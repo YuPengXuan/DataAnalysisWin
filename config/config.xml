@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataRecord>
+  <column name="客户编号" defValue="0" valueType="VARCHAR(30)" databaseName="customerID" />
+  <column name="套餐品牌" defValue="全球通" valueType="VARCHAR(30)" databaseName="tariffPackage" />
+  <column name="信用等级" defValue="五星级钻" valueType="VARCHAR(50)" databaseName="creditRating" />
+  <column name="是否使用4GUSIM卡" defValue="是" valueType="VARCHAR(10)" databaseName="is4GUsim" />
+  <column name="是否4G资费" defValue="是" valueType="VARCHAR(10)" databaseName="is4Tariff" />
+  <column name="网龄" defValue="0" valueType="INT" databaseName="netAge" />
+  <column name="当月ARPU" defValue="0.0" valueType="FLOAT" databaseName="currentARPU" />
+  <column name="当月MOU" defValue="0" valueType="FLOAT" databaseName="currentMOU" />
+  <column name="当月停机天数" defValue="0.0" valueType="FLOAT" databaseName="shutDownDays" />
+  <column name="当月停机次数" defValue="0" valueType="LONG" databaseName="shutDownTimes" />
+  <column name="当月DOU" defValue="0" valueType="BIGINT" databaseName="currentDOU" />
+  <column name="随意玩编号" defValue="0" valueType="BIGINT" databaseName="freePlayNo" />
+  <column name="终端制式" defValue="GSM" valueType="VARCHAR(30)" databaseName="ueMode" />
+  <column name="终端机型" defValue="GSM" valueType="VARCHAR(30)" databaseName="ueType" />
+  <column name="是否智能机" defValue="Y" valueType="VARCHAR(10)" databaseName="isSmartUe" />
+  <column name="终端使用时间（月）" defValue="0" valueType="INT" databaseName="usedMonth" />
+  <column name="终端屏幕大小" defValue="0.0" valueType="VARCHAR(20)" databaseName="ueScreenSize" />
+  <column name="当月省内漫游时长" defValue="0" valueType="INT" databaseName="intraRoamingTime" />
+  <column name="当月省际漫游时长" defValue="0" valueType="INT" databaseName="interRoamingTime" />
+  <column name="外呼营销4G终端是否成功" defValue="是" valueType="VARCHAR(10)" databaseName="is4GExtSaleSuc" />
+</DataRecord>
