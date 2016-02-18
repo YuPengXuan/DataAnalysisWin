@@ -5,6 +5,7 @@
 	<artifactId>DataAnalysisWin</artifactId>
 	<name>DataAnalysisWin</name>
 	<version>0.1</version>
+	<packaging>jar</packaging>
 	<build>
 		<pluginManagement>
 			<plugins>
