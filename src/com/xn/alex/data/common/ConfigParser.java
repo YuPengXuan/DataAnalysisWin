@@ -3,6 +3,8 @@ package com.xn.alex.data.common;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -13,6 +15,8 @@ public class ConfigParser extends DefaultHandler{
 	public static Map<String, ConfigElement> columnInfoMap = new HashMap<String, ConfigElement>();
 	
 	public static Map<String, String> chnToEnColumnName = new HashMap<String, String>();
+	
+	public static Map<String, Integer> columnNameToSizeMap = new HashMap<String, Integer>();
 	
 	public static Vector<String> columnVecInConfigOrder = new Vector<String>();
 	
@@ -54,6 +58,15 @@ public class ConfigParser extends DefaultHandler{
 		    }
 		    else if("valueType".equals(attrName)){
 			    cfgElement.mValueType = attributes.getValue(attrName);
+			    if(cfgElement.mValueType.contains("VARCHAR")){
+			    	Pattern pat = Pattern.compile("VARCHAR\\((\\d+)\\)");
+			    	Matcher macher = pat.matcher(cfgElement.mValueType);
+			    	while(macher.find()){
+			    		String sizeStr = macher.group(1);
+			    		int size = Integer.parseInt(sizeStr);
+			    		columnNameToSizeMap.put(mExcelName, size);
+			    	}
+			    }
 		    }
 		    else if("databaseName".equals(attrName)){
 			    cfgElement.mDatabaseName = attributes.getValue(attrName);

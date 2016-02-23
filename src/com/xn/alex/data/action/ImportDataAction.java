@@ -1,12 +1,15 @@
 package com.xn.alex.data.action;
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.Vector;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
+import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.datimport.DataImport;
@@ -42,6 +45,8 @@ public class ImportDataAction extends WindowAction {
 		if(null == selectedFile){
 			return;
 		}
+		
+		 System.out.println("开始导入数据...");
 			
 		 String fullFileName = selectedFile.toString(); 
 		 
@@ -55,18 +60,64 @@ public class ImportDataAction extends WindowAction {
 		 DataImport dataImportHandler = new DataImport(fullFileName, tableName, fileType);
 		 dataImportHandler.loadDataForTree();
 		 
-		 getResultForTreeNode();
+		 Vector<String> tableColumnVec = getTableColumnName();
+		 
+		 if(tableColumnVec.size() == 0){
+			 return;
+		 }
+		 
+		 if(false == getResultForTreeNode(tableColumnVec)){
+			 return;
+		 }
 		 
 		 TreeDataSheet.Instance().refresh();
 		 
 	 }
 	 
-	 private void getResultForTreeNode(){
+	 private Vector<String> getTableColumnName(){
+		 Vector<String> columnNames = new Vector<String>();
+		 
+		 try{
+		 		 
+		     String tableName = "information_schema.columns";
+		 
+		     String selecedCol = "COLUMN_NAME";
+		 
+		     String condition = "table_name='"+ DatabaseConstant.TREE_DATA_IMP_TABLE +"'";
+		 
+		     ResultSet rs = DatabaseAction.Instance().getOneResult(tableName, selecedCol, condition);
+		 
+		     ResultSetMetaData data = rs.getMetaData();
+		     
+		    while(rs.next()){
+		     
+		     for(int i=1;i<=data.getColumnCount();i++){
+		    	 String val = rs.getString(i);
+		    	 
+		    	 columnNames.add(val);
+		     }
+		    }
+		 
+		 
+		     DatabaseAction.Instance().closeCurrentConnection();
+		 }
+		 catch(Exception e){
+			 e.printStackTrace();
+			 
+			 DatabaseAction.Instance().closeCurrentConnection();
+			 
+			 columnNames.clear();
+		 }
+		 
+		 return columnNames;
+	 }
+	 
+	 private boolean getResultForTreeNode(Vector<String> tableColumnVec){
 		 
 		 treeNodeResultObj resultTree = GenerateTreeByLeaf.getResultNode();
 		 
 		 if(null == resultTree){
-			 return;
+			 return false;
 		 }
 		 
 		 //others
@@ -77,19 +128,25 @@ public class ImportDataAction extends WindowAction {
 		 
 		 for(int i=level-1;i>=0;i--){
 			 Vector<treeNodeResultObj> levelObjVec = treeNodeResultObjVec.get(i);
-			 if(false == loopAndSetDataIntoTree(levelObjVec)){
+			 if(false == loopAndSetDataIntoTree(levelObjVec, tableColumnVec)){
 				 System.out.println("计算错误！");
-				 return;
+				 return false;
 			 }
 		 }
+		 return true;
 		 
 	 }
 	 
-	 private boolean loopAndSetDataIntoTree(Vector<treeNodeResultObj> levelObjVec){
+	 private boolean loopAndSetDataIntoTree(Vector<treeNodeResultObj> levelObjVec, Vector<String> tableColumnVec){
 		 for(int i=0;i<levelObjVec.size();i++){
 			 treeNodeResultObj obj = levelObjVec.get(i);
 			 
 			 if(obj.isLeaf == true){
+				 if(false == isColumnExist(obj.chnColumnName, tableColumnVec)){
+					 System.out.println("导入数据列信息和规则信息不匹配");
+					 return false;
+				 }
+				 
 				 String condition = obj.sql;
 				 
 				 String tableName = DatabaseConstant.TREE_DATA_IMP_TABLE;
@@ -144,6 +201,24 @@ public class ImportDataAction extends WindowAction {
 			 obj.Probability = String.valueOf((float)value/(obj.conditionMeet + obj.conditionNotMeet));
 			 
 			 updateObjInfo(obj);
+		 }
+		 
+		 return true;
+	 }
+	 
+	 private boolean isColumnExist(Vector<String> chnColumnName, Vector<String> tableColumnVec){
+		 for(int i=0;i<chnColumnName.size();i++){
+			 String chnColName = chnColumnName.get(i);
+			 
+			 String enColName = ConfigParser.chnToEnColumnName.get(chnColName);
+			 
+			 if(null == enColName){
+				 return false;
+			 }
+			 
+			 if(false == tableColumnVec.contains(enColName)){
+				 return false;
+			 }
 		 }
 		 
 		 return true;

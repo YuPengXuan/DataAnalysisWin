@@ -150,6 +150,8 @@ public class DatabaseAction {
 			StringBuffer sb = new StringBuffer("SELECT * FROM ");
 			
 			sb.append(tableName);
+			//only get 2000 lines;
+			sb.append(" limit 2000");
 			
 			String sql = sb.toString();
 			
@@ -322,7 +324,6 @@ public class DatabaseAction {
             	    tmpStr = columnName + " " +  columnType + "  not null,"; 
             	}
             	else{
-            		
             		tmpStr = columnName + " " +  columnType + "  null,";
             	}
             	
@@ -373,7 +374,7 @@ public class DatabaseAction {
 		if(null == tableName || columnNameVec.size() == 0 || commitValVec.size() == 0){			
 			return true;			
 		}
-		
+				
 		try{
 			
 			int commitNum = 1000;
@@ -422,7 +423,7 @@ public class DatabaseAction {
 				 
 				 sb.append(")");
 				 
-				 String sql = sb.toString();
+				 String sql = sb.toString();				 
 							 
 				 ps.addBatch(sql);
 				 
@@ -441,7 +442,9 @@ public class DatabaseAction {
 			  return true;
 			
 		}
-		catch(Exception e){
+		catch(Exception e){		
+			
+			e.printStackTrace();
 			
 			System.out.println("插入数据到表 "+ tableName +"失败");
 			
@@ -871,7 +874,7 @@ public class DatabaseAction {
 				return null;
 			}
 			
-			StringBuffer sb = new StringBuffer("SELECT * FROM " + tableName + " ORDER BY " + orderCol);
+			StringBuffer sb = new StringBuffer("SELECT * FROM " + tableName + " LIMIT 2000 ORDER BY " + orderCol);
 			
 			if(!isAsc){
 				sb.append(" DESC");

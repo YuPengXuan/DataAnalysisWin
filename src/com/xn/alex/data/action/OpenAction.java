@@ -169,6 +169,7 @@ public class OpenAction extends WindowAction{
 			System.out.println("文件类型不支持");			
 			return;
 		}
+		System.out.println("开始导入数据...");
 		
 		DataImport dataImportHandler = new DataImport(fullFileName, fileType);
 		dataImportHandler.run();		
@@ -178,8 +179,8 @@ public class OpenAction extends WindowAction{
 		
 		JTable table = MainWindow.Instance().getTable();
 		DataExport dataExportHandler = new DataExport(fullFileName,table);
-		//dataExportHandler.run();
-		dataExportHandler.showDataInJTable();
+		dataExportHandler.run();
+		//dataExportHandler.showDataInJTable();
 		
 		MainWindow.setCurrentAct(CURRENT_ACTION.NONE);
 	    //currentAct = CURRENT_ACTION.NONE;

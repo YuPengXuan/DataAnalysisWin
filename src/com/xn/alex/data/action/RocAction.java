@@ -5,7 +5,7 @@ import java.util.Vector;
 import com.xn.alex.data.common.CommonConfig.ROC_TYPE;
 import com.xn.alex.data.graphics.LineDataSheet;
 import com.xn.alex.data.process.MenuItemDisable;
-import com.xn.alex.data.resultobj.algorithmResultObj2;
+import com.xn.alex.data.resultobj.ProfitResultNode;
 import com.xn.alex.data.resultobj.treeNodeResultObj;
 import com.xn.alex.data.rule.GenerateTreeByLeaf;
 import com.xn.alex.data.rule.RocParameterGenerate;
@@ -81,24 +81,21 @@ public class RocAction extends WindowAction {
 		 lineDataSheet.setyLabel("F0£¨ÃüÖÐÂÊ£©");
 		 
 		 lineDataSheet.setRocType(rocType);
-		 
-		 Vector<algorithmResultObj2> showVec = constructResultVec(lineDataSheet);
+		 		 
+		 Vector<ProfitResultNode> showVec = constructResultVec();
 		 
 		 lineDataSheet.show(showVec);
 		 		 		 
 		 //LineDataSheet.Instance().testCategoryLineDataSheet();
 	 }
 	 
-	 private Vector<algorithmResultObj2> constructResultVec(LineDataSheet lineDataSheet){
-		 //LineDataSheet.Instance().testCategoryLineDataSheet();
+	 private Vector<ProfitResultNode> constructResultVec(){
 		 
 		 Vector<treeNodeResultObj> treeNodeVec = GenerateTreeByLeaf.getTreeLeafNodeVec();
 		 
 		 RocParameterGenerate genHandler = new RocParameterGenerate(treeNodeVec);
 		 
-		 Vector<algorithmResultObj2> showVec = genHandler.getShowVec();
-		 
-		 lineDataSheet.setResultObj(genHandler);
+		 Vector<ProfitResultNode> showVec = genHandler.getShowVec();
 		 
 		 return showVec;		 
 	 }

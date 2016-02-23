@@ -42,15 +42,15 @@ public class DataExport {
 		    
 		    String orderCol = OrderAction.Instance().getOrderCol();
 		    
-            if(orderCol != null || !"".equals(orderCol)){
+            if(orderCol == null || "".equals(orderCol)){
 		    	
-		    	boolean isAsc = OrderAction.Instance().isAsc();
-		    	
-		    	rs = DatabaseAction.Instance().getOrderResult(tableName, orderCol, isAsc);
+            	rs = DatabaseAction.Instance().getAllResult(tableName);
 		    	
 		    }else{
-
-		    	rs = DatabaseAction.Instance().getAllResult(tableName);
+		    	
+                boolean isAsc = OrderAction.Instance().isAsc();
+		    	
+		    	rs = DatabaseAction.Instance().getOrderResult(tableName, orderCol, isAsc);
 		    
 		    }
 		    

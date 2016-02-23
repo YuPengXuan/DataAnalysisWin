@@ -1,5 +1,7 @@
 package com.xn.alex.data.datimport;
 
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -86,6 +88,21 @@ public class DataImport {
 		FILE_TYPE type = getFileType();
 		String fileName = getfileName();
 		
+		File xlsxFile = new File(fileName);
+		long fileSize = xlsxFile.length();
+		
+		if(fileSize> 8000000){			
+			Vector<String> columnNames = new Vector<String>();
+			
+			if(false == HugeDataImport.Instance().importData(fileName, getTableName(), columnNames, missingColumnIndexList)){
+				System.out.println("导入大数据失败");
+				return;
+			}
+			
+			System.out.print("导入数据成功");
+			return;
+		}
+		
 		Vector<String> columnNames = new Vector<String>();	
 		try{
 		switch(type){
@@ -162,10 +179,32 @@ public class DataImport {
 		Vector<String> columnNames = new Vector<String>();
 		
 		//columnNames.clear();
+		File xlsxFile = new File(fileName);
+		long fileSize = xlsxFile.length();
+		//if(fileSize>0){
+		if(fileSize> 8000000){
+			String tableName = getTableName(fileName);
+			
+			if(false == HugeDataImport.Instance().importData(fileName, tableName, columnNames, missingColumnIndexList)){
+				System.out.println("导入大数据失败");
+				
+				MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance().getCurrentNode().hashCode());
+				
+				return;
+			}
+			
+            MainWindow.fileNameToTableMap.put(fileName, tableName);
+			
+			updateMainWindowColumnVec(columnNames);
+			
+			System.out.println("文件：" + fileName +" 导入数据库成功");	
+		}
+		else{
 		
-		getColumnXlsxNames(columnNames);
+		    getColumnXlsxNames(columnNames);
 		
-		commomLoadIntoDb(fileName, columnNames);
+		    commomLoadIntoDb(fileName, columnNames);
+		}
 		
 	}
 	
@@ -208,9 +247,31 @@ public class DataImport {
         
         //columnNames.clear();
         
+        File xlsxFile = new File(fileName);
+		long fileSize = xlsxFile.length();
+		
+		if(fileSize> 8000000){
+			String tableName = getTableName(fileName);
+			
+			if(false == HugeDataImport.Instance().importData(fileName, tableName, columnNames, missingColumnIndexList)){
+				System.out.println("导入大数据失败");
+				
+				MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance().getCurrentNode().hashCode());
+				return;
+			}
+			
+            MainWindow.fileNameToTableMap.put(fileName, tableName);
+			
+			updateMainWindowColumnVec(columnNames);
+			
+			System.out.println("文件：" + fileName +" 导入数据库成功");	
+		}
+		else{
+        
         getColumnXlsNames(columnNames);
         
         commomLoadIntoDb(fileName, columnNames);
+		}
 		
 	}
 	
@@ -294,11 +355,10 @@ public class DataImport {
 	private void getColumnXlsxNames(Vector<String> resultColumns) throws IOException{
 		
 		InputStream localIs = getInstanceOfIs();
-			
-		
+				
 		if((null == xssWorkBook)&&(FILE_TYPE.XLSX_FILE == getFileType())){
 			
-		    xssWorkBook = new XSSFWorkbook(localIs);
+		    xssWorkBook = new XSSFWorkbook(new BufferedInputStream(localIs));
 		    
 		}
 								
@@ -454,7 +514,7 @@ public class DataImport {
 				
 				if(sheet == null)
 				    continue;			
-								
+				
 				for(int rowNum=1;rowNum<=sheet.getLastRowNum();rowNum++){
 					
 					Row row = sheet.getRow(rowNum);
@@ -496,12 +556,12 @@ public class DataImport {
 					    		
 					    		break;
 					    		
-					    	}
-					    
+					    	}					    
 					        cellValue = cell.toString();
 					     
 					    }					    
-					   
+					    
+
 					    tmpVec.add(cellValue);
 					   					  
 					}

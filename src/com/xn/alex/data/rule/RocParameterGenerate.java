@@ -1,91 +1,22 @@
 package com.xn.alex.data.rule;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import com.xn.alex.data.resultobj.ProfitResultNode;
-import com.xn.alex.data.resultobj.algorithmResultObj2;
 import com.xn.alex.data.resultobj.treeNodeResultObj;
 
 public class RocParameterGenerate {
 	
 	private Vector<treeNodeResultObj> m_leafNodeVec = null;
 	
-	private Vector<algorithmResultObj2> showVec = null;
+	private Vector<ProfitResultNode> showVec = new Vector<ProfitResultNode>();
 	
 	public RocParameterGenerate(Vector<treeNodeResultObj> leafNodeVec){
 		m_leafNodeVec = leafNodeVec;
 	}
 	
-	public Vector<ProfitResultNode> getProfitVec(){
-		Vector<ProfitResultNode> resultVec = new Vector<ProfitResultNode>();
-		
-		CalculateProfitVal(resultVec);
-		
-		return resultVec;
-	}
-	
-	private void CalculateProfitVal(Vector<ProfitResultNode> resultVec){
-		if(null == m_leafNodeVec || m_leafNodeVec.size() == 0){
-			return;
-		}
-		
-		if(null == showVec || showVec.size() == 0){			
-			getShowVec();
-			return;
-		}
-		
-		Map<Integer, Integer> positionMap = new HashMap<Integer, Integer>();
-		
-		for(int i=0;i<showVec.size();i++){
-			algorithmResultObj2 obj = showVec.get(i);
-			if(null == obj){
-				continue;
-			}			
-			positionMap.put(obj.nodeNum, i);
-		}
-		
-		for(int j=0;j<m_leafNodeVec.size();j++){
-			treeNodeResultObj leafObj = m_leafNodeVec.get(j);
-			if(null == leafObj){
-				continue;
-			}
-			
-			int position = positionMap.get(leafObj.nodeNumber);
-			
-			algorithmResultObj2 tmpObj = showVec.get(position);
-			
-			ProfitResultNode pObj = new ProfitResultNode();
-			
-			pObj.F1 = tmpObj.x.doubleValue();
-			
-			pObj.F0 = tmpObj.y.doubleValue();
-			
-			pObj.nodeNum = leafObj.nodeNumber;
-			
-			pObj.salePNum = leafObj.conditionMeet + leafObj.conditionNotMeet;
-			
-            pObj.predSuccPNum = leafObj.conditionMeet;
-            
-            pObj.F2 = leafObj.conditionMeet/pObj.salePNum;
-            
-            pObj.condition = leafObj.condition;
-            
-            pObj.distPNum = leafObj.conditionNotMeet;
-            
-            resultVec.add(pObj);
-            
-		}
-		
-		
-	}
-	
-	public Vector<algorithmResultObj2> getShowVec(){
-		if(null == showVec){
-			showVec = new Vector<algorithmResultObj2>();
-		}
+	public Vector<ProfitResultNode> getShowVec(){
 		
 		ordyByDesc(showVec);
 		
@@ -93,11 +24,11 @@ public class RocParameterGenerate {
 		
 		normalization(showVec);
 		
-		algorithmResultObj2 zeroObj = new algorithmResultObj2();
+		ProfitResultNode zeroObj = new ProfitResultNode();
 		
-		zeroObj.x = (float)0;
+		zeroObj.F0 = (float)0;
 		
-		zeroObj.y = (float)0;
+		zeroObj.F1 = (float)0;
 		
 		zeroObj.type = showVec.get(0).type;
 		
@@ -106,7 +37,7 @@ public class RocParameterGenerate {
 		return showVec;
 	}
 	
-	private void normalization(Vector<algorithmResultObj2> showVec){
+	private void normalization(Vector<ProfitResultNode> showVec){
 		
 		int size = showVec.size();
 		
@@ -114,38 +45,44 @@ public class RocParameterGenerate {
 			return;
 		}
 		
-		float maxValueX = showVec.get(size-1).x.floatValue();
+		double maxValueX = showVec.get(size-1).F1;
 		
-		float maxValueY = showVec.get(size-1).y.floatValue();
+		double maxValueY = showVec.get(size-1).F0;
 		
 		for(int i=0;i<showVec.size();i++){
-			algorithmResultObj2 obj = showVec.get(i);
+			ProfitResultNode obj = showVec.get(i);
 			
-			obj.y = obj.y.floatValue() / maxValueY;
+			obj.F0 = obj.F0 / maxValueY;
 			
-			obj.x = obj.x.floatValue() / maxValueX;
+			obj.F1 = obj.F1 / maxValueX;
 			
 		}	
 				
 	}
 	
-	private void sumByOrder(Vector<algorithmResultObj2> showVec){
+	private void sumByOrder(Vector<ProfitResultNode> showVec){
 		
 		for(int i=1;i<showVec.size();i++){
-			algorithmResultObj2 obj = showVec.get(i);				
+			ProfitResultNode obj = showVec.get(i);				
 
-			algorithmResultObj2 preObj = showVec.get(i-1);
+			ProfitResultNode preObj = showVec.get(i-1);
 				
-			obj.x = obj.x.floatValue() + preObj.x.floatValue();
+			obj.F1 = obj.F1 + preObj.F1;
 				
-			obj.y = obj.y.floatValue() + preObj.y.floatValue();
+			obj.F0 = obj.F0 + preObj.F0;
 
 		}
 		
 	}
 	
-	private void ordyByDesc(Vector<algorithmResultObj2> showVec){
+	private void ordyByDesc(Vector<ProfitResultNode> showVec){
 		if(null == m_leafNodeVec){
+			return;
+		}
+		
+		treeNodeResultObj rootNode = GenerateTreeByLeaf.getTreeNodeByLevelVec().get(0).get(0);
+		
+		if(null == rootNode){
 			return;
 		}
 		
@@ -156,30 +93,44 @@ public class RocParameterGenerate {
 				continue;
 			}
 			
-			algorithmResultObj2 cmpObj = new algorithmResultObj2();
+			ProfitResultNode cmpObj = new ProfitResultNode();
 			
-			cmpObj.x = obj.conditionNotMeet;
+			cmpObj.F1 = obj.conditionNotMeet;
 			
-			if(cmpObj.x.floatValue() == 0){
-				cmpObj.x = 1;
+			if(cmpObj.F1 == 0){
+				cmpObj.F1 = 1;
 			}
 			
-			cmpObj.y = obj.conditionMeet;
+			cmpObj.F0 = obj.conditionMeet;
 			
-			if(cmpObj.y.floatValue()  == 0){
-				cmpObj.y = 1;
+			if(cmpObj.F0  == 0){
+				cmpObj.F0 = 1;
 			}
 			
-			cmpObj.yDivX = cmpObj.y.floatValue() /cmpObj.x.floatValue();
+			cmpObj.F0divF1 = cmpObj.F0 /cmpObj.F1;
 			
 			cmpObj.type = "F1(X)£ºF0(Y)";
 			
 			cmpObj.nodeNum = obj.nodeNumber;
+			
+			cmpObj.salePNum = obj.conditionMeet + obj.conditionNotMeet;
+			
+			cmpObj.distPNum = obj.conditionNotMeet;
+			
+			cmpObj.predSuccPNum = obj.conditionMeet;
+			
+			cmpObj.peopleRatio = (double)cmpObj.salePNum/((double)rootNode.conditionMeet + (double)rootNode.conditionNotMeet);
+			
+			cmpObj.exportF0 = (double)obj.conditionMeet / (double)rootNode.conditionMeet;
+			
+			cmpObj.exportF1 = (double)obj.conditionNotMeet /(double)rootNode.conditionNotMeet;
+			
+			cmpObj.exportF2 = (double)obj.conditionMeet / ((double)obj.conditionMeet + (double)obj.conditionNotMeet);
 						
 			showVec.add(cmpObj);
 		}
 		
-		Collections.sort(showVec, new algorithmResultObj2());
+		Collections.sort(showVec, new ProfitResultNode());
 	}
 
 }

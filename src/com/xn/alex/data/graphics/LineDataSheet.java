@@ -28,9 +28,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import com.xn.alex.data.common.CommonConfig.ROC_TYPE;
 import com.xn.alex.data.resultobj.ProfitResultNode;
 import com.xn.alex.data.resultobj.algorithmResultObj2;
-import com.xn.alex.data.roc.ProfitActionFactory;
+import com.xn.alex.data.roc.ProfitModelAction;
 import com.xn.alex.data.roc.ProfitModelInterface;
-import com.xn.alex.data.rule.RocParameterGenerate;
 
 public class LineDataSheet extends JFrame implements ActionListener{
 
@@ -56,18 +55,8 @@ public class LineDataSheet extends JFrame implements ActionListener{
 	private String yLabel = "";
 	
 	private ROC_TYPE rocType;
-	
-	private Object resultObj;
-	
-	private Vector<algorithmResultObj2> m_resultObjVec;
-	
-	public Object getResultObj() {
-		return resultObj;
-	}
-
-	public void setResultObj(Object resultObj) {
-		this.resultObj = resultObj;
-	}
+		
+	private Vector<ProfitResultNode> m_resultObjVec;	
 	
 	public ROC_TYPE getRocType() {
 		return rocType;
@@ -117,7 +106,7 @@ public class LineDataSheet extends JFrame implements ActionListener{
 	}
 	
 	
-	public void show(Vector<algorithmResultObj2> resultObjVec){
+	public void show(Vector<ProfitResultNode> resultObjVec){
 		m_resultObjVec = resultObjVec;
 		
 		clearPreviousVar();
@@ -141,8 +130,6 @@ public class LineDataSheet extends JFrame implements ActionListener{
 				
 		contentPane.add(southPanel,BorderLayout.SOUTH);
 		
-        //this.setContentPane(createPanel(resultObjVec));
-		
 		this.pack();
 		
 		this.setVisible(true);
@@ -151,7 +138,7 @@ public class LineDataSheet extends JFrame implements ActionListener{
 		
 	}
 	
-	private JPanel createPanel(Vector<algorithmResultObj2> resultObjVec){
+	private JPanel createPanel(Vector<ProfitResultNode> resultObjVec){
 		
 		chart =createChart(createLineDataset(resultObjVec));
 		
@@ -211,7 +198,7 @@ public class LineDataSheet extends JFrame implements ActionListener{
 		
 	}
 	
-	private XYDataset createLineDataset(Vector<algorithmResultObj2> resultObjVec){
+	private XYDataset createLineDataset(Vector<ProfitResultNode> resultObjVec){
 		
 		 XYSeriesCollection dataset = new XYSeriesCollection();
 				
@@ -222,7 +209,7 @@ public class LineDataSheet extends JFrame implements ActionListener{
 		
 		    for(int i=0;i<resultObjVec.size();i++){
 			
-			    algorithmResultObj2 obj = resultObjVec.get(i);
+		    	ProfitResultNode obj = resultObjVec.get(i);
 			
 			    if(null == obj){
 				    continue;
@@ -237,8 +224,7 @@ public class LineDataSheet extends JFrame implements ActionListener{
 			    }			
 			
 			    XYSeries currentSeries = xySeriesMap.get(type);
-			    //currentSeries.add(obj.y, obj.x);
-			    currentSeries.add(obj.x, obj.y);
+			    currentSeries.add(obj.F1, obj.F0);
 		    }
 		
 		    for(Map.Entry<String, XYSeries> entry : xySeriesMap.entrySet()){
@@ -286,7 +272,7 @@ public class LineDataSheet extends JFrame implements ActionListener{
     	
     	resultObjVec.add(obj2);
     	
-    	show(resultObjVec);
+    	//show(resultObjVec);
     	
     }
 
@@ -295,22 +281,28 @@ public class LineDataSheet extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		if(event.getSource() == profitButton){
 			
-			 ProfitModelInterface profitAction = ProfitActionFactory.getNewProfitAction(rocType);
+			 ProfitModelInterface profitAction = new ProfitModelAction();
 			 
-			 profitAction.setResultObjVec(m_resultObjVec);
-			 
-			 if(null == resultObj){
-				 System.out.println("计算利润值失败");
-				 return;
-			 }
-			 
-			 Vector<ProfitResultNode> profitVec = ((RocParameterGenerate)resultObj).getProfitVec();
-			 
-			 profitAction.setpResultVec(profitVec);
+			 profitAction.setpResultVec(m_resultObjVec);
 			 
 			 profitAction.setRocType(rocType);
-			  
+			 
 			 profitAction.takeAction();
+			 
+			 //profitAction.setResultObjVec(m_resultObjVec);
+			 
+			 //if(null == resultObj){
+			//	 System.out.println("计算利润值失败");
+				// return;
+			 //}
+			 
+			 //Vector<ProfitResultNode> profitVec = ((RocParameterGenerate)resultObj).getProfitVec();
+			 
+			 //profitAction.setpResultVec(profitVec);
+			 
+			// profitAction.setRocType(rocType);
+			  
+			// profitAction.takeAction();
 			 
 		}
 		
