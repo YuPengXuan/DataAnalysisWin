@@ -49,10 +49,10 @@ public class DatabaseAction {
 				int errorCode = sqle.getErrorCode();
 				
 				if(1045 == errorCode){
-					JOptionPane.showMessageDialog(null,"ç”¨æˆ·åæˆ–å¯†ç ä¸æ­£ç¡®ï¼","é”™è¯¯ä¿¡æ¯",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null,"ÓÃ»§Ãû»òÃÜÂë²»ÕıÈ·£¡","´íÎóĞÅÏ¢",JOptionPane.ERROR_MESSAGE);
 				}
 				else{
-					JOptionPane.showMessageDialog(null,"æ•°æ®åº“è¿æ¥å¤±è´¥ï¼","é”™è¯¯ä¿¡æ¯",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null,"Êı¾İ¿âÁ¬½ÓÊ§°Ü£¡","´íÎóĞÅÏ¢",JOptionPane.ERROR_MESSAGE);
 				}
 				
 				return false;
@@ -60,7 +60,7 @@ public class DatabaseAction {
 		}
 		catch(Exception e){
 						
-			System.out.println("è¿æ¥æ•°æ®åº“å¤±è´¥ï¼");
+			System.out.println("Á¬½ÓÊı¾İ¿âÊ§°Ü£¡");
 			
 			return false;
 			
@@ -75,7 +75,7 @@ public class DatabaseAction {
 				con.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				System.out.println("æ–­è¿æ•°æ®åº“å¤±è´¥ï¼");
+				System.out.println("¶ÏÁ¬Êı¾İ¿âÊ§°Ü£¡");
 				
 				return false;
 			}
@@ -127,7 +127,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("è·å–è¡¨ " + tableName + "æ•°æ®å¤±è´¥ï¼");			
+			System.out.println("»ñÈ¡±í " + tableName + "Êı¾İÊ§°Ü£¡");			
 			
 			return null;
 			
@@ -166,7 +166,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("è·å–è¡¨ " + tableName + "æ•°æ®å¤±è´¥ï¼");			
+			System.out.println("»ñÈ¡±í " + tableName + "Êı¾İÊ§°Ü£¡");			
 			
 			return null;			
 		}
@@ -208,7 +208,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("åˆ é™¤æ•°æ®åº“æ•°æ®å¤±è´¥ï¼");			
+			System.out.println("É¾³ıÊı¾İ¿âÊı¾İÊ§°Ü£¡");			
 		}
 		
 		return true;
@@ -246,7 +246,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("åˆ é™¤è¡¨ " + tableName + "æ•°æ®å¤±è´¥ï¼");
+			System.out.println("É¾³ı±í " + tableName + "Êı¾İÊ§°Ü£¡");
 			
 			return false;			
 		}
@@ -286,7 +286,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("åˆ é™¤è¡¨"+tableName+"å¤±è´¥ï¼");
+			System.out.println("É¾³ı±í"+tableName+"Ê§°Ü£¡");
 		}
 		
 	    return true;
@@ -346,7 +346,7 @@ public class DatabaseAction {
 		    
 		    if(false == isTableExist(tableName)){
 		    	
-		    	System.out.println("åˆ›å»ºè¡¨ " + tableName + "å¤±è´¥ï¼");
+		    	System.out.println("´´½¨±í " + tableName + "Ê§°Ü£¡");
 		    	
 		    	ps.close();
 		    	
@@ -361,7 +361,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("åˆ›å»ºè¡¨"+tableName+"å¤±è´¥ï¼");
+			System.out.println("´´½¨±í"+tableName+"Ê§°Ü£¡");
 			
 		}
 		
@@ -446,7 +446,7 @@ public class DatabaseAction {
 			
 			e.printStackTrace();
 			
-			System.out.println("æ’å…¥æ•°æ®åˆ°è¡¨ "+ tableName +"å¤±è´¥");
+			System.out.println("²åÈëÊı¾İµ½±í "+ tableName +"Ê§°Ü");
 			
 			try {
 				
@@ -674,7 +674,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("æ›´æ–°è¡¨"+ tableName +"å¤±è´¥!");
+			System.out.println("¸üĞÂ±í"+ tableName +"Ê§°Ü!");
 		}
 		
 		
@@ -710,7 +710,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("è¡¨"+tableName+"å­˜åœ¨æ£€æµ‹å¤±è´¥!");
+			System.out.println("±í"+tableName+"´æÔÚ¼ì²âÊ§°Ü!");
 			
 			return false;			
 		}
@@ -803,7 +803,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println("æ›´æ–°è¡¨"+ tableName +"æ•°æ®å¤±è´¥ï¼");
+			System.out.println("¸üĞÂ±í"+ tableName +"Êı¾İÊ§°Ü£¡");
 		}
 		
 		
@@ -893,7 +893,7 @@ public class DatabaseAction {
 			
 			closeCurrentConnection();
 			
-			System.out.println(orderCol + "æ’åºå¤±è´¥ï¼");			
+			System.out.println(orderCol + "ÅÅĞòÊ§°Ü£¡");			
 			
 			return null;			
 		}
