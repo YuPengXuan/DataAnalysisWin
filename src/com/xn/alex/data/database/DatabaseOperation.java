@@ -7,8 +7,7 @@ import org.apache.log4j.Logger;
 public class DatabaseOperation {
     private final static Logger logger = Logger.getLogger(DatabaseOperation.class);
     
-    public static synchronized boolean executer(SqlExecuter sqlExecuter) {
-    	DataBaseConnection databaseConnection = new DataBaseConnection();
+    public static synchronized boolean executer(final DataBaseConnection databaseConnection, final SqlExecuter sqlExecuter) {
 		final Connection connection = databaseConnection.getConnection();
     	try {
 			connection.setAutoCommit(false);
