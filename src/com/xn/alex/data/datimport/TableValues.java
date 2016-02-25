@@ -1,5 +1,7 @@
 package com.xn.alex.data.datimport;
 
+import java.util.Map;
+
 import javax.swing.table.AbstractTableModel;
 
 public class TableValues extends AbstractTableModel {
@@ -13,12 +15,27 @@ public class TableValues extends AbstractTableModel {
     public final static int NUMERIC_TYPE = 1;
     public final static String[] columnNames = {"列名", "类型"};
     
-    public Object[][] values = {
-            {"列a",true},
-            {"列b",false},
-            {"列c",false},
-            {"列d",true}
-    };
+    
+    public Object[][] values = null;
+       
+    public TableValues(Map<Integer, String> MissColumnIndToChnNameMap){
+    	int row = 0;
+    	
+    	int size = MissColumnIndToChnNameMap.size();
+    	
+    	values = new Object[size][2];
+    	
+    	for (Map.Entry<Integer, String> entry : MissColumnIndToChnNameMap.entrySet()) {
+    		String columnName = entry.getValue();
+    		
+    		values[row][0] = columnName;
+    		
+    		values[row][1] = true; 
+    		
+    		row++;
+    	}
+    	
+    }
 
 	@Override
 	public int getColumnCount() {
@@ -44,6 +61,10 @@ public class TableValues extends AbstractTableModel {
 	
 	public boolean isCellEditable(int row, int column){  
 		   return true;  
-	}  
+	}
+	
+	public String getColumnName(int column){
+        return columnNames[column];
+    }
 	
 }

@@ -1,6 +1,8 @@
 package com.xn.alex.data.datimport;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.EventObject;
 
 import javax.swing.JComboBox;
@@ -24,7 +26,14 @@ public class GenderEditor extends JComboBox<Object> implements TableCellEditor{
     public GenderEditor(){
               super();
               addItem("字符串型");
-              addItem("数值型");            
+              addItem("数值型");
+              addActionListener(new ActionListener(){
+                 public void actionPerformed(ActionEvent e) {
+                       System.out.println("ActionListener");
+                       //如同stopCellEditing，都是调用fireEditingStopped()方法
+                       fireEditingStopped();
+              }            
+             });
     }
     public void addCellEditorListener(CellEditorListener l) {
               listenerList.add(CellEditorListener.class,l);
@@ -49,7 +58,7 @@ public class GenderEditor extends JComboBox<Object> implements TableCellEditor{
 
     public boolean stopCellEditing() {
               //System.out.println("编辑其中一个单元格，再点击另一个单元格时，调用。");
-              fireEditingStopped();
+              //fireEditingStopped();
               return true;
     }
 

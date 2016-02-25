@@ -8,15 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
-public class NewColumnHandler extends Thread implements ActionListener{
+public class NewColumnHandler{
 	
     protected JFrame frame;
 	
@@ -24,7 +28,13 @@ public class NewColumnHandler extends Thread implements ActionListener{
     
     protected JPanel topPanel;
     
+    protected JPanel bottomPanel;
+    
     protected JScrollPane topScrolPanel;
+    
+    protected JButton okBt;
+    
+    protected JButton cancelBt;
     
     protected JTable table;
     
@@ -84,6 +94,8 @@ public class NewColumnHandler extends Thread implements ActionListener{
     	
     	createColumnSelectWindow(MissColumnIndToChnNameMap);
     	
+    	addListenerForButton(MissColumnIndToChnNameMap);
+    	
     }
 
 		
@@ -105,7 +117,7 @@ public class NewColumnHandler extends Thread implements ActionListener{
 	     
 		topPanel.setLayout(layout1);
 		
-		TableValues tv = new TableValues();
+		TableValues tv = new TableValues(MissColumnIndToChnNameMap);
 		
 		table = new JTable(tv); 
 		
@@ -114,8 +126,10 @@ public class NewColumnHandler extends Thread implements ActionListener{
 		TableColumnModel tcm= table.getColumnModel();
 		
         TableColumn tc = tcm.getColumn(TableValues.NUMERIC_TYPE);
- 
-        tc.setCellRenderer(new GenderRenderer());
+        
+        GenderRenderer cellRenderer = new GenderRenderer(); 
+       
+        tc.setCellRenderer(cellRenderer);
         
         tc.setCellEditor(new GenderEditor());
 		
@@ -125,11 +139,31 @@ public class NewColumnHandler extends Thread implements ActionListener{
 								
 		contentPane.add(topPanel, BorderLayout.CENTER);
 		
+		bottomPanel = new JPanel();
+		
+        GridLayout Layout2 = new GridLayout(0,2);
+	    
+	    bottomPanel.setLayout(Layout2);
+	    
+	    Layout2.setHgap(30);
+		
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 30, 40));
+		
+		okBt = new JButton("确定");
+	     
+	    bottomPanel.add(okBt);
+	     
+	    cancelBt = new JButton("取消");
+	     
+	    bottomPanel.add(cancelBt);
+	     
+	    contentPane.add(bottomPanel, BorderLayout.SOUTH);
+		
 		frame.setContentPane(contentPane);
 
 		frame.pack();		
 		     
-		frame.setSize(300,400);
+		frame.setSize(320, 400);
 		
 		frame.setLocationRelativeTo(null);
 		     
@@ -138,11 +172,37 @@ public class NewColumnHandler extends Thread implements ActionListener{
 	    frame.setVisible(true);
 		
 	}
+	
+	private void addListenerForButton(Map<Integer, String> MissColumnIndToChnNameMap){
+		okBt.addActionListener(new ActionListener(){
 
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		// TODO Auto-generated method stub
+			public void actionPerformed(ActionEvent Event) {
+				// TODO Auto-generated method stub
+				int row = table.getRowCount();				
+				
+				for(int i=0;i<row;i++){
+					String columnName = table.getValueAt(i, 0).toString();
+					
+					String value = table.getValueAt(i, 1).toString();
+					
+					//System.out.println("row:" + i + " colunName:" + columnName + " value:" + value);
+					
+				}
+												
+				frame.dispose();
+				
+			}
+			
+		});
 		
-	}
+		cancelBt.addActionListener(new ActionListener(){
 
+			@Override
+			public void actionPerformed(ActionEvent Event){
+				// TODO Auto-generated method stub
+				frame.dispose();
+			}
+		});
+	}
+	
 }

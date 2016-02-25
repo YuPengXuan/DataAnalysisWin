@@ -22,7 +22,7 @@ public class GenderRenderer extends JComboBox<Object> implements TableCellRender
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stubs
 		if(isSelected){
             setForeground(table.getForeground());
             super.setBackground(table.getBackground());
@@ -31,7 +31,7 @@ public class GenderRenderer extends JComboBox<Object> implements TableCellRender
             setBackground(table.getBackground());
         }
         boolean isNumeric = ((Boolean)value).booleanValue();
-        setSelectedIndex(isNumeric? 0 : 1);
+        setSelectedIndex(isNumeric? 0 : 1); 
         return this;
 	}
 
