@@ -240,7 +240,8 @@ public class DataImport {
 				
 				NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this);
 				
-				colHandTh.start();
+				//colHandTh.start();
+				colHandTh.run();
 				
 				return;
 				
@@ -275,7 +276,8 @@ public class DataImport {
 				
 				NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this);
 				
-				colHandTh.start();
+				//colHandTh.start();
+				colHandTh.run();
 				
 				return;
 				
