@@ -33,6 +33,7 @@ public class DataImportTest {
             final File confFile = new File("config/config.xml");
             parser.parse(confFile, cParser);
 
+            
         } catch (final Exception e) {
             System.out.println("parser fail!");
 

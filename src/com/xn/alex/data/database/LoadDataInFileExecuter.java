@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.mysql.jdbc.Statement;
 
-public class LoadDataInFileExecuter implements SqlExecuter{
+public class LoadDataInFileExecuter implements SqlExecuter {
 
 	private String errorHandler;
 	private String tableName;
@@ -23,7 +23,7 @@ public class LoadDataInFileExecuter implements SqlExecuter{
     	this.data = data;
 	}
     
-	@Override
+    @Override
 	public void executer(Connection connection) throws SQLException {
 		final String executeSql = String.format("LOAD DATA LOCAL INFILE 'sql.csv' %s INTO TABLE %s IGNORE 1 LINES", errorHandler, tableName);
 		final int dataSize = data.size();
@@ -36,7 +36,6 @@ public class LoadDataInFileExecuter implements SqlExecuter{
 		executeSql(data, statement, batchNumber, executeSql, splitNumber);
 		
 		statement.close();
-		
 	}
 
 	private void executeSql(final List<String[]> data, Statement statement, final int batchNumber,
