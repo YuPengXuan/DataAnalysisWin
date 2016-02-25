@@ -13,16 +13,16 @@ import com.xn.alex.data.common.ConfigParser;
 public class CSVImport implements IDataImport {
     private static final int BATCH_NUM = 10000;
 
-    final List<String> columnNames = new ArrayList<String>();
+    private List<String> columnNames = new ArrayList<String>();
 
-    final List<String> missingColumnIndexList = new ArrayList<String>();
+    private final List<String> missingColumnIndexList = new ArrayList<String>();
 
     @Override
     public void parse(final String file) {
         final long start = System.currentTimeMillis();
         final CsvParserSettings settings = new CsvParserSettings();
         final DataRowListProcessor rowProcessor = new DataRowListProcessor(BATCH_NUM, this);
-        //settings.setRowProcessor(new ConcurrentRowProcessor(new RowProcessor() {
+        //settings.setRowProcessor(new ConcurrentRowProcessor(rowProcessor));
         settings.setRowProcessor(rowProcessor);
         settings.setHeaderExtractionEnabled(true);
         settings.setLineSeparatorDetectionEnabled(true);
@@ -40,7 +40,7 @@ public class CSVImport implements IDataImport {
             if (checkHeader(headers) == false) {
 
             }
-            processENColumn(headers);
+            // processENColumn(headers);
             final List<String[]> rows = rowProcessor.getRows();
             load2Db(rows);
             final StringBuilder sb = new StringBuilder();
@@ -48,8 +48,15 @@ public class CSVImport implements IDataImport {
                 sb.append(value);
                 sb.append(" ");
             }
+
             System.out.println("Headers are " + sb.toString());
-            System.out.println("Processed line " + rows.size());
+            if (rows.size() > 0) {
+                System.out.println("Processed line " + rows.size());
+            }
+            if (rowProcessor.getObsoleteLine() > 0) {
+                System.out.println(rowProcessor.getObsoleteLine() + "行不符合要求数据被丢弃！");
+            }
+            System.out.println("导入数据成功");
             final long end = System.currentTimeMillis();
             System.out.println("Time costs " + (end - start));
         } catch (final FileNotFoundException e) {
@@ -76,10 +83,6 @@ public class CSVImport implements IDataImport {
 
     }
 
-    /* (non-Javadoc)
-     * @see com.xn.alex.data.datimport.IDataImport#checkHeader()
-     */
-    @Override
     public boolean checkHeader(final String[] headers) {
         for (int curCol = 0; curCol < headers.length; curCol++) {
             if ("".equals(headers[curCol])) {
@@ -91,7 +94,7 @@ public class CSVImport implements IDataImport {
         return true;
     }
 
-    private void processENColumn(final String[] headers) {
+    public void processENColumn(final String[] headers) {
         for (final String value : headers) {
             final String columnNameCh = value.trim();
             final String columnNameEn = ConfigParser.chnToEnColumnName.get(columnNameCh);
@@ -102,4 +105,19 @@ public class CSVImport implements IDataImport {
             }
         }
     }
+
+    /**
+     * @return the columnNames
+     */
+    public List<String> getColumnNames() {
+        return columnNames;
+    }
+
+    /**
+     * @param columnNames the columnNames to set
+     */
+    public void setColumnNames(final List<String> columnNames) {
+        this.columnNames = columnNames;
+    }
+
 }

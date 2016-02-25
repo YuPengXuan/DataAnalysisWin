@@ -2,7 +2,6 @@ package com.xn.ales.data.datimport.csv;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.common.ConfigParser;
@@ -27,18 +26,15 @@ public class DataImportFactory {
         return dataImport;
     }
 
-    public static List<Integer> getNumericListColumnIndex(final Vector<String> columnNameVec) {
+    public static List<String> getNumericListColumnIndex(final List<String> columnNameVec) {
 
-        final List<Integer> numericIndexList = new ArrayList<Integer>();
+        final List<String> numericIndexList = new ArrayList<String>();
 
-        for (int i = 0; i < columnNameVec.size(); i++) {
+        for (final String column : columnNameVec) {
 
-            final String columnName = columnNameVec.get(i);
+            if (false == ConfigParser.columnInfoMap.get(column).mValueType.contains("VARCHAR")) {
 
-            if (false == ConfigParser.columnInfoMap.get(columnName).mValueType.contains("VARCHAR")) {
-
-                numericIndexList.add(i);
-
+                numericIndexList.add(column);
             }
 
         }

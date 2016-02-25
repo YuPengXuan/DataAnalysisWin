@@ -8,6 +8,4 @@ public interface IDataImport {
 
     public void load2Db(List<String[]> resultList);
 
-    public boolean checkHeader(String[] headers);
-
 }

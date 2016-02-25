@@ -12,6 +12,8 @@ public class DataRowListProcessor implements RowProcessor {
 
     private static final String INVALID_VALUE = "#NULL!";
 
+    private static final String REGEX = "-?[0-9]+.*[0-9]*";
+
     private final List<String[]> rows;
 
     private String[] headers;
@@ -20,6 +22,8 @@ public class DataRowListProcessor implements RowProcessor {
 
     private final IDataImport dataImport;
 
+    private List<String> numbericIndexList;
+
     private final int obsoleteLine = 0;
 
     public DataRowListProcessor(final int batchNum, final IDataImport dataImport) {
@@ -27,6 +31,8 @@ public class DataRowListProcessor implements RowProcessor {
         this.batchNum = batchNum;
         this.dataImport = dataImport;
         rows = new ArrayList<String[]>(batchNum);
+        headers = null;
+        numbericIndexList = null;
     }
 
     @Override
@@ -36,17 +42,27 @@ public class DataRowListProcessor implements RowProcessor {
 
     @Override
     public void rowProcessed(final String[] row, final ParsingContext context) {
-        //   if(context.currentLine())
+        if (headers == null) {
+            headers = context.headers();
+            ((CSVImport) dataImport).processENColumn(headers);
+            numbericIndexList = DataImportFactory.getNumericListColumnIndex(((CSVImport) dataImport).getColumnNames());
+        }
+        // boolean obsolete = false;
         for (String value : row) {
             if (value == null || value.equals(INVALID_VALUE)) {
                 value = String.valueOf(CommonConfig.IVALID_VALUE);
             }
+            /*   if (numbericIndexList.contains(value)) {
+                   final Boolean strResult = value.matches(REGEX);
+                   if (strResult == false) {
+                       obsolete = true;
+                   }
+               }*/
         }
-
-        /*  if() {
-              obsoleteLine++;
-          } else {
-          */rows.add(row);
+        /*if (obsolete == true) {
+            obsoleteLine++;
+        } else { */
+        rows.add(row);
         //}
         if (rows.size() == batchNum) {
             dataImport.load2Db(rows);
