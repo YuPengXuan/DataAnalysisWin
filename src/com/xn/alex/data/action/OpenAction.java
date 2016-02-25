@@ -174,17 +174,20 @@ public class OpenAction extends WindowAction{
 		DataImport dataImportHandler = new DataImport(fullFileName, fileType);
 		dataImportHandler.run();		
 		
-		MainWindow.setCurrentAct(CURRENT_ACTION.DB_OPERATION);
-		//currentAct = CURRENT_ACTION.DB_OPERATION;
+		if(false == dataImportHandler.isNeedChooseColType()){
 		
-		JTable table = MainWindow.Instance().getTable();
-		DataExport dataExportHandler = new DataExport(fullFileName,table);
-		dataExportHandler.run();
-		//dataExportHandler.showDataInJTable();
+		    MainWindow.setCurrentAct(CURRENT_ACTION.DB_OPERATION);
+		    //currentAct = CURRENT_ACTION.DB_OPERATION;
 		
-		MainWindow.setCurrentAct(CURRENT_ACTION.NONE);
-	    //currentAct = CURRENT_ACTION.NONE;
-		MenuItemEnable.Instance().enableSecondColumnMenu();
+		    JTable table = MainWindow.Instance().getTable();
+		    DataExport dataExportHandler = new DataExport(fullFileName,table);
+		    dataExportHandler.run();
+		    //dataExportHandler.showDataInJTable();
+		
+		    MainWindow.setCurrentAct(CURRENT_ACTION.NONE);
+	        //currentAct = CURRENT_ACTION.NONE;
+		    MenuItemEnable.Instance().enableSecondColumnMenu();
+		}
 		
 	}
     
