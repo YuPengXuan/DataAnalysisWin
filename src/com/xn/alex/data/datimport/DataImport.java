@@ -325,6 +325,8 @@ public class DataImport {
 				
 		}
 		
+		System.out.println("结束读取列名.\n");
+		
 		return isSucc;
 	}
 	

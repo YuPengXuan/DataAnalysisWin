@@ -9,7 +9,12 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 public class NewColumnHandler extends Thread implements ActionListener{
 	
@@ -18,6 +23,10 @@ public class NewColumnHandler extends Thread implements ActionListener{
     protected JPanel contentPane;
     
     protected JPanel topPanel;
+    
+    protected JScrollPane topScrolPanel;
+    
+    protected JTable table;
     
     private volatile boolean isFinished = false;
     
@@ -43,8 +52,31 @@ public class NewColumnHandler extends Thread implements ActionListener{
 	}
 	
 	public void run(){
+		if(false == ColumnCheck(m_columnNames)){
+			return;
+		}
+		
+		createSelectedWindow(m_issColumnIndToChnNameMap);
+		
 		HandleNewColumnType(m_columnNames,m_issColumnIndToChnNameMap);
 		
+	}
+	
+	private void createSelectedWindow(Map<Integer, String> MissColumnIndToChnNameMap){
+		
+	}
+	
+	private boolean ColumnCheck(Vector<String> columnNames){
+		String primaryKey = "customerID";				        
+		if(columnNames.contains(primaryKey) == false){	
+			System.out.println("È±·¦¿Í»§±àºÅ£¡");
+			JOptionPane.showMessageDialog(null,"È±·¦¿Í»§±àºÅ£¡","´íÎóÐÅÏ¢",JOptionPane.ERROR_MESSAGE);		    
+		    return false;
+		    	
+	    } 	
+		
+		
+		return true;
 	}
 
 
@@ -64,20 +96,40 @@ public class NewColumnHandler extends Thread implements ActionListener{
 		contentPane = new JPanel();
 				
 		contentPane.setLayout(new BorderLayout());
-		/*				 
+					
 		topPanel = new JPanel();
-				
+		
+		topScrolPanel = new JScrollPane(); 
+		
 		GridLayout layout1 = new GridLayout(0,1);
-			     
+	     
 		topPanel.setLayout(layout1);
 		
-		contentPane.add(topPanel, BorderLayout.NORTH);
-		*/
+		TableValues tv = new TableValues();
+		
+		table = new JTable(tv); 
+		
+		table.setRowHeight(30);
+		
+		TableColumnModel tcm= table.getColumnModel();
+		
+        TableColumn tc = tcm.getColumn(TableValues.NUMERIC_TYPE);
+ 
+        tc.setCellRenderer(new GenderRenderer());
+        
+        tc.setCellEditor(new GenderEditor());
+		
+		topScrolPanel.setViewportView(table);
+		
+		topPanel.add(topScrolPanel);
+								
+		contentPane.add(topPanel, BorderLayout.CENTER);
+		
 		frame.setContentPane(contentPane);
 
 		frame.pack();		
 		     
-		frame.setSize(590,620);
+		frame.setSize(300,400);
 		
 		frame.setLocationRelativeTo(null);
 		     
