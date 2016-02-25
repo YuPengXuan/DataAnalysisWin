@@ -40,6 +40,7 @@ public class CSVImport implements IDataImport {
             if (checkHeader(headers) == false) {
 
             }
+
             // processENColumn(headers);
             final List<String[]> rows = rowProcessor.getRows();
             load2Db(rows);
