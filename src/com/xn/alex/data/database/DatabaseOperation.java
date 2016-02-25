@@ -8,6 +8,9 @@ public class DatabaseOperation {
     private final static Logger logger = Logger.getLogger(DatabaseOperation.class);
     
     public static synchronized boolean executer(final DataBaseConnection databaseConnection, final SqlExecuter sqlExecuter) {
+    	if(!databaseConnection.connect()) {
+    		return false;
+    	}
 		final Connection connection = databaseConnection.getConnection();
     	try {
 			connection.setAutoCommit(false);

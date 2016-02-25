@@ -9,14 +9,18 @@ import java.util.List;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import com.xn.alex.data.common.ConfigParser;
+import com.xn.alex.data.database.LoadDataInfile;
+import com.xn.alex.data.database.SqlExecuter;
 
 public class CSVImport implements IDataImport {
-    private static final int BATCH_NUM = 10000;
+    private static final int BATCH_NUM = 20000;
 
     private List<String> columnNames = new ArrayList<String>();
 
     private final List<String> missingColumnIndexList = new ArrayList<String>();
 
+    private LoadDataInfile loadDataInfile = new LoadDataInfile();
+    
     @Override
     public void parse(final String file) {
         final long start = System.currentTimeMillis();
@@ -80,8 +84,7 @@ public class CSVImport implements IDataImport {
      */
     @Override
     public void load2Db(final List<String[]> resultList) {
-        // TODO Auto-generated method stub
-
+    	loadDataInfile.load(resultList, "test.test", SqlExecuter.IGNORE, resultList.size());
     }
 
     public boolean checkHeader(final String[] headers) {

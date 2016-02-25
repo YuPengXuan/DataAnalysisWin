@@ -25,7 +25,10 @@ public class LoadDataInFileExecuter implements SqlExecuter {
     
     @Override
 	public void executer(Connection connection) throws SQLException {
-		final String executeSql = String.format("LOAD DATA LOCAL INFILE 'sql.csv' %s INTO TABLE %s IGNORE 1 LINES", errorHandler, tableName);
+    	if(batchNumber == 0) {
+    		return;
+    	}
+		final String executeSql = String.format("LOAD DATA LOCAL INFILE 'sql.csv' %s INTO TABLE %s", errorHandler, tableName);
 		final int dataSize = data.size();
 		final int splitNumber = dataSize / batchNumber;
 		final Statement statement =  (Statement) connection.createStatement();
@@ -46,9 +49,11 @@ public class LoadDataInFileExecuter implements SqlExecuter {
 			endIndex = data.size();
 		}
 		
-		final InputStream inputStream = buildInsertData(data, startIndex, endIndex);
-		statement.setLocalInfileInputStream(inputStream);
-		statement.executeUpdate(executeSql);
+		if(startIndex != endIndex) {
+		  final InputStream inputStream = buildInsertData(data, startIndex, endIndex);
+		  statement.setLocalInfileInputStream(inputStream);
+		  statement.executeUpdate(executeSql);
+		}
 	}
     
     private InputStream buildInsertData(List<String[]> data, int startIndex, int endIndex) {
