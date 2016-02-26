@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,10 +17,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
+
+import com.xn.alex.data.common.CommonConfig;
+import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
+import com.xn.alex.data.common.ConfigElement;
+import com.xn.alex.data.common.ConfigParser;
+import com.xn.alex.data.database.DatabaseAction;
+import com.xn.alex.data.window.MainWindow;
 
 public class NewColumnHandler{
 	
@@ -45,8 +52,24 @@ public class NewColumnHandler{
     private Map<Integer, String> m_issColumnIndToChnNameMap;
     
     private List<Integer> m_missingColumnIndexList;
+    
+    private String m_tableName;
+    
+    private DataImport m_dataImprtHandler;
+    
+    private FILE_TYPE fileType;
          
-    public boolean isFinished() {
+    public FILE_TYPE getFileType() {
+		return fileType;
+	}
+
+
+	public void setFileType(FILE_TYPE fileType) {
+		this.fileType = fileType;
+	}
+
+
+	public boolean isFinished() {
 		return isFinished;
 	}
 
@@ -55,26 +78,24 @@ public class NewColumnHandler{
 		this.isFinished = isFinished;
 	}
 	
-	public NewColumnHandler(Vector<String> columnNames, Map<Integer, String> MissColumnIndToChnNameMap, List<Integer> missingColumnIndexList, DataImport dataImprtHandler){
+	public NewColumnHandler(Vector<String> columnNames, Map<Integer, String> MissColumnIndToChnNameMap, List<Integer> missingColumnIndexList, DataImport dataImprtHandler, String tableName){
 		m_columnNames = columnNames;
 		m_issColumnIndToChnNameMap = MissColumnIndToChnNameMap;
 		m_missingColumnIndexList = missingColumnIndexList;
+		m_dataImprtHandler = dataImprtHandler;
+		m_tableName = tableName;
 	}
 	
 	public void run(){
 		if(false == ColumnCheck(m_columnNames)){
 			return;
 		}
+				
+		HandleNewColumnType(m_columnNames,m_issColumnIndToChnNameMap, m_missingColumnIndexList, m_tableName);
 		
-		createSelectedWindow(m_issColumnIndToChnNameMap);
+		m_issColumnIndToChnNameMap.clear();
 		
-		HandleNewColumnType(m_columnNames,m_issColumnIndToChnNameMap);
-		
-	}
-	
-	private void createSelectedWindow(Map<Integer, String> MissColumnIndToChnNameMap){
-		
-	}
+	}	
 	
 	private boolean ColumnCheck(Vector<String> columnNames){
 		String primaryKey = "customerID";				        
@@ -90,11 +111,11 @@ public class NewColumnHandler{
 	}
 
 
-	public void HandleNewColumnType(Vector<String> columnNames, Map<Integer, String> MissColumnIndToChnNameMap){    	
+	public void HandleNewColumnType(Vector<String> columnNames, Map<Integer, String> MissColumnIndToChnNameMap, List<Integer> missingColumnIndexList, String tableName){    	
     	
     	createColumnSelectWindow(MissColumnIndToChnNameMap);
     	
-    	addListenerForButton(MissColumnIndToChnNameMap);
+    	addListenerForButton(tableName, columnNames, missingColumnIndexList);
     	
     }
 
@@ -173,7 +194,7 @@ public class NewColumnHandler{
 		
 	}
 	
-	private void addListenerForButton(Map<Integer, String> MissColumnIndToChnNameMap){
+	private void addListenerForButton(final String tableName, final Vector<String> columnNames, final List<Integer> missingColumnIndexList){
 		okBt.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent Event) {
@@ -185,13 +206,31 @@ public class NewColumnHandler{
 					
 					String value = table.getValueAt(i, 1).toString();
 					
+					String valueType = null;
+					
+					if("true".equals(value)){
+						valueType = "VARCHAR(100)";
+					}
+					else{
+						valueType = "FLOAT";
+					}					
+					
+					updateConfigFile(columnName,valueType, columnNames, missingColumnIndexList);					
+															
 					//System.out.println("row:" + i + " colunName:" + columnName + " value:" + value);
 					
 				}
-												
+
+				if(false == createTable(columnNames,tableName)){
+					frame.dispose();
+					return;
+				}
+				
 				frame.dispose();
 				
-			}
+				loadHugeData(tableName, columnNames, missingColumnIndexList);
+							
+			}			
 			
 		});
 		
@@ -203,6 +242,95 @@ public class NewColumnHandler{
 				frame.dispose();
 			}
 		});
+	}
+	
+	private void updateConfigFile(String columnName, String valType, Vector<String> columnNames, List<Integer> missingColumnIndexList){
+		long maxGenId = ConfigParser.Instance().getMaxGenId();
+		
+		long newGenId = maxGenId + 1;
+		
+		ConfigParser.Instance().setMaxGenId(newGenId);
+		
+		String newDatabaseColName = CommonConfig.GEN_COLUMN_NAME_PREFIX + newGenId;
+		
+		ConfigElement cfgElement = new ConfigElement();
+		
+		cfgElement.mExcelColumnName = columnName;
+		
+		cfgElement.mValueType = valType;
+		
+		cfgElement.mDefValue = "0";
+		
+		cfgElement.mDatabaseName = newDatabaseColName;
+		
+		ConfigParser.columnInfoMap.put(newDatabaseColName, cfgElement);
+		
+		ConfigParser.chnToEnColumnName.put(columnName, newDatabaseColName);
+		
+		ConfigParser.columnVecInConfigOrder.add(columnName);
+		
+		if(cfgElement.mValueType.contains("VARCHAR")){			
+	    	Pattern pat = Pattern.compile("VARCHAR\\((\\d+)\\)");
+	    	
+	    	Matcher macher = pat.matcher(cfgElement.mValueType);
+	    	
+	    	while(macher.find()){	    		
+	    		String sizeStr = macher.group(1);
+	    		
+	    		int size = Integer.parseInt(sizeStr);
+	    		
+	    		ConfigParser.columnNameToSizeMap.put(columnName, size);
+	    	}
+	    }
+		
+		int index = columnNames.indexOf(columnName);
+		
+		columnNames.set(index, newDatabaseColName);
+		
+		int listInd = missingColumnIndexList.indexOf(index);
+		
+		missingColumnIndexList.remove(listInd);				
+		
+	}
+	
+	private boolean createTable(Vector<String> columnNames, String tableName){
+		String primaryKey = "customerID";
+		
+		Map<String, String> columnNameToTypeMap = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
+		
+		if(false == DatabaseAction.Instance().createTable(tableName, columnNameToTypeMap, primaryKey)){
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	private void loadHugeData(String tableName, Vector<String> columnNames, List<Integer> missingColumnIndexList){
+		String fileName = m_dataImprtHandler.getfileName();
+		
+	    boolean isSuccess = false;
+	    
+	    if(FILE_TYPE.CSV_FILE == getFileType()){
+	    	isSuccess = m_dataImprtHandler.loadDataIntoDatabase(columnNames);
+	    }
+	    else{
+	    	isSuccess = HugeDataImport.Instance().importData(fileName, tableName, columnNames, missingColumnIndexList);
+	    }
+		
+		if(false == isSuccess){
+		    System.out.println("导入大数据失败");
+		
+		    MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance().getCurrentNode().hashCode());
+		
+		    return;
+	 }
+	
+     MainWindow.fileNameToTableMap.put(fileName, tableName);
+	
+     m_dataImprtHandler.updateMainWindowColumnVec(columnNames);
+	
+	 System.out.println("文件：" + fileName +" 导入数据库成功");
 	}
 	
 }

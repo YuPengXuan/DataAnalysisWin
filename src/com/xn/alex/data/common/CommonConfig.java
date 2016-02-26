@@ -54,5 +54,7 @@ public class CommonConfig {
     public final static String MAX_PRED_DIST_PEOPLE = "预计打扰人数";
 
     public final static String MAX_LEAF_NODE_NUM = "涉及叶子节点个数";
+    
+    public final static String GEN_COLUMN_NAME_PREFIX = "genColumn_";
 
 }

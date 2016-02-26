@@ -176,23 +176,7 @@ public class SheetHandler extends DefaultHandler{
 				throws SAXException {
 			lastContents += new String(ch, start, length);
 		}
-		
-		private boolean handlFirstRow() {
-			String primaryKey = "customerID";				        
-			if(columnNames.contains(primaryKey) == false){							
-			    System.out.println("È±·¦¿Í»§±àºÅ£¡");
-			    
-			    return false;
-			    	
-		    } 			
-			
-			Map<String, String> columnNameToTypeMap = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
-			
-			DatabaseAction.Instance().createTable(tableName, columnNameToTypeMap, primaryKey);
-			
-			return true;
-			
-		}
+				
 		
 		private boolean rowEndHandle(){
 			if(curRow == 0){
