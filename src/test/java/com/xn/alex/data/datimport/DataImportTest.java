@@ -2,6 +2,7 @@ package com.xn.alex.data.datimport;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -15,12 +16,9 @@ import com.xn.ales.data.datimport.csv.DataImportFactory;
 import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
-import com.xn.alex.data.database.DataBaseConnection;
-import com.xn.alex.data.database.DatabaseOperation;
-import com.xn.alex.data.database.SqlExecuter;
-import com.xn.alex.data.datimport.HugeDataImport;
+import com.xn.alex.data.database.MySqlExecuter;
+import com.xn.alex.data.database.SqlTask;
 import com.xn.alex.data.login.LoginAction;
-import com.xn.alex.data.datimport.DataImport;
 
 public class DataImportTest {
     HugeDataImport dataImport;
@@ -44,39 +42,54 @@ public class DataImportTest {
 
             LoginAction.Instance().setLoginUserName("root");
             LoginAction.Instance().setLoginPassword("shroot");
-            final StringBuilder createTableDefine = new StringBuilder("CREATE TABLE test.test (id DOUBLE PRIMARY KEY");
+            MySqlExecuter mySqlExecuter = MySqlExecuter.getMySqlExecuter();
             
-            for(int i = 0; i < 74; i ++) {
+            final StringBuilder createTableDefine = new StringBuilder("CREATE TABLE test.test (id INTEGER PRIMARY KEY");
+            createTableDefine.append(", COLUMN" + 0 + " INTEGER NULL");
+            for(int i = 1; i < 74; i ++) {
             	createTableDefine.append(", COLUMN" + i + " VARCHAR(255) NULL");
             }
             createTableDefine.append(") ENGINE MyISAM");
             
-            DatabaseOperation.executer(new DataBaseConnection(), new SqlExecuter() {
-    			
-    			@Override
-    			public void executer(Connection connection) throws SQLException {
-    				Statement statement = connection.createStatement();
-    				statement.executeUpdate("CREATE DATABASE IF NOT EXISTS test");
-    			}
-    		});
+            mySqlExecuter.executer(new SqlTask() {
+				
+				@Override
+				public Statement run(Connection connection) throws SQLException {
+					final PreparedStatement statement = (PreparedStatement) connection.prepareStatement("CREATE DATABASE IF NOT EXISTS test");
+    				statement.executeUpdate();
+					return statement;
+				}
+			});
             
-            DatabaseOperation.executer(new DataBaseConnection(), new SqlExecuter() {
-    			
-        			@Override
-        			public void executer(Connection connection) throws SQLException {
-        				Statement statement = connection.createStatement();
-        				statement.executeUpdate("DROP TABLE IF EXISTS test.test");
-        			}
-        	});
+           mySqlExecuter.executer(new SqlTask() {
+				
+				@Override
+				public Statement run(Connection connection) throws SQLException {
+					final PreparedStatement statement = (PreparedStatement) connection.prepareStatement("USE test");
+    				statement.executeUpdate();
+					return statement;
+				}
+			});
             
-            DatabaseOperation.executer(new DataBaseConnection(), new SqlExecuter() {
-    			
-    			@Override
-    			public void executer(Connection connection) throws SQLException {
-    				Statement statement = connection.createStatement();
-    				statement.executeUpdate(createTableDefine.toString());
-    			}
-    		});
+            mySqlExecuter.executer(new SqlTask() {
+				
+				@Override
+				public Statement run(Connection connection) throws SQLException {
+					final PreparedStatement statement = (PreparedStatement) connection.prepareStatement("DROP TABLE IF EXISTS test.test");
+    				statement.executeUpdate();
+    				return statement;
+				}
+			});
+            
+            mySqlExecuter.executer(new SqlTask() {
+				
+				@Override
+				public Statement run(Connection connection) throws SQLException {
+					final PreparedStatement statement = (PreparedStatement) connection.prepareStatement(createTableDefine.toString());
+    				statement.executeUpdate();
+    				return statement;
+				}
+			});
         } catch (final Exception e) {
             System.out.println("parser fail!");
 

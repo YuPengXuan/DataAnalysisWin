@@ -9,17 +9,17 @@ import java.util.List;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import com.xn.alex.data.common.ConfigParser;
-import com.xn.alex.data.database.LoadDataInfile;
-import com.xn.alex.data.database.SqlExecuter;
+import com.xn.alex.data.database.DataAnalysisException;
+import com.xn.alex.data.database.DatabaseConstant;
+import com.xn.alex.data.database.LoadDataInFileTask;
+import com.xn.alex.data.database.MySqlExecuter;
 
 public class CSVImport implements IDataImport {
-    private static final int BATCH_NUM = 20000;
+    private static final int BATCH_NUM = 10000;
 
     private List<String> columnNames = new ArrayList<String>();
 
     private final List<String> missingColumnIndexList = new ArrayList<String>();
-
-    private LoadDataInfile loadDataInfile = new LoadDataInfile();
     
     private final String tableName;
 
@@ -104,7 +104,11 @@ public class CSVImport implements IDataImport {
      */
     @Override
     public void load2Db(final List<String[]> resultList, final String tableName) {
-    	loadDataInfile.load(resultList, tableName, SqlExecuter.IGNORE, resultList.size());
+	  try {
+		MySqlExecuter.getMySqlExecuter().executer(new LoadDataInFileTask(resultList, DatabaseConstant.IGNORE, tableName, resultList.size()));
+	  } catch (DataAnalysisException e) {
+		  System.err.println("数据文件加载失败");
+	   }
     }
 
     public boolean checkHeader(final String[] headers) {
