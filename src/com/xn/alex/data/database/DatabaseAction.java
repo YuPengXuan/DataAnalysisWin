@@ -334,7 +334,7 @@ public class DatabaseAction {
             
             sb.append(condition);
             
-            sb.append(") ENGINE=InnoDB DEFAULT CHARSET=utf8 ");
+            sb.append(") ENGINE=MYISAM DEFAULT CHARSET=utf8 ");
 		    
 		    String sql = sb.toString();
 		    

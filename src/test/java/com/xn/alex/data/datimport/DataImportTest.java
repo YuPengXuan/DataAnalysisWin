@@ -1,4 +1,4 @@
-package com.xn.alex.data.datimport;
+package test.java.com.xn.alex.data.datimport;
 
 import java.io.File;
 import java.sql.Connection;
@@ -20,6 +20,7 @@ import com.xn.alex.data.database.DatabaseOperation;
 import com.xn.alex.data.database.SqlExecuter;
 import com.xn.alex.data.datimport.HugeDataImport;
 import com.xn.alex.data.login.LoginAction;
+import com.xn.alex.data.datimport.DataImport;
 
 public class DataImportTest {
     HugeDataImport dataImport;
@@ -76,7 +77,6 @@ public class DataImportTest {
     				statement.executeUpdate(createTableDefine.toString());
     			}
     		});
-            
         } catch (final Exception e) {
             System.out.println("parser fail!");
 
@@ -86,8 +86,7 @@ public class DataImportTest {
 
     @Test
     public void testCSVImport() throws Exception {
-        final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE);
-        
+        final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE, "test.test");
         csvImport.parse(SAMPLE_FILE);
 
     }

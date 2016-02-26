@@ -67,9 +67,10 @@ public class OpenAction extends WindowAction{
 		
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		
-		final String[][] fileENames = {{".DBF", "数据库文件（*.DBF）"},
+		final String[][] fileENames = {{".DBF", "数据库文件（*.DBF）",".csv"},
 				{".xls","MS-Excel 2003 文件(*.xls)"},
-				{".xlsx","MS-Excel 2007 文件(*.xlsx)"}
+				{".xlsx","MS-Excel 2007 文件(*.xlsx)"},
+				{".csv","表格数据文件(*.csv)"}
 		};
 		
 		fileChooser.addChoosableFileFilter(new FileFilter(){
@@ -210,6 +211,9 @@ public class OpenAction extends WindowAction{
 	}
 	else if("dbf".equals(fileExtensionName.toLowerCase())){
 		return FILE_TYPE.DBF_FILE;
+	}
+	else if("csv".equals(fileExtensionName.toLowerCase())){
+		return FILE_TYPE.CSV_FILE;
 	}
 	
 	return FILE_TYPE.INVALID_FILE;
