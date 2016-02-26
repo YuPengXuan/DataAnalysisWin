@@ -20,6 +20,8 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import com.xn.ales.data.datimport.csv.DataImportFactory;
+import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.common.ConfigElement;
@@ -312,7 +314,9 @@ public class NewColumnHandler{
 	    boolean isSuccess = false;
 	    
 	    if(FILE_TYPE.CSV_FILE == getFileType()){
-	    	isSuccess = m_dataImprtHandler.loadDataIntoDatabase(columnNames);
+	    	final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE, tableName);
+	    	
+	    	isSuccess = csvImport.parse(fileName);
 	    }
 	    else{
 	    	isSuccess = HugeDataImport.Instance().importData(fileName, tableName, columnNames, missingColumnIndexList);
