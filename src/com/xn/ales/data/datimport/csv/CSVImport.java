@@ -96,7 +96,7 @@ public class CSVImport implements IDataImport {
      * @see com.xn.alex.data.datimport.IDataImport#load(java.util.List)
      */
     @Override
-    public void load2Db(final List<String[]> resultList, final String tableName) {
+    public void load2Db(final List<String[]> resultList, final String table) {
         // TODO Auto-generated method stub
 
     }
