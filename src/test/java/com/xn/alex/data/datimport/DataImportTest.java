@@ -1,4 +1,4 @@
-package test.java.com.xn.alex.data.datimport;
+package com.xn.alex.data.datimport;
 
 import java.io.File;
 import java.sql.Connection;

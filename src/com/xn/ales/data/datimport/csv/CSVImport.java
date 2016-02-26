@@ -103,8 +103,8 @@ public class CSVImport implements IDataImport {
      * @see com.xn.alex.data.datimport.IDataImport#load(java.util.List)
      */
     @Override
-    public void load2Db(final List<String[]> resultList) {
-    	loadDataInfile.load(resultList, "test.test", SqlExecuter.IGNORE, resultList.size());
+    public void load2Db(final List<String[]> resultList, final String tableName) {
+    	loadDataInfile.load(resultList, tableName, SqlExecuter.IGNORE, resultList.size());
     }
 
     public boolean checkHeader(final String[] headers) {
