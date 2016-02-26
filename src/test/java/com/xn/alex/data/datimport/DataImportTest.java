@@ -1,4 +1,4 @@
-package com.xn.alex.data.datimport;
+package test.java.com.xn.alex.data.datimport;
 
 import java.io.File;
 
@@ -12,6 +12,8 @@ import com.xn.ales.data.datimport.csv.DataImportFactory;
 import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
+import com.xn.alex.data.datimport.DataImport;
+import com.xn.alex.data.datimport.HugeDataImport;
 
 public class DataImportTest {
     HugeDataImport dataImport;
