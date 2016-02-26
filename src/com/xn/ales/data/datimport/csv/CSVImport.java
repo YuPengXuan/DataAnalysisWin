@@ -35,7 +35,8 @@ public class CSVImport implements IDataImport {
     }
 
     @Override
-    public void parse(final String file) {
+    public boolean parse(final String file) {
+        boolean rt = true;
         final long start = System.currentTimeMillis();
         final CsvParserSettings settings = new CsvParserSettings();
         final DataRowListProcessor rowProcessor = new DataRowListProcessor(BATCH_NUM, this);
@@ -55,7 +56,8 @@ public class CSVImport implements IDataImport {
             final String[] headers = rowProcessor.getHeaders();
             processENColumn(headers);
             if (checkHeader(headers) == false) {
-
+                rt = false;
+                return rt;
             }
 
             // processENColumn(headers);
@@ -79,6 +81,7 @@ public class CSVImport implements IDataImport {
             System.out.println("Time costs " + (end - start));
         } catch (final FileNotFoundException e) {
             e.printStackTrace();
+            rt = false;
         } finally {
             parser.stopParsing();
             if (reader != null) {
@@ -89,7 +92,7 @@ public class CSVImport implements IDataImport {
                 }
             }
         }
-
+        return rt;
     }
 
     /* (non-Javadoc)
