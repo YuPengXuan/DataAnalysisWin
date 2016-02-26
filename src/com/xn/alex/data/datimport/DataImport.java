@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -14,10 +16,17 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
@@ -43,6 +52,31 @@ public class DataImport {
 	
 	private String m_table_Name = null;
 	
+	private boolean isNeedChooseColType;
+	
+	private boolean isLargeFile = false;
+	
+	private Map<Integer, String> MissColumnIndToChnNameMap = new HashMap<Integer, String>();
+	
+	public boolean isLargeFile() {
+		return isLargeFile;
+	}
+
+
+	public void setLargeFile(boolean isLargeFile) {
+		this.isLargeFile = isLargeFile;
+	}
+	
+	public boolean isNeedChooseColType() {
+		return isNeedChooseColType;
+	}
+
+
+	public void setNeedChooseColType(boolean isNeedChooseColType) {
+		this.isNeedChooseColType = isNeedChooseColType;
+	}
+
+
 	public String getTableName() {
 		return m_table_Name;
 	}
@@ -66,12 +100,14 @@ public class DataImport {
 	public DataImport(String fileName, FILE_TYPE fileType){
 		m_fileName = fileName;
 		m_fileType = fileType;
+		isNeedChooseColType = false;
 	}
 	
 	public DataImport(String fileName, String tableName, FILE_TYPE fileType){
 		m_fileName = fileName;
 		m_table_Name = tableName;
 		m_fileType = fileType;
+		isNeedChooseColType = false;
 	}
 		
 	
@@ -181,31 +217,119 @@ public class DataImport {
 		//columnNames.clear();
 		File xlsxFile = new File(fileName);
 		long fileSize = xlsxFile.length();
+		
 		//if(fileSize>0){
 		if(fileSize> 8000000){
+			isLargeFile = true;
+			
 			String tableName = getTableName(fileName);
 			
-			if(false == HugeDataImport.Instance().importData(fileName, tableName, columnNames, missingColumnIndexList)){
+			if(false == getColumnInfoAndData(fileName, columnNames, missingColumnIndexList, MissColumnIndToChnNameMap)){
+				
 				System.out.println("导入大数据失败");
 				
-				MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance().getCurrentNode().hashCode());
+			    MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance().getCurrentNode().hashCode());
+			
+			    return;
 				
-				return;
 			}
 			
-            MainWindow.fileNameToTableMap.put(fileName, tableName);
+			if(MissColumnIndToChnNameMap.size() != 0){
+				
+				isNeedChooseColType = true;
+				
+				NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this);
+				
+				//colHandTh.start();
+				colHandTh.run();
+				
+				return;
+				
+			}
+				
+		    isNeedChooseColType = false;
 			
-			updateMainWindowColumnVec(columnNames);
+			if(false == HugeDataImport.Instance().importData(fileName, tableName, columnNames, missingColumnIndexList)){
+				    System.out.println("导入大数据失败");
+				
+				    MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance().getCurrentNode().hashCode());
+				
+				    return;
+			 }
 			
-			System.out.println("文件：" + fileName +" 导入数据库成功");	
+             MainWindow.fileNameToTableMap.put(fileName, tableName);
+			
+			 updateMainWindowColumnVec(columnNames);
+			
+			 System.out.println("文件：" + fileName +" 导入数据库成功");	
+			 
 		}
 		else{
+			
+			isLargeFile = false;
 		
 		    getColumnXlsxNames(columnNames);
+		    
+           if(MissColumnIndToChnNameMap.size() != 0){
+				
+				isNeedChooseColType = true;
+				
+				NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this);
+				
+				//colHandTh.start();
+				colHandTh.run();
+				
+				return;
+				
+			}
 		
 		    commomLoadIntoDb(fileName, columnNames);
 		}
 		
+	}
+	
+	public boolean getColumnInfoAndData(String fileName, Vector<String> columnNames, List<Integer> missColumnIndexList, Map<Integer, String> MissColumnIndToChnNameMap){
+		
+		InputStream sheet = null;
+		
+		boolean isSucc = true;
+		
+		try{						
+			OPCPackage pkg = OPCPackage.open(fileName);			
+			XSSFReader r = new XSSFReader(pkg);
+			SharedStringsTable sst = r.getSharedStringsTable();
+			
+			XMLReader parser =XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
+			ContentHandler handler = new SaxHeaderParser(sst,columnNames,missColumnIndexList,MissColumnIndToChnNameMap);
+			parser.setContentHandler(handler);
+
+			Iterator<InputStream> sheets = r.getSheetsData();
+			while(sheets.hasNext()) {
+				System.out.println("开始读取列名...:\n");
+				sheet = sheets.next();
+				InputSource sheetSource = new InputSource(sheet);
+				parser.parse(sheetSource);
+				sheet.close();
+				System.out.println("");
+			}
+		}
+		catch(Exception e){
+			    if(!"".equals(e.getMessage())){
+				    e.printStackTrace();
+				    isSucc = false;
+			    }
+				try {
+					sheet.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+		}
+		
+		System.out.println("结束读取列名.\n");
+		
+		return isSucc;
 	}
 	
 	
@@ -251,6 +375,8 @@ public class DataImport {
 		long fileSize = xlsxFile.length();
 		
 		if(fileSize> 8000000){
+			isLargeFile = true;
+			
 			String tableName = getTableName(fileName);
 			
 			if(false == HugeDataImport.Instance().importData(fileName, tableName, columnNames, missingColumnIndexList)){
@@ -267,7 +393,8 @@ public class DataImport {
 			System.out.println("文件：" + fileName +" 导入数据库成功");	
 		}
 		else{
-        
+	    isLargeFile = false;
+			
         getColumnXlsNames(columnNames);
         
         commomLoadIntoDb(fileName, columnNames);
@@ -396,6 +523,8 @@ public class DataImport {
 		    else{
 		    	
 		    	missingColumnIndexList.add(i);
+		    	
+		    	MissColumnIndToChnNameMap.put(i, columnNameCh);
 		    }
 		}
 			

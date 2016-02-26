@@ -33,13 +33,10 @@ public class HugeDataImport extends DefaultHandler{
 		
 		try{
 		
-			OPCPackage pkg = OPCPackage.open(fileName);
-			
+			OPCPackage pkg = OPCPackage.open(fileName);			
 			XSSFReader r = new XSSFReader(pkg);
-			SharedStringsTable sst = r.getSharedStringsTable();
-			
+			SharedStringsTable sst = r.getSharedStringsTable();			
 			XMLReader parser = fetchSheetParser(sst, columnNames,missingColumnIndexList,tableName);
-
 			Iterator<InputStream> sheets = r.getSheetsData();
 			while(sheets.hasNext()) {
 				System.out.println("Processing new sheet:\n");
@@ -68,6 +65,6 @@ public class HugeDataImport extends DefaultHandler{
 		ContentHandler handler = new SheetHandler(sst,columnNames, missingColumnIndexList, tableName);
 		parser.setContentHandler(handler);
 		return parser;
-	}	
+	}
 
 }

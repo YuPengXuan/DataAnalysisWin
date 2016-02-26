@@ -44,7 +44,7 @@ public class SheetHandler extends DefaultHandler{
 	    
 	    private Map<Integer, String> colNumToExcleColumIndMap = new HashMap<Integer, String>();
 	    
-	    private Map<String, Integer> ExcelColumnIndToColNumMap = new HashMap<String, Integer>();
+	    private Map<String, Integer> ExcelColumnIndToColNumMap = new HashMap<String, Integer>();	   
 	    
 	    private boolean isAddThisRow = true;
 	    
@@ -154,20 +154,8 @@ public class SheetHandler extends DefaultHandler{
 				return;
 				//System.out.println(lastContents);
 			}
-		
-									
-			if(curRow == 0){
-				//it means first row and should be column name
-				if(false == getColumnNames()){
-					try {
-						throw new Exception("get column name fail!");
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}																	
-			}						
-			else{
+																	
+			if(curRow!= 0){
 				 								
 				if(false == handleCellData()){
 					try {
@@ -178,8 +166,8 @@ public class SheetHandler extends DefaultHandler{
 					}
 					
 				}
-							
 			}
+							
 			curCol++;
 			
 		}
@@ -196,7 +184,7 @@ public class SheetHandler extends DefaultHandler{
 			    
 			    return false;
 			    	
-		    } 
+		    } 			
 			
 			Map<String, String> columnNameToTypeMap = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
 			
@@ -206,39 +194,10 @@ public class SheetHandler extends DefaultHandler{
 			
 		}
 		
-		private boolean getColumnNames(){
-			
-			if("".equals(lastContents)){
-				String msg = "第"+ (curCol+1) +"列列名不能为空";
-				
-				System.out.println(msg);
-				
-				return false;
-			}
-			
-			String columnNameCh = lastContents.trim();
-			
-			String columnNameEn = ConfigParser.chnToEnColumnName.get(columnNameCh);
-		    
-		    if(null != columnNameEn){
-		    	columnNames.add(columnNameEn);
-		    }
-		    else{
-		    	
-		    	missingColumnIndexList.add(curCol);
-		    }
-		    
-		    return true;
-			
-		}
-		
 		private boolean rowEndHandle(){
 			if(curRow == 0){
 				//come to the end of the first row
-				if(false ==	handlFirstRow())
-				{
-					return false;
-				}
+
 				numbericIndexList = getNumericListColumnIndex(columnNames);
 				
 				rowValVec = new Vector<String>();
