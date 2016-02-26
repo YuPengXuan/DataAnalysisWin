@@ -12,13 +12,13 @@ public class DataImportFactory {
 
     }
 
-    public static IDataImport getDataImport(final FILE_TYPE type) {
+    public static IDataImport getDataImport(final FILE_TYPE type, final String tableName) {
         IDataImport dataImport = null;
         if (type == null) {
             System.out.println("File type is null!");
         } else {
             if (type == FILE_TYPE.CSV_FILE) {
-                dataImport = new CSVImport();
+                dataImport = new CSVImport(tableName);
             } else {
                 System.out.println("File type is not supported!");
             }

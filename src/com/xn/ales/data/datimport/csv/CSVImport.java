@@ -17,6 +17,23 @@ public class CSVImport implements IDataImport {
 
     private final List<String> missingColumnIndexList = new ArrayList<String>();
 
+    private final String tableName;
+
+    /**
+     * @param tableName
+     */
+    public CSVImport(final String tableName) {
+        super();
+        this.tableName = tableName;
+    }
+
+    /**
+     * @return the tableName
+     */
+    public String getTableName() {
+        return tableName;
+    }
+
     @Override
     public void parse(final String file) {
         final long start = System.currentTimeMillis();
@@ -43,7 +60,7 @@ public class CSVImport implements IDataImport {
 
             // processENColumn(headers);
             final List<String[]> rows = rowProcessor.getRows();
-            load2Db(rows);
+            load2Db(rows, tableName);
             final StringBuilder sb = new StringBuilder();
             for (final String value : columnNames) {
                 sb.append(value);
@@ -79,7 +96,7 @@ public class CSVImport implements IDataImport {
      * @see com.xn.alex.data.datimport.IDataImport#load(java.util.List)
      */
     @Override
-    public void load2Db(final List<String[]> resultList) {
+    public void load2Db(final List<String[]> resultList, final String tableName) {
         // TODO Auto-generated method stub
 
     }

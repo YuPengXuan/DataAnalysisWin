@@ -33,7 +33,6 @@ public class DataImportTest {
             final File confFile = new File("config/config.xml");
             parser.parse(confFile, cParser);
 
-            
         } catch (final Exception e) {
             System.out.println("parser fail!");
 
@@ -43,7 +42,7 @@ public class DataImportTest {
 
     @Test
     public void testCSVImport() throws Exception {
-        final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE);
+        final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE, "");
         csvImport.parse(SAMPLE_FILE);
 
     }
