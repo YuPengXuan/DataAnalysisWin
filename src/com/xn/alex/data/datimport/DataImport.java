@@ -1,12 +1,15 @@
 package com.xn.alex.data.datimport;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +31,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import com.xn.ales.data.datimport.csv.DataImportFactory;
+import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
@@ -152,6 +157,10 @@ public class DataImport {
 		    case XLSX_FILE:
 		    	getColumnXlsxNames(columnNames);	
 		    	break;
+		    
+		    case CSV_FILE:
+		    	getCsvColumnNames(columnNames);
+		    	break;
 		    	
 		    default:		    	
 		    	System.out.println("找不到这个文件："+fileName+"!");
@@ -177,6 +186,44 @@ public class DataImport {
 		
 		
 	}
+	
+	private void getCsvColumnNames(Vector<String> columnNames) throws IOException{		
+		String fileName = getfileName();
+		
+		InputStreamReader fr = new InputStreamReader(new FileInputStream(fileName));
+		
+		BufferedReader br = new BufferedReader(fr);
+		
+		String line = null;
+		
+		if((line = br.readLine())!= null){
+			System.out.println("line:"+line);
+			
+			String tmpArray[] = line.split(",");
+			
+			for(int i=0;i<tmpArray.length;i++){
+				String chnColName = tmpArray[i].trim();
+				
+				String enColName = ConfigParser.chnToEnColumnName.get(chnColName);
+				
+				if(enColName != null){
+					columnNames.add(enColName);
+				}
+				else{
+					columnNames.add(chnColName);
+					
+					missingColumnIndexList.add(i);
+			    	
+			    	MissColumnIndToChnNameMap.put(i, chnColName);
+				}
+				
+			}
+						
+		}
+		
+		br.close();
+		fr.close();		
+	}
 
 	public void run(){
 		
@@ -197,6 +244,10 @@ public class DataImport {
 		    case XLSX_FILE:
 		    	loadXlsxFile(fileName);
 		    	break;
+		    
+		    case CSV_FILE:
+		    	loadCsvFile(fileName);
+		        break;
 		    	
 		    default:		    	
 		    	System.out.println("找不到这个文件："+fileName+"!");
@@ -207,6 +258,58 @@ public class DataImport {
 			//e.printStackTrace();
 			System.out.println("导入文件 "+ fileName + " 失败！");
 		}
+		
+	}
+	
+	public void loadCsvFile(String fileName) throws IOException{
+		
+		Vector<String> columnNames = new Vector<String>();
+		
+		getCsvColumnNames(columnNames);
+		
+		loadDataIntoDatabase(columnNames);
+		
+	}
+	
+	public boolean loadDataIntoDatabase(Vector<String> columnNames){
+		
+		String fileName = getfileName();
+		
+		String tableName = getTableName(fileName);
+		
+		if(MissColumnIndToChnNameMap.size() != 0){
+			
+			isNeedChooseColType = true;
+			
+			NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this, tableName);
+			
+			colHandTh.setFileType(getFileType());
+			//colHandTh.start();
+			colHandTh.run();
+			
+			return true;
+			
+		}
+			
+	    isNeedChooseColType = false;
+	    
+	    final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE, tableName);
+	    	    		
+		if(false == csvImport.parse(fileName)){
+			    System.out.println("导入大数据失败");
+			
+			    MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance().getCurrentNode().hashCode());
+			
+			    return false;
+		 }
+		
+         MainWindow.fileNameToTableMap.put(fileName, tableName);
+		
+		 updateMainWindowColumnVec(columnNames);
+		
+		 System.out.println("文件：" + fileName +" 导入数据库成功");
+		 
+		 return true;
 		
 	}
 	
@@ -224,7 +327,7 @@ public class DataImport {
 			
 			String tableName = getTableName(fileName);
 			
-			if(false == getColumnInfoAndData(fileName, columnNames, missingColumnIndexList, MissColumnIndToChnNameMap)){
+			if(false == getColumnInfoAndData(fileName, columnNames, missingColumnIndexList, MissColumnIndToChnNameMap,tableName)){
 				
 				System.out.println("导入大数据失败");
 				
@@ -238,8 +341,8 @@ public class DataImport {
 				
 				isNeedChooseColType = true;
 				
-				NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this);
-				
+				NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this, tableName);
+				colHandTh.setFileType(getFileType());
 				//colHandTh.start();
 				colHandTh.run();
 				
@@ -267,6 +370,8 @@ public class DataImport {
 		else{
 			
 			isLargeFile = false;
+			
+			String tableName = getTableName(fileName);
 		
 		    getColumnXlsxNames(columnNames);
 		    
@@ -274,8 +379,8 @@ public class DataImport {
 				
 				isNeedChooseColType = true;
 				
-				NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this);
-				
+				NewColumnHandler colHandTh = new NewColumnHandler(columnNames, MissColumnIndToChnNameMap, missingColumnIndexList, this, tableName);
+				colHandTh.setFileType(getFileType());
 				//colHandTh.start();
 				colHandTh.run();
 				
@@ -288,7 +393,7 @@ public class DataImport {
 		
 	}
 	
-	public boolean getColumnInfoAndData(String fileName, Vector<String> columnNames, List<Integer> missColumnIndexList, Map<Integer, String> MissColumnIndToChnNameMap){
+	public boolean getColumnInfoAndData(String fileName, Vector<String> columnNames, List<Integer> missColumnIndexList, Map<Integer, String> MissColumnIndToChnNameMap,String tableName){
 		
 		InputStream sheet = null;
 		
@@ -448,7 +553,7 @@ public class DataImport {
 		
 	}
 	
-	private void updateMainWindowColumnVec(Vector<String> columnEnNameVec){
+	public void updateMainWindowColumnVec(Vector<String> columnEnNameVec){
 		
 		Vector<String> ColumnChnVec = MainWindow.getJtableColumnVec();
 		

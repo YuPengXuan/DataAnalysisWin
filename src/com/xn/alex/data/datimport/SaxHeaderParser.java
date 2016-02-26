@@ -146,6 +146,8 @@ public class SaxHeaderParser extends DefaultHandler{
 	    }
 	    else{
 	    	
+	    	columnNames.add(columnNameCh);
+	    	
 	    	missingColumnIndexList.add(curCol);
 	    	
 	    	MissColumnIndToChnNameMap.put(curCol, columnNameCh);

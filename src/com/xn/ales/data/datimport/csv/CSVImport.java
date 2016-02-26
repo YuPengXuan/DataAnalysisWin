@@ -17,8 +17,26 @@ public class CSVImport implements IDataImport {
 
     private final List<String> missingColumnIndexList = new ArrayList<String>();
 
+    private final String tableName;
+
+    /**
+     * @param tableName
+     */
+    public CSVImport(final String tableName) {
+        super();
+        this.tableName = tableName;
+    }
+
+    /**
+     * @return the tableName
+     */
+    public String getTableName() {
+        return tableName;
+    }
+
     @Override
-    public void parse(final String file) {
+    public boolean parse(final String file) {
+        boolean rt = true;
         final long start = System.currentTimeMillis();
         final CsvParserSettings settings = new CsvParserSettings();
         final DataRowListProcessor rowProcessor = new DataRowListProcessor(BATCH_NUM, this);
@@ -38,12 +56,13 @@ public class CSVImport implements IDataImport {
             final String[] headers = rowProcessor.getHeaders();
             processENColumn(headers);
             if (checkHeader(headers) == false) {
-
+                rt = false;
+                return rt;
             }
 
             // processENColumn(headers);
             final List<String[]> rows = rowProcessor.getRows();
-            load2Db(rows);
+            load2Db(rows, tableName);
             final StringBuilder sb = new StringBuilder();
             for (final String value : columnNames) {
                 sb.append(value);
@@ -62,6 +81,7 @@ public class CSVImport implements IDataImport {
             System.out.println("Time costs " + (end - start));
         } catch (final FileNotFoundException e) {
             e.printStackTrace();
+            rt = false;
         } finally {
             parser.stopParsing();
             if (reader != null) {
@@ -72,14 +92,14 @@ public class CSVImport implements IDataImport {
                 }
             }
         }
-
+        return rt;
     }
 
     /* (non-Javadoc)
      * @see com.xn.alex.data.datimport.IDataImport#load(java.util.List)
      */
     @Override
-    public void load2Db(final List<String[]> resultList) {
+    public void load2Db(final List<String[]> resultList, final String table) {
         // TODO Auto-generated method stub
 
     }

@@ -19,7 +19,7 @@ public class ConfigParser extends DefaultHandler{
 	public static Map<String, Integer> columnNameToSizeMap = new HashMap<String, Integer>();
 	
 	public static Vector<String> columnVecInConfigOrder = new Vector<String>();
-	
+		
 	private String mDataBaseName = null;
 	
 	private String mExcelName = null;
@@ -28,8 +28,18 @@ public class ConfigParser extends DefaultHandler{
 	
 	private ConfigElement cfgElement = null;
 	
+	private long maxGenId = 0;
+	
 	private ConfigParser(){
 		
+	}
+	
+	public long getMaxGenId() {
+		return maxGenId;
+	}
+
+	public void setMaxGenId(long maxGenId) {
+		this.maxGenId = maxGenId;
 	}
 	
 	public static ConfigParser Instance(){
@@ -39,8 +49,7 @@ public class ConfigParser extends DefaultHandler{
         }
         return configParser;
 	}
-	
-	
+				
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException{
 				
 		cfgElement = new ConfigElement();
@@ -71,6 +80,17 @@ public class ConfigParser extends DefaultHandler{
 		    else if("databaseName".equals(attrName)){
 			    cfgElement.mDatabaseName = attributes.getValue(attrName);
 			    mDataBaseName = cfgElement.mDatabaseName;
+			    if(mDataBaseName.contains("GenColumn_")){
+			        Pattern numPat = Pattern.compile(CommonConfig.GEN_COLUMN_NAME_PREFIX+"\\d+");
+			        Matcher macher = numPat.matcher(mDataBaseName);
+			        while(macher.find()){
+			        	String numStr = macher.group(1);
+			        	long num = Long.parseLong(numStr);
+			        	if(num > maxGenId){
+			        		maxGenId = num;
+			        	}
+			        }
+			    }
 		    }
 		}
 	}

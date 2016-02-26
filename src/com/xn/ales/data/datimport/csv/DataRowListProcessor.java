@@ -24,7 +24,7 @@ public class DataRowListProcessor implements RowProcessor {
 
     private List<String> numbericIndexList;
 
-    private final int obsoleteLine = 0;
+    private int obsoleteLine = 0;
 
     public DataRowListProcessor(final int batchNum, final IDataImport dataImport) {
         super();
@@ -47,25 +47,25 @@ public class DataRowListProcessor implements RowProcessor {
             ((CSVImport) dataImport).processENColumn(headers);
             numbericIndexList = DataImportFactory.getNumericListColumnIndex(((CSVImport) dataImport).getColumnNames());
         }
-        // boolean obsolete = false;
+        boolean obsolete = false;
         for (String value : row) {
             if (value == null || value.equals(INVALID_VALUE)) {
                 value = String.valueOf(CommonConfig.IVALID_VALUE);
             }
-            /*   if (numbericIndexList.contains(value)) {
-                   final Boolean strResult = value.matches(REGEX);
-                   if (strResult == false) {
-                       obsolete = true;
-                   }
-               }*/
+            if (numbericIndexList.contains(value)) {
+                final Boolean strResult = value.matches(REGEX);
+                if (strResult == false) {
+                    obsolete = true;
+                }
+            }
         }
-        /*if (obsolete == true) {
+        if (obsolete == true) {
             obsoleteLine++;
-        } else { */
-        rows.add(row);
-        //}
+        } else {
+            rows.add(row);
+        }
         if (rows.size() == batchNum) {
-            dataImport.load2Db(rows);
+            dataImport.load2Db(rows, ((CSVImport) dataImport).getTableName());
             System.out.println("Processed line " + rows.size());
             rows.clear();
         }
