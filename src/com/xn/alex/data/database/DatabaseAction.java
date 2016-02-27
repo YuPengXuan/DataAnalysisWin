@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
@@ -13,6 +15,7 @@ import javax.swing.JOptionPane;
 
 import com.xn.alex.data.common.ConfigElement;
 import com.xn.alex.data.common.ConfigParser;
+import com.xn.alex.data.common.ConfigParser.DataColumnInfo;
 import com.xn.alex.data.login.LoginAction;
 
 public class DatabaseAction {
@@ -40,11 +43,12 @@ public class DatabaseAction {
 		try{
 			
 			try{
-		
-		    Class.forName(DatabaseConstant.DRIVER);
-		
-		    con = DriverManager.getConnection(DatabaseConstant.URL,LoginAction.Instance().getLoginUserName(),LoginAction.Instance().getLoginPassword());
-			}
+				Class.forName(DatabaseConstant.DRIVER);
+			    con = DriverManager.getConnection(DatabaseConstant.URL,LoginAction.Instance().getLoginUserName(),LoginAction.Instance().getLoginPassword());
+			    Statement statement = con.createStatement();
+			    statement.executeUpdate("USE " + DatabaseConstant.DB_NAME);
+			    statement.close();
+			 }
 			catch(SQLException sqle){
 				int errorCode = sqle.getErrorCode();
 				
@@ -292,7 +296,7 @@ public class DatabaseAction {
 	    return true;
 	}
 	
-	public boolean createTable(String tableName, Map<String, String> columnInfo, String primaryKey){
+	public boolean createTable(String tableName, List<DataColumnInfo> columnNameToType, String primaryKey){
 		
 		if(false == dropTable(tableName)){
 			return false;
@@ -311,11 +315,11 @@ public class DatabaseAction {
 		    
             String condition = "";           
             
-            for(Entry<String, String> entry : columnInfo.entrySet()){
+            for(DataColumnInfo entry : columnNameToType){
             	
-            	String columnName = entry.getKey();
+            	String columnName = entry.getName();
             	
-            	String columnType = entry.getValue();
+            	String columnType = entry.getType();
             	
             	String tmpStr = "";
             	

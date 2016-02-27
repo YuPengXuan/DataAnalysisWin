@@ -1,6 +1,8 @@
 package com.xn.alex.data.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -114,14 +116,14 @@ public class ConfigParser extends DefaultHandler{
 		}
 	}
 	
-	public Map<String, String> getColumnNameToTypeMap(Vector<String> columnInfoVec){
+	public List<DataColumnInfo> getColumnNameToTypeMap(Vector<String> columnInfoVec){
 		
 		if(null == columnInfoVec)
 		{
 			return null;
 		}
 		
-		Map<String, String> resultMap = new HashMap<String, String>();
+		List<DataColumnInfo> resultList = new ArrayList<DataColumnInfo>();
 		
 		for(int i=0;i<columnInfoVec.size();i++){
 			
@@ -131,13 +133,60 @@ public class ConfigParser extends DefaultHandler{
 			
 			if(null != columnType){
 			
-			    resultMap.put(columnName, columnType);
+				resultList.add(new DataColumnInfo(columnName, columnType));
 			    
 			}
 			
 		}
 		
-		return resultMap;		
+		return resultList;		
 	}
 
+	public static class DataColumnInfo {
+		public String name;
+		public String type;
+		
+		
+		public DataColumnInfo(String name, String type) {
+			super();
+			this.name = name;
+			this.type = type;
+		}
+		
+		public String getName() {
+			return name;
+		}
+
+
+		public String getType() {
+			return type;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			return result;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			DataColumnInfo other = (DataColumnInfo) obj;
+			if (name == null) {
+				if (other.name != null)
+					return false;
+			} else if (!name.equals(other.name))
+				return false;
+			return true;
+		}
+		
+		
+	}
 }

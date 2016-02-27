@@ -2,9 +2,13 @@ package com.xn.alex.data.database;
 
 public class DatabaseConstant {
 		
+	public static final String IGNORE = "IGNORE";
+	
+	public static final String REPLACE ="REPLACE";
+	
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
 	
-	public static final String DB_NAME = "test";
+	public static final String DB_NAME = "TEST";
 	
 	public static final String USERNAME = "root";
 	
@@ -15,7 +19,7 @@ public class DatabaseConstant {
     
 	public static final String PORT = "3306";
 	
-	public static final String URL = "jdbc:mysql://" + IP + ":" + PORT + "/" + DB_NAME;
+	public static final String URL = "jdbc:mysql://" + IP + ":" + PORT;
 	
 	public static final String AVAILABLE_ID = "availableId";
 	

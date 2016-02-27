@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,7 +19,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import com.xn.alex.data.database.DatabaseAction;
+import com.xn.alex.data.database.DataAnalysisException;
+import com.xn.alex.data.database.DatabaseConstant;
+import com.xn.alex.data.database.MySqlExecuter;
+import com.xn.alex.data.database.SqlTask;
 import com.xn.alex.data.window.Main;
 import com.xn.alex.data.window.MainWindow;
 
@@ -195,7 +201,8 @@ public class LoginWindow {
 		
 		LoginAction.Instance().setLoginPassword(password);
 		
-		if(false == DatabaseAction.Instance().connect()){
+		if(false == initDB()){
+			JOptionPane.showMessageDialog(null,"用户名和密码不匹配或者没有访问数据库权限","错误信息",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		
@@ -217,6 +224,14 @@ public class LoginWindow {
 		
         Main.setStartUpEnabledMenu();
 		
+	}
+
+	private boolean initDB() {
+		try {
+			return MySqlExecuter.getMySqlExecuter().getConnection() != null;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 }
