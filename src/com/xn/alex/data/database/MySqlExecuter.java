@@ -31,6 +31,7 @@ public class MySqlExecuter {
 	    	  mysqlDataSource.setInitialSize(1);
 	    	  mysqlDataSource.setDefaultAutoCommit(false);
 	    	  mysqlDataSource.setEnableAutoCommitOnReturn(true);
+	    	  //MySql default 8 hours to close the live session, so we need set the hours far better less than 8 hours.
 	    	  mysqlDataSource.setMaxConnLifetimeMillis(6 * 60 * 60 * 1000);
 	      }
 	      

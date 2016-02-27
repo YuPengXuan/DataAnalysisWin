@@ -8,6 +8,7 @@ import java.sql.Statement;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ import com.xn.ales.data.datimport.csv.DataImportFactory;
 import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
+import com.xn.alex.data.database.DataAnalysisException;
 import com.xn.alex.data.database.MySqlExecuter;
 import com.xn.alex.data.database.SqlTask;
 import com.xn.alex.data.login.LoginAction;
@@ -74,6 +76,20 @@ public class DataImportTest {
     public void testCSVImport() throws Exception {
         final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE, "test.test");
         csvImport.parse(SAMPLE_FILE);
-
     }
+    
+    @After
+    public void after() throws DataAnalysisException {
+//    	MySqlExecuter.getMySqlExecuter().executer(new SqlTask() {
+//			
+//			@Override
+//			public Statement run(Connection connection) throws SQLException {
+//				final Statement statement = (Statement) connection.createStatement();
+//				statement.addBatch("DROP DATABASE IF EXISTS test");
+//				statement.executeBatch();
+//				return statement;
+//			}
+//		});
+    }
+    
 }
