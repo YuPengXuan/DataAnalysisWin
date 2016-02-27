@@ -1,7 +1,6 @@
 package com.xn.alex.data.database;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +12,6 @@ import javax.swing.JOptionPane;
 
 import com.xn.alex.data.common.ConfigElement;
 import com.xn.alex.data.common.ConfigParser;
-import com.xn.alex.data.login.LoginAction;
 
 public class DatabaseAction {
 	
@@ -40,10 +38,7 @@ public class DatabaseAction {
 		try{
 			
 			try{
-		
-		    Class.forName(DatabaseConstant.DRIVER);
-		
-		    con = DriverManager.getConnection(DatabaseConstant.URL,LoginAction.Instance().getLoginUserName(),LoginAction.Instance().getLoginPassword());
+				con = MySqlExecuter.getMySqlExecuter().getConnection();
 			}
 			catch(SQLException sqle){
 				int errorCode = sqle.getErrorCode();
