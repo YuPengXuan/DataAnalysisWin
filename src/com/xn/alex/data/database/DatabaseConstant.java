@@ -8,7 +8,7 @@ public class DatabaseConstant {
 	
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
 	
-	public static final String DB_NAME = "db";
+	public static final String DB_NAME = "TEST";
 	
 	public static final String USERNAME = "root";
 	

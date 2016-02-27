@@ -1,9 +1,11 @@
 package com.xn.alex.data.database;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
@@ -12,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import com.xn.alex.data.common.ConfigElement;
 import com.xn.alex.data.common.ConfigParser;
+import com.xn.alex.data.login.LoginAction;
 
 public class DatabaseAction {
 	
@@ -38,8 +41,12 @@ public class DatabaseAction {
 		try{
 			
 			try{
-				con = MySqlExecuter.getMySqlExecuter().getConnection();
-			}
+				Class.forName(DatabaseConstant.DRIVER);
+			    con = DriverManager.getConnection(DatabaseConstant.URL,LoginAction.Instance().getLoginUserName(),LoginAction.Instance().getLoginPassword());
+			    Statement statement = con.createStatement();
+			    statement.executeUpdate("USE " + DatabaseConstant.DB_NAME);
+			    statement.close();
+			 }
 			catch(SQLException sqle){
 				int errorCode = sqle.getErrorCode();
 				
