@@ -2,7 +2,6 @@ package com.xn.alex.data.datimport;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -55,39 +54,13 @@ public class DataImportTest {
 				
 				@Override
 				public Statement run(Connection connection) throws SQLException {
-					final PreparedStatement statement = (PreparedStatement) connection.prepareStatement("CREATE DATABASE IF NOT EXISTS test");
-    				statement.executeUpdate();
+					final Statement statement = (Statement) connection.createStatement();
+					statement.addBatch("CREATE DATABASE IF NOT EXISTS test");
+					statement.addBatch("USE test");
+					statement.addBatch("DROP TABLE IF EXISTS test.test");
+					statement.addBatch(createTableDefine.toString());
+    				statement.executeBatch();
 					return statement;
-				}
-			});
-            
-           mySqlExecuter.executer(new SqlTask() {
-				
-				@Override
-				public Statement run(Connection connection) throws SQLException {
-					final PreparedStatement statement = (PreparedStatement) connection.prepareStatement("USE test");
-    				statement.executeUpdate();
-					return statement;
-				}
-			});
-            
-            mySqlExecuter.executer(new SqlTask() {
-				
-				@Override
-				public Statement run(Connection connection) throws SQLException {
-					final PreparedStatement statement = (PreparedStatement) connection.prepareStatement("DROP TABLE IF EXISTS test.test");
-    				statement.executeUpdate();
-    				return statement;
-				}
-			});
-            
-            mySqlExecuter.executer(new SqlTask() {
-				
-				@Override
-				public Statement run(Connection connection) throws SQLException {
-					final PreparedStatement statement = (PreparedStatement) connection.prepareStatement(createTableDefine.toString());
-    				statement.executeUpdate();
-    				return statement;
 				}
 			});
         } catch (final Exception e) {

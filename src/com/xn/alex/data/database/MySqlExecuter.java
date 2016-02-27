@@ -41,7 +41,7 @@ public class MySqlExecuter {
 		return mysqlDataSource.getConnection();
 	}
 	
-	public void executer(final SqlTask sqlTask) throws DataAnalysisException {
+	public boolean executer(final SqlTask sqlTask) throws DataAnalysisException {
 		Connection connection = null;
 		try {
 			connection = getConnection();
@@ -49,6 +49,7 @@ public class MySqlExecuter {
 				final Statement statement = sqlTask.run(connection);
 				if (statement != null) {
 					statement.close();
+					return true;
 				}
 			}
 		} catch (SQLException e) {
@@ -63,5 +64,7 @@ public class MySqlExecuter {
 				}
 			}
 		}
+		
+		return false;
 	}
 }
