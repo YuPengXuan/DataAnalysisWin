@@ -80,16 +80,16 @@ public class DataImportTest {
     
     @After
     public void after() throws DataAnalysisException {
-//    	MySqlExecuter.getMySqlExecuter().executer(new SqlTask() {
-//			
-//			@Override
-//			public Statement run(Connection connection) throws SQLException {
-//				final Statement statement = (Statement) connection.createStatement();
-//				statement.addBatch("DROP DATABASE IF EXISTS test");
-//				statement.executeBatch();
-//				return statement;
-//			}
-//		});
+    	MySqlExecuter.getMySqlExecuter().executer(new SqlTask() {
+			
+			@Override
+			public Statement run(Connection connection) throws SQLException {
+				final Statement statement = (Statement) connection.createStatement();
+				statement.addBatch("DROP DATABASE IF EXISTS test");
+				statement.executeBatch();
+				return statement;
+			}
+		});
     }
     
 }

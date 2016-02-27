@@ -26,6 +26,7 @@ import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.common.ConfigElement;
 import com.xn.alex.data.common.ConfigParser;
+import com.xn.alex.data.common.ConfigParser.DataColumnInfo;
 import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.window.MainWindow;
 
@@ -298,9 +299,9 @@ public class NewColumnHandler{
 	private boolean createTable(Vector<String> columnNames, String tableName){
 		String primaryKey = "customerID";
 		
-		Map<String, String> columnNameToTypeMap = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
+		List<DataColumnInfo> columnNameToType = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
 		
-		if(false == DatabaseAction.Instance().createTable(tableName, columnNameToTypeMap, primaryKey)){
+		if(false == DatabaseAction.Instance().createTable(tableName, columnNameToType, primaryKey)){
 			return false;
 		}
 		

@@ -2,9 +2,13 @@ package com.xn.alex.data.database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import com.xn.alex.data.common.ConfigParser.DataColumnInfo;
 
 public class DatabaseSpecialAction {
 			
@@ -26,13 +30,13 @@ public class DatabaseSpecialAction {
 	
    public boolean createAvailableIdTable(){
 		
-		Map<String, String> columnInfo = new HashMap<String, String>();
+		List<DataColumnInfo> columnInfo = new ArrayList<DataColumnInfo>();
 		
 		String valueType = "INT";
 		
-		columnInfo.put(DatabaseConstant.AVAILABLE_ID, valueType);
+		columnInfo.add(new DataColumnInfo(DatabaseConstant.AVAILABLE_ID, valueType));
 		
-		columnInfo.put(DatabaseConstant.MAX_ID, valueType);		
+		columnInfo.add(new DataColumnInfo(DatabaseConstant.MAX_ID, valueType));		
 		
 		String primaryKey = DatabaseConstant.AVAILABLE_ID;
 					
@@ -160,15 +164,16 @@ public class DatabaseSpecialAction {
 		   
 		   String tableName = DatabaseConstant.FILE_TO_TABLE;
 		   
-		   Map<String, String> columnInfoMap = new HashMap<String, String>();
-		   
-		   columnInfoMap.put(DatabaseConstant.FILE_FULL_PATH, "VARCHAR(255)");
-		   
-		   columnInfoMap.put(DatabaseConstant.TABLE_NAME, "VARCHAR(100)");		
+		   List<DataColumnInfo> columnInfo = new ArrayList<DataColumnInfo>();
+			
+		   columnInfo.add(new DataColumnInfo(DatabaseConstant.FILE_FULL_PATH, "VARCHAR(255)"));
+			
+		   columnInfo.add(new DataColumnInfo(DatabaseConstant.TABLE_NAME, "VARCHAR(100)"));		
+			
 		   
 		   String primaryKey = DatabaseConstant.FILE_FULL_PATH;
 		   
-		   if(false ==  DatabaseAction.Instance().createTable(tableName, columnInfoMap, primaryKey)){
+		   if(false ==  DatabaseAction.Instance().createTable(tableName, columnInfo, primaryKey)){
 			   return false;
 		   }
 		   

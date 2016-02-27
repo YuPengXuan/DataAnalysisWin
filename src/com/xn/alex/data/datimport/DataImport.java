@@ -36,6 +36,7 @@ import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
+import com.xn.alex.data.common.ConfigParser.DataColumnInfo;
 import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.database.DatabaseSpecialAction;
@@ -168,8 +169,8 @@ public class DataImport {
 		    }
 		
 		    String primaryKey = "customerID";	
-            Map<String, String> columnNameToTypeMap = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);		
-		    DatabaseAction.Instance().createTable(getTableName(), columnNameToTypeMap, primaryKey);
+		    List<DataColumnInfo> columnNameToType  = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);		
+		    DatabaseAction.Instance().createTable(getTableName(), columnNameToType, primaryKey);
 		    
 		    if(false == loadDataIntoDatabase(getTableName(), columnNames)){
 		    	JOptionPane.showMessageDialog(null,"导入数据失败","错误信息",JOptionPane.ERROR_MESSAGE);
@@ -537,9 +538,9 @@ public class DataImport {
 			return;
 		}
 		
-		Map<String, String> columnNameToTypeMap = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
+		List<DataColumnInfo> columnNameToType = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
 		
-		DatabaseAction.Instance().createTable(tableName, columnNameToTypeMap, primaryKey);
+		DatabaseAction.Instance().createTable(tableName, columnNameToType, primaryKey);
 		
 		if(true == loadDataIntoDatabase(tableName, columnNames)){
 			
