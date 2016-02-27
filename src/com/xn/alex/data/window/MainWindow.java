@@ -58,6 +58,7 @@ import com.xn.alex.data.graphics.CategoryDataSheet;
 import com.xn.alex.data.listener.JButtonListener;
 import com.xn.alex.data.listener.JTableListener;
 import com.xn.alex.data.listener.JTreeListener;
+import com.xn.alex.data.ui.ImageUtility;
 
 public class MainWindow extends JFrame implements ActionListener{
 
@@ -399,6 +400,7 @@ public class MainWindow extends JFrame implements ActionListener{
 	public void createWindow(){		
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		this.setIconImage(new ImageIcon("resource/das16X16.png").getImage());
 		setBounds(100, 100, 450, 300);
 		
 		createMeanu();
@@ -458,21 +460,29 @@ public class MainWindow extends JFrame implements ActionListener{
 		menuBar.add(mnFile);
 		
 		mntmOpenFile = new JMenuItem("  导入数据");
+		Image openImage = new ImageIcon("resource/open16.png").getImage();
+		mntmOpenFile.setIcon(new ImageIcon(ImageUtility.createTransparencyImage(openImage,0,0)));
 		mnFile.add(mntmOpenFile);
 		mntmOpenFile.addActionListener(this);
 		
 		mntmSaveFile = new JMenuItem("  保存数据");
+		Image saveImage = new ImageIcon("resource/save16.png").getImage();
+		mntmSaveFile.setIcon(new ImageIcon(ImageUtility.createTransparencyImage(saveImage, 0, 0)));
 		mnFile.add(mntmSaveFile);
 		mntmSaveFile.addActionListener(this);
 		
 		mnFile.addSeparator();
 		
 		mntmCloseFile = new JMenuItem("  关闭数据");
+		Image closeImage = new ImageIcon("resource/delete16.png").getImage();
+		mntmCloseFile.setIcon(new ImageIcon(ImageUtility.createTransparencyImage(closeImage, 0, 0)));
 		mnFile.add(mntmCloseFile);
 		mntmCloseFile.addActionListener(this);
 		
 		mnFile.addSeparator();
 		mntmExit = new JMenuItem("  退出软件");
+		Image exitImage = new ImageIcon("resource/close16.png").getImage();
+		mntmExit.setIcon(new ImageIcon(ImageUtility.createTransparencyImage(exitImage, 0, 0)));
 		mnFile.add(mntmExit);
 		mntmExit.addActionListener(this);
 		
@@ -615,6 +625,8 @@ public class MainWindow extends JFrame implements ActionListener{
 		menuBar.add(mnHelp);		
 		
 		mntmAbout = new JMenuItem(" 关于");
+		Image aboutImage = new ImageIcon("resource/about16.png").getImage();
+		mntmAbout.setIcon(new ImageIcon(ImageUtility.createTransparencyImage(aboutImage, 0, 0)));
 		mnHelp.add(mntmAbout);
 		mntmAbout.addActionListener(this);
 		
@@ -666,11 +678,11 @@ public class MainWindow extends JFrame implements ActionListener{
 		scrollPane_1.setViewportView(textArea);
 		
 		toolBar = new JToolBar();
-		openButton = generateToolBarButton("resource/open.png");
+		openButton = generateToolBarButton("resource/open16.png");
 		openButton.addActionListener(this);
-		saveButton = generateToolBarButton("resource/save.png");
+		saveButton = generateToolBarButton("resource/save16.png");
 		saveButton.addActionListener(this);
-		closeButton = generateToolBarButton("resource/delete.png");
+		closeButton = generateToolBarButton("resource/delete16.png");
 		closeButton.addActionListener(this);
 		toolBar.add(openButton);
 		toolBar.add(saveButton);
@@ -698,9 +710,9 @@ public class MainWindow extends JFrame implements ActionListener{
 			
 		    imageicon = new ImageIcon(fileName);
 		
-		    Image image = imageicon.getImage();
+		    Image image = ImageUtility.createTransparencyImage(imageicon.getImage(),0,0);
 		
-		    image = image.getScaledInstance(22, 22, Image.SCALE_DEFAULT);
+//		    image = image.getScaledInstance(22, 22, Image.SCALE_DEFAULT);
 		
 		    imageicon.setImage(image);		
 		}

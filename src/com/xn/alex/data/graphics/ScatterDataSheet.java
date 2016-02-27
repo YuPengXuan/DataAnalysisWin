@@ -19,6 +19,8 @@ import org.jfree.data.xy.XYDataset;
 import com.xn.alex.data.resultobj.algorithmResultObj2;
 
 public class ScatterDataSheet extends JFrame{
+	public ScatterDataSheet() {
+	}
 
 	/**
 	 * 

@@ -14,6 +14,7 @@ import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.database.DatabaseSpecialAction;
 import com.xn.alex.data.login.LoginWindow;
 import com.xn.alex.data.process.MenuItemDisable;
+import com.xn.alex.data.ui.Logo;
 
 
 
@@ -22,22 +23,40 @@ public class Main {
 	 * Launch the application.
 	 */		
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					
-					LoginWindow logWin = new LoginWindow();
-					
-					logWin.process();
-					
-					
-				} catch (Exception e) {
-					
-					e.printStackTrace();
-					
-				}
-			}
-		});
+		Logo logo = new Logo("resource/das.png");
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LoginWindow logWin = new LoginWindow();
+		
+		logWin.process();
+		
+		logo.dispose();
+		
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					
+//					Logo logo = new Logo("resource/das.png");
+//					
+//					Thread.sleep(2000);
+//					LoginWindow logWin = new LoginWindow();
+//					
+//					logWin.process();
+//					
+//					logo.dispose();
+//					
+//				} catch (Exception e) {
+//					
+//					e.printStackTrace();
+//					
+//				}
+//			}
+//		});
 	}
 	
 	public static void Initialize(){
@@ -145,5 +164,4 @@ public class Main {
 		MenuItemDisable.Instance().disableFourthColumnMenu();
 		
 	}
-
 }

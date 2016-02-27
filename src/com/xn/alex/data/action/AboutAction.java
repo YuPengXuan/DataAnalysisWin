@@ -3,6 +3,7 @@ package com.xn.alex.data.action;
 import javax.swing.JOptionPane;
 
 import com.xn.alex.data.common.SoftWareLicence;
+import com.xn.alex.data.ui.AboutDialog;
 
 public class AboutAction extends WindowAction {
 	
@@ -25,9 +26,11 @@ public class AboutAction extends WindowAction {
 		 
 		 long leftDay = SoftWareLicence.Instance().getLeftUseTime();
 		 
-		 JOptionPane.showMessageDialog(null,"软件版本：1.01\n剩余试用天数："+leftDay+"\n其它：如需购买，请联系爱臭美的多多老师。联系方式54321"
-				 ,"软件信息",JOptionPane.INFORMATION_MESSAGE);
-		 
+		 AboutDialog dialog = new AboutDialog();
+		 dialog.setVisible(true);
+//		 JOptionPane.showMessageDialog(null,"软件版本：1.01\n剩余试用天数："+leftDay+"\n其它：如需购买，请联系爱臭美的多多老师。联系方式54321"
+//				 ,"软件信息",JOptionPane.INFORMATION_MESSAGE);
+//		 
 	 }
 	 
 

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -55,6 +56,7 @@ public class LoginWindow {
 	private void createLoginWindow(){
 		
 		frame = new JFrame("ÓÃ»§µÇÂ¼");
+		frame.setIconImage(new ImageIcon("resource/das16X16.png").getImage());
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	     
