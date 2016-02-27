@@ -3,6 +3,9 @@ package com.xn.alex.data.database;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -31,6 +34,10 @@ public class MySqlExecuter {
 	    	  mysqlDataSource.setInitialSize(1);
 	    	  mysqlDataSource.setDefaultAutoCommit(false);
 	    	  mysqlDataSource.setEnableAutoCommitOnReturn(true);
+	    	  Collection<String> initSqls = new ArrayList<String>();
+	    	  Collections.addAll(initSqls, "CREATE DATABASE IF NOT EXISTS " + DatabaseConstant.DB_NAME);
+	    	  Collections.addAll(initSqls, "USE " + DatabaseConstant.DB_NAME);
+			  mysqlDataSource.setConnectionInitSqls(initSqls);
 	    	  //MySql default 8 hours to close the live session, so we need set the hours far better less than 8 hours.
 	    	  mysqlDataSource.setMaxConnLifetimeMillis(6 * 60 * 60 * 1000);
 	      }

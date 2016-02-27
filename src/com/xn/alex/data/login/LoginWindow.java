@@ -228,17 +228,8 @@ public class LoginWindow {
 
 	private boolean initDB() {
 		try {
-			return MySqlExecuter.getMySqlExecuter().executer(new SqlTask() {
-				@Override
-				public Statement run(Connection connection) throws SQLException {
-					final Statement statement = (Statement) connection.createStatement();
-					statement.addBatch("CREATE DATABASE IF NOT EXISTS " + DatabaseConstant.DB_NAME);
-					statement.addBatch("USE " + DatabaseConstant.DB_NAME);
-					statement.executeBatch();
-					return statement;
-				}
-			});
-		} catch (DataAnalysisException e) {
+			return MySqlExecuter.getMySqlExecuter().getConnection() != null;
+		} catch (SQLException e) {
 			return false;
 		}
 	}
