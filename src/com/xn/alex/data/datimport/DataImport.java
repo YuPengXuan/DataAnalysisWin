@@ -198,7 +198,7 @@ public class DataImport {
 		String line = null;
 		
 		if((line = br.readLine())!= null){
-			System.out.println("line:"+line);
+			//System.out.println("line:"+line);
 			
 			String tmpArray[] = line.split(",");
 			

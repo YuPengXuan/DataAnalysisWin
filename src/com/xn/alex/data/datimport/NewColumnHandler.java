@@ -23,11 +23,13 @@ import javax.swing.table.TableColumnModel;
 import com.xn.ales.data.datimport.csv.DataImportFactory;
 import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
+import com.xn.alex.data.common.CommonConfig.CURRENT_ACTION;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.common.ConfigElement;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.common.ConfigParser.DataColumnInfo;
 import com.xn.alex.data.database.DatabaseAction;
+import com.xn.alex.data.process.MenuItemEnable;
 import com.xn.alex.data.window.MainWindow;
 
 public class NewColumnHandler{
@@ -336,6 +338,18 @@ public class NewColumnHandler{
      m_dataImprtHandler.updateMainWindowColumnVec(columnNames);
 	
 	 System.out.println("文件：" + fileName +" 导入数据库成功");
+	 
+	 MainWindow.setCurrentAct(CURRENT_ACTION.DB_OPERATION);
+	    //currentAct = CURRENT_ACTION.DB_OPERATION;
+	
+	    JTable table = MainWindow.Instance().getTable();
+	    DataExport dataExportHandler = new DataExport(fileName,table);
+	    dataExportHandler.run();
+	    //dataExportHandler.showDataInJTable();
+	
+	    MainWindow.setCurrentAct(CURRENT_ACTION.NONE);
+     //currentAct = CURRENT_ACTION.NONE;
+	    MenuItemEnable.Instance().enableSecondColumnMenu();
 	}
 	
 }
