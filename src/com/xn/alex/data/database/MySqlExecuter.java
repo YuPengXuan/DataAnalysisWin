@@ -26,9 +26,6 @@ public class MySqlExecuter {
 	    	  mySqlExecuter = new MySqlExecuter();
 	    	  mysqlDataSource = new BasicDataSource();
 	    	  mysqlDataSource.setUrl(DatabaseConstant.URL);
-	    	  final LoginAction loginAction = LoginAction.Instance();
-	    	  mysqlDataSource.setUsername(loginAction.getLoginUserName());
-	    	  mysqlDataSource.setPassword(loginAction.getLoginPassword());
 	    	  mysqlDataSource.setMaxTotal(2);
 	    	  mysqlDataSource.setMaxIdle(1);
 	    	  mysqlDataSource.setInitialSize(1);
@@ -41,7 +38,9 @@ public class MySqlExecuter {
 	    	  //MySql default 8 hours to close the live session, so we need set the hours far better less than 8 hours.
 	    	  mysqlDataSource.setMaxConnLifetimeMillis(6 * 60 * 60 * 1000);
 	      }
-	      
+	      final LoginAction loginAction = LoginAction.Instance();
+	      mysqlDataSource.setUsername(loginAction.getLoginUserName());
+    	  mysqlDataSource.setPassword(loginAction.getLoginPassword());
 	      return mySqlExecuter;
 	}
 

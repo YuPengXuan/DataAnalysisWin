@@ -24,14 +24,9 @@ import java.util.HashMap;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
-    
-    private HashMap<String,String> versionInfo = new HashMap<String,String>();
-    private String strName="OSS Network Viewer Plus";
+    private String strName="";
     private String strVersion="";
-    private String strRelease="";
-    private String strBuildDate="";
-    private String fileLocation = File.separator + "sw" + File.separator + "version.txt";
-    
+
     public AboutDialog() {
 
         loadReleaseInfo();
