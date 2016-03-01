@@ -18,7 +18,7 @@ public class SaxHeaderParser extends DefaultHandler{
 	
 	private SharedStringsTable sst;
 	
-	private Vector<String> columnNames;
+	private List<String> columnNames;
 	
 	private List<Integer> missingColumnIndexList;
 	
@@ -34,7 +34,7 @@ public class SaxHeaderParser extends DefaultHandler{
 	
 	private Map<Integer, String> MissColumnIndToChnNameMap;
 	
-	public SaxHeaderParser(SharedStringsTable sst, Vector<String> columnNames, List<Integer> missingColumnIndexList, Map<Integer, String> MissColumnIndToChnNameMap){
+	public SaxHeaderParser(SharedStringsTable sst, List<String> columnNames, List<Integer> missingColumnIndexList, Map<Integer, String> MissColumnIndToChnNameMap){
 		this.sst = sst;
 		this.columnNames = columnNames;
 		this.missingColumnIndexList = missingColumnIndexList;

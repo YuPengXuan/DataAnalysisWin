@@ -29,7 +29,7 @@ public class HugeDataImport extends DefaultHandler{
 		return hugeDataImport;
 	}
 	
-	public boolean importData(String fileName, String tableName, Vector<String> columnNames, List<Integer> missingColumnIndexList){
+	public boolean importData(String fileName, String tableName, List<String> columnNames, List<Integer> missingColumnIndexList){
 		
 		try{
 		
@@ -57,7 +57,7 @@ public class HugeDataImport extends DefaultHandler{
 		return true;
 	}
 	
-	private XMLReader fetchSheetParser(SharedStringsTable sst,  Vector<String> columnNames, List<Integer> missingColumnIndexList, String tableName) throws Exception {
+	private XMLReader fetchSheetParser(SharedStringsTable sst,  List<String> columnNames, List<Integer> missingColumnIndexList, String tableName) throws Exception {
 		XMLReader parser =
 			XMLReaderFactory.createXMLReader(
 					"org.apache.xerces.parsers.SAXParser"

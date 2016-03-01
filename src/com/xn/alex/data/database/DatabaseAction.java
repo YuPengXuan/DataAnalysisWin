@@ -373,7 +373,7 @@ public class DatabaseAction {
 		
 	}
 	
-	public boolean insertTable(String tableName, Vector<String> columnNameVec, Vector<Vector<String>> commitValVec){
+	public boolean insertTable(String tableName, List<String> columnNameVec, Vector<Vector<String>> commitValVec){
 		
 		if(null == tableName || columnNameVec.size() == 0 || commitValVec.size() == 0){			
 			return true;			
@@ -473,7 +473,7 @@ public class DatabaseAction {
 		
 	}
 	
-	private String constructInsertHeader(Vector<String> columnNameVec){
+	private String constructInsertHeader(List<String> columnNameVec){
 		
 			try {
 								    	         
@@ -500,7 +500,7 @@ public class DatabaseAction {
 		}
 	
 	
-	private String constructValueStr(Vector<String> valueVec, Vector<String> columnNameVec){
+	private String constructValueStr(List<String> valueVec, List<String> columnNameVec){
 		
 		String resultStr = "";
 		

@@ -38,7 +38,7 @@ public class CSVImport implements IDataImport {
     }
 
     @Override
-    public boolean parse(final String file) {
+    public boolean parse(final String file){
     	final String newFormatfile = file.replaceAll("\\\\", "\\\\\\\\");
         final long startTime = System.currentTimeMillis();
     	try {

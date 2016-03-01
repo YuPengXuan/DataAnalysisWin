@@ -116,7 +116,7 @@ public class ConfigParser extends DefaultHandler{
 		}
 	}
 	
-	public List<DataColumnInfo> getColumnNameToTypeMap(Vector<String> columnInfoVec){
+	public List<DataColumnInfo> getColumnNameToTypeMap(List<String> columnInfoVec){
 		
 		if(null == columnInfoVec)
 		{

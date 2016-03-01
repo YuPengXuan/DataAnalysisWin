@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,7 +35,7 @@ import com.xn.alex.data.window.MainWindow;
 
 public class NewColumnHandler{
 	
-    protected JFrame frame;
+    protected JDialog frame;
 	
     protected JPanel contentPane;
     
@@ -52,7 +53,7 @@ public class NewColumnHandler{
     
     private volatile boolean isFinished = false;
     
-    private Vector<String> m_columnNames;
+    private List<String> m_columnNames;
     
     private Map<Integer, String> m_issColumnIndToChnNameMap;
     
@@ -60,11 +61,11 @@ public class NewColumnHandler{
     
     private String m_tableName;
     
-    private DataImport m_dataImprtHandler;
+    private AbstractImporter m_dataImprtHandler;
     
     private FILE_TYPE fileType;
-         
-    public FILE_TYPE getFileType() {
+    
+	public FILE_TYPE getFileType() {
 		return fileType;
 	}
 
@@ -83,7 +84,7 @@ public class NewColumnHandler{
 		this.isFinished = isFinished;
 	}
 	
-	public NewColumnHandler(Vector<String> columnNames, Map<Integer, String> MissColumnIndToChnNameMap, List<Integer> missingColumnIndexList, DataImport dataImprtHandler, String tableName){
+	public NewColumnHandler(List<String> columnNames, Map<Integer, String> MissColumnIndToChnNameMap, List<Integer> missingColumnIndexList, AbstractImporter dataImprtHandler, String tableName){
 		m_columnNames = columnNames;
 		m_issColumnIndToChnNameMap = MissColumnIndToChnNameMap;
 		m_missingColumnIndexList = missingColumnIndexList;
@@ -102,7 +103,7 @@ public class NewColumnHandler{
 		
 	}	
 	
-	private boolean ColumnCheck(Vector<String> columnNames){
+	private boolean ColumnCheck(List<String> columnNames){
 		String primaryKey = "customerID";				        
 		if(columnNames.contains(primaryKey) == false){	
 			System.out.println("缺乏客户编号！");
@@ -116,19 +117,10 @@ public class NewColumnHandler{
 	}
 
 
-	public void HandleNewColumnType(Vector<String> columnNames, Map<Integer, String> MissColumnIndToChnNameMap, List<Integer> missingColumnIndexList, String tableName){    	
-    	
-    	createColumnSelectWindow(MissColumnIndToChnNameMap);
-    	
-    	addListenerForButton(tableName, columnNames, missingColumnIndexList);
-    	
-    }
-
+	public void HandleNewColumnType(final List<String> columnNames, Map<Integer, String> MissColumnIndToChnNameMap, final List<Integer> missingColumnIndexList, final String tableName){    	
+    	frame = new JDialog(MainWindow.Instance(),"列数据类型选择");
 		
-	
-	public void createColumnSelectWindow(Map<Integer, String> MissColumnIndToChnNameMap){
-		frame = new JFrame("列数据类型选择");
-		
+		frame.setModal(true);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				
 		contentPane = new JPanel();
@@ -176,30 +168,6 @@ public class NewColumnHandler{
 		bottomPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 30, 40));
 		
 		okBt = new JButton("确定");
-	     
-	    bottomPanel.add(okBt);
-	     
-	    cancelBt = new JButton("取消");
-	     
-	    bottomPanel.add(cancelBt);
-	     
-	    contentPane.add(bottomPanel, BorderLayout.SOUTH);
-		
-		frame.setContentPane(contentPane);
-
-		frame.pack();		
-		     
-		frame.setSize(320, 400);
-		
-		frame.setLocationRelativeTo(null);
-		     
-		frame.setResizable(false);
-
-	    frame.setVisible(true);
-		
-	}
-	
-	private void addListenerForButton(final String tableName, final Vector<String> columnNames, final List<Integer> missingColumnIndexList){
 		okBt.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent Event) {
@@ -232,14 +200,18 @@ public class NewColumnHandler{
 				}
 				
 				frame.dispose();
+				isFinished = true;
 				
-				loadHugeData(tableName, columnNames, missingColumnIndexList);
+//				loadHugeData(tableName, columnNames, missingColumnIndexList);
 							
 			}			
 			
 		});
-		
-		cancelBt.addActionListener(new ActionListener(){
+	     
+	    bottomPanel.add(okBt);
+	     
+	    cancelBt = new JButton("取消");
+	    cancelBt.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent Event){
@@ -247,9 +219,25 @@ public class NewColumnHandler{
 				frame.dispose();
 			}
 		});
-	}
-	
-	private void updateConfigFile(String columnName, String valType, Vector<String> columnNames, List<Integer> missingColumnIndexList){
+	     
+	    bottomPanel.add(cancelBt);
+	     
+	    contentPane.add(bottomPanel, BorderLayout.SOUTH);
+		
+		frame.setContentPane(contentPane);
+
+		frame.pack();		
+		     
+		frame.setSize(320, 400);
+		
+		frame.setLocationRelativeTo(null);
+		     
+		frame.setResizable(false);
+
+	    frame.setVisible(true);
+    }
+
+	private void updateConfigFile(String columnName, String valType, List<String> columnNames, List<Integer> missingColumnIndexList){
 		long maxGenId = ConfigParser.Instance().getMaxGenId();
 		
 		long newGenId = maxGenId + 1;
@@ -298,7 +286,7 @@ public class NewColumnHandler{
 		
 	}
 	
-	private boolean createTable(Vector<String> columnNames, String tableName){
+	private boolean createTable(List<String> columnNames, String tableName){
 		String primaryKey = "customerID";
 		
 		List<DataColumnInfo> columnNameToType = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
@@ -311,8 +299,8 @@ public class NewColumnHandler{
 		
 	}
 	
-	private void loadHugeData(String tableName, Vector<String> columnNames, List<Integer> missingColumnIndexList){
-		String fileName = m_dataImprtHandler.getfileName();
+	private void loadHugeData(String tableName, List<String> columnNames, List<Integer> missingColumnIndexList){
+		String fileName = m_dataImprtHandler.getFileName();
 		
 	    boolean isSuccess = false;
 	    

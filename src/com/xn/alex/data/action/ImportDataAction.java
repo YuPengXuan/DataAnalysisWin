@@ -12,7 +12,7 @@ import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.database.DatabaseConstant;
-import com.xn.alex.data.datimport.DataImport;
+import com.xn.alex.data.datimport.AbstractImporter;
 import com.xn.alex.data.graphics.TreeDataSheet;
 import com.xn.alex.data.resultobj.treeNodeResultObj;
 import com.xn.alex.data.rule.GenerateTreeByLeaf;
@@ -58,7 +58,7 @@ public class ImportDataAction extends WindowAction {
             return;
         }
         final String tableName = DatabaseConstant.TREE_DATA_IMP_TABLE;
-        final DataImport dataImportHandler = new DataImport(fullFileName, tableName, fileType);
+        final AbstractImporter dataImportHandler = AbstractImporter.getImporter(fullFileName,tableName,fileType);
         dataImportHandler.loadDataForTree();
 
         final Vector<String> tableColumnVec = getTableColumnName();

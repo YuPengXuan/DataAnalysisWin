@@ -1,12 +1,14 @@
 package com.xn.alex.data.action;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -16,9 +18,10 @@ import javax.swing.tree.TreePath;
 import com.xn.alex.data.common.CommonConfig.CURRENT_ACTION;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.database.DatabaseAction;
+import com.xn.alex.data.datimport.AbstractImporter;
 import com.xn.alex.data.datimport.DataExport;
-import com.xn.alex.data.datimport.DataImport;
 import com.xn.alex.data.process.MenuItemEnable;
+import com.xn.alex.data.ui.ProgressBar;
 import com.xn.alex.data.window.MainWindow;
 import com.xn.alex.data.window.UpdateObject;
 
@@ -152,7 +155,7 @@ public class OpenAction extends WindowAction{
 		
 	}
     
-    private void loadANewFile(String fullFileName){
+    private void loadANewFile(final String fullFileName){
 		
 	    List<UpdateObject> updateObjList = MainWindow.Instance().getUpdateObjList();
 	   
@@ -164,7 +167,7 @@ public class OpenAction extends WindowAction{
 		
 		MainWindow.treeNodeToFullPathMap.put(MainWindow.Instance().getCurrentNode().hashCode(), fullFileName);
 		
-		FILE_TYPE fileType = getFileType(fullFileName);
+		final FILE_TYPE fileType = getFileType(fullFileName);
 		
 		if(FILE_TYPE.INVALID_FILE == fileType){
 			System.out.println("文件类型不支持");			
@@ -172,11 +175,15 @@ public class OpenAction extends WindowAction{
 		}
 		System.out.println("开始导入数据...");
 		
-		DataImport dataImportHandler = new DataImport(fullFileName, fileType);
-		dataImportHandler.run();		
-		
-		if(false == dataImportHandler.isNeedChooseColType()){
-		
+		AbstractImporter importer = AbstractImporter.getImporter(fullFileName,fileType);
+		try {
+			importer.load();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if(false == importer.isNeedChooseColType()){
+			
 		    MainWindow.setCurrentAct(CURRENT_ACTION.DB_OPERATION);
 		    //currentAct = CURRENT_ACTION.DB_OPERATION;
 		
@@ -188,8 +195,7 @@ public class OpenAction extends WindowAction{
 		    MainWindow.setCurrentAct(CURRENT_ACTION.NONE);
 	        //currentAct = CURRENT_ACTION.NONE;
 		    MenuItemEnable.Instance().enableSecondColumnMenu();
-		}
-		
+		}	
 	}
     
    

@@ -30,7 +30,7 @@ public class SheetHandler extends DefaultHandler{
 		
 	    private int curCol = 0;
 	    
-	    private Vector<String> columnNames;
+	    private List<String> columnNames;
 	    
 	    private List<Integer> missingColumnIndexList;
 	    
@@ -56,7 +56,7 @@ public class SheetHandler extends DefaultHandler{
 			return obsoleteRowNum;
 		}
 
-		public SheetHandler(SharedStringsTable sst, Vector<String> columnNames, List<Integer> missingColumnIndexList, String tableName) {
+		public SheetHandler(SharedStringsTable sst, List<String> columnNames, List<Integer> missingColumnIndexList, String tableName) {
 			this.sst = sst;
 			this.columnNames = columnNames;
 			this.missingColumnIndexList = missingColumnIndexList;
@@ -216,7 +216,7 @@ public class SheetHandler extends DefaultHandler{
 			return true;			
 		}
 		
-		private List<Integer> getNumericListColumnIndex(Vector<String> columnNameVec){
+		private List<Integer> getNumericListColumnIndex(List<String> columnNameVec){
 			
 			List<Integer> numericIndexList = new ArrayList<Integer>();
 			
