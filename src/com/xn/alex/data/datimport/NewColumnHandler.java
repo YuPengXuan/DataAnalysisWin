@@ -29,6 +29,7 @@ import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.common.ConfigElement;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.common.ConfigParser.DataColumnInfo;
+import com.xn.alex.data.common.ConfigWriter;
 import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.process.MenuItemEnable;
 import com.xn.alex.data.window.MainWindow;
@@ -172,7 +173,9 @@ public class NewColumnHandler{
 
 			public void actionPerformed(ActionEvent Event) {
 				// TODO Auto-generated method stub
-				int row = table.getRowCount();				
+				int row = table.getRowCount();	
+				
+				Vector<ConfigElement> cfgVec = new Vector<ConfigElement>();
 				
 				for(int i=0;i<row;i++){
 					String columnName = table.getValueAt(i, 0).toString();
@@ -188,11 +191,19 @@ public class NewColumnHandler{
 						valueType = "FLOAT";
 					}					
 					
-					updateConfigFile(columnName,valueType, columnNames, missingColumnIndexList);					
+					
+					ConfigElement cfg = updateConfigFile(columnName,valueType, columnNames, missingColumnIndexList);
+					
+					if(null != cfg){
+						cfgVec.add(cfg);
+					}
 															
 					//System.out.println("row:" + i + " colunName:" + columnName + " value:" + value);
 					
 				}
+				
+				ConfigWriter cfgWr = new ConfigWriter(cfgVec);
+				new Thread(cfgWr).start();
 
 				if(false == createTable(columnNames,tableName)){
 					frame.dispose();
@@ -237,7 +248,7 @@ public class NewColumnHandler{
 	    frame.setVisible(true);
     }
 
-	private void updateConfigFile(String columnName, String valType, List<String> columnNames, List<Integer> missingColumnIndexList){
+	private ConfigElement updateConfigFile(String columnName, String valType, List<String> columnNames, List<Integer> missingColumnIndexList){
 		long maxGenId = ConfigParser.Instance().getMaxGenId();
 		
 		long newGenId = maxGenId + 1;
@@ -282,8 +293,9 @@ public class NewColumnHandler{
 		
 		int listInd = missingColumnIndexList.indexOf(index);
 		
-		missingColumnIndexList.remove(listInd);				
+		missingColumnIndexList.remove(listInd);	
 		
+		return cfgElement;
 	}
 	
 	private boolean createTable(List<String> columnNames, String tableName){

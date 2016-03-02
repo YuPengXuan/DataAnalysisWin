@@ -476,7 +476,7 @@ public class GenerateTreeByLeaf {
     	String tmpLine = line.replace("WHERE", "");
     	
     	//remove all special characters
-    	tmpLine = tmpLine.replaceAll("(OR)|(AND)|(IS NULL)|(<>)|(>)|(<)|\\(|\\)|;", "");
+    	tmpLine = tmpLine.replaceAll("(NOT)|(OR)|(AND)|(IS NULL)|(<>)|(>)|(<)|\\(|\\)|;", "");
     	
     	String resultArray[] = tmpLine.split("\\s+|\\s");
     	
