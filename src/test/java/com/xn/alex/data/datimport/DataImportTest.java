@@ -24,14 +24,14 @@ import com.xn.alex.data.login.LoginAction;
 public class DataImportTest {
     HugeDataImport dataImport;
 
-    DataImport defaultDataImport;
+//    DataImport defaultDataImport;
 
     private static String SAMPLE_FILE = "D:\\projects\\data\\test1.csv";
 
     @Before
     public void before() throws Exception {
         dataImport = HugeDataImport.Instance();
-        defaultDataImport = new DataImport(SAMPLE_FILE, null, CommonConfig.FILE_TYPE.CSV_FILE);
+//        defaultDataImport = new DataImport(SAMPLE_FILE, null, CommonConfig.FILE_TYPE.CSV_FILE);
         try {
             final ConfigParser cParser = ConfigParser.Instance();
             //parse EventDecoderCounter.xml                 

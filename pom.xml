@@ -92,6 +92,10 @@
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-		
+		<dependency>
+	      <groupId>com.verhas</groupId>
+	      <artifactId>license3j</artifactId>
+	      <version>1.0.7</version>
+      </dependency>
 	</dependencies>
 </project>
