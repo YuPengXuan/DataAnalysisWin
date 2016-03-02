@@ -30,6 +30,8 @@ public class LicenseController {
 	
 	private static String baseDir;
 	
+	private static boolean isTrialLicense;
+	
 	private static final byte[] digest = new byte[] { (byte) 0x12, (byte) 0x92, (byte) 0xDA, (byte) 0xE2, (byte) 0x97,
 			(byte) 0x75, (byte) 0x67, (byte) 0x50, (byte) 0x40, (byte) 0xE3, (byte) 0xC1, (byte) 0x6A, (byte) 0xE3,
 			(byte) 0x25, (byte) 0x75, (byte) 0x5A, (byte) 0xF1, (byte) 0xCC, (byte) 0x86, (byte) 0x16, (byte) 0x53,
@@ -82,10 +84,12 @@ public class LicenseController {
 			
 			if(!licenseFile.exists()) {
 				license.setLicenseEncodedFromFile("resource/lic.out");
+				isTrialLicense = true;
 			} else {
 				final ObjectInputStream licenseObjectInputStream = new ObjectInputStream(new FileInputStream(licenseFile));
 				license.setLicenseEncoded((String) licenseObjectInputStream.readObject());
 				licenseObjectInputStream.close();
+				isTrialLicense = false;
 			}
 			
 		} catch (Exception e) {
@@ -93,17 +97,21 @@ public class LicenseController {
 		}  
 	}
 	
-	
+	public boolean isTrialLicense() {
+		return isTrialLicense;
+	}
+
 	public void installLicense(final String licenseEncoded) {
 		final File licenseFile = new File(baseDir + ".lic");
 		
 		if(!licenseFile.exists()) {
 			try {
-				ObjectOutputStream licenseObjectOutputStream = new ObjectOutputStream(new FileOutputStream(licenseFile));
+				final ObjectOutputStream licenseObjectOutputStream = new ObjectOutputStream(new FileOutputStream(licenseFile));
 				licenseObjectOutputStream.writeObject(licenseEncoded);
 				licenseObjectOutputStream.close();
 				
 				license.setLicenseEncoded(licenseEncoded);
+				isTrialLicense = false;
 			} catch (Exception e) {
 				System.err.print("注册权限认证失败");
 			}
