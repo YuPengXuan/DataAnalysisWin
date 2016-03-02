@@ -332,4 +332,14 @@ public abstract class AbstractImporter{
 			System.out.println("导入文件 "+ fileName + " 失败！");
 		}
 	}
+	
+	protected void createTable(List<String> columnNames, String tableName) throws Exception{
+		String primaryKey = "customerID";
+		
+		List<DataColumnInfo> columnNameToType = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
+		
+		if(false == DatabaseAction.Instance().createTable(tableName, columnNameToType, primaryKey)){
+			throw new Exception("创建数据库表失败:" + tableName);
+		}
+	}
 }

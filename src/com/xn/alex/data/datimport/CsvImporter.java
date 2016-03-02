@@ -104,6 +104,8 @@ public class CsvImporter extends  AbstractImporter{
 			public void onRun() throws Exception {
 				setProgress(0,"开始加载文件:" + fileName);
 				
+				createTable(columnNames,tableName);
+				setProgress(30,200);
 				final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE, tableName);
 	    		
 				if(false == csvImport.parse(fileName)){
@@ -114,7 +116,7 @@ public class CsvImporter extends  AbstractImporter{
 				 }
 				
 		         MainWindow.fileNameToTableMap.put(fileName, tableName);		
-				setProgress(50,500);
+				setProgress(60,500);
 				
 				updateMainWindowColumnVec(columnNames);
 				

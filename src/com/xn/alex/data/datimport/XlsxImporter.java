@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -28,6 +30,7 @@ import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.database.DatabaseAction;
+import com.xn.alex.data.ui.ProgressBar;
 import com.xn.alex.data.window.MainWindow;
 
 public class XlsxImporter extends AbstractImporter {
@@ -101,7 +104,6 @@ public class XlsxImporter extends AbstractImporter {
 
 	@Override
 	public void load() throws IOException {
-		List<String> columnNames = new ArrayList<String>();
 		final String fileName = getFileName();
 		final String tableName = getTableName();
 
@@ -109,6 +111,7 @@ public class XlsxImporter extends AbstractImporter {
 		long fileSize = xlsxFile.length();
 
 		if (fileSize > 8000000) {
+			final List<String> columnNames = new ArrayList<String>();
 			setLargeFile(true);
 
 			if (false == getColumnInfoAndData(fileName, columnNames,
@@ -133,33 +136,52 @@ public class XlsxImporter extends AbstractImporter {
 				colHandTh.setFileType(getFileType());
 				// colHandTh.start();
 				colHandTh.run();
-
-				return;
-
+				if(!colHandTh.isFinished()){
+					return;
+				}
 			}
 
 			setNeedChooseColType(false);
 
-			if (false == HugeDataImport.Instance().importData(fileName,
-					tableName, columnNames, missingColumnIndexList)) {
-				System.out.println("导入大数据失败");
+			final ProgressBar progresBar = new ProgressBar(MainWindow.Instance(),"加载文件"){
 
-				MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance()
-						.getCurrentNode().hashCode());
+				@Override
+				public void onRun() throws Exception {
+					if (false == HugeDataImport.Instance().importData(fileName,
+							tableName, columnNames, missingColumnIndexList)) {
+						System.out.println("导入大数据失败");
 
-				return;
-			}
+						MainWindow.treeNodeToFullPathMap.remove(MainWindow.Instance()
+								.getCurrentNode().hashCode());
 
-			MainWindow.fileNameToTableMap.put(fileName, tableName);
+						throw new Exception("导入大数据失败");
+					}
 
-			updateMainWindowColumnVec(columnNames);
+					MainWindow.fileNameToTableMap.put(fileName, tableName);
 
-			System.out.println("文件：" + fileName + " 导入数据库成功");
+					updateMainWindowColumnVec(columnNames);
+
+					System.out.println("文件：" + fileName + " 导入数据库成功");
+				}
+
+				@Override
+				public void onClose() {
+					this.dispose();
+				}
+
+				@Override
+				public void onException(Exception e) {
+					JOptionPane.showMessageDialog(this, e.getMessage(),"ERROR",JOptionPane.ERROR_MESSAGE);
+					this.dispose();
+				}
+				
+			};
+			
 
 		} else {
 			setLargeFile(false);
 
-			columnNames = getColumnInfo();
+			List<String> columnNames = getColumnInfo();
 
 			if (MissColumnIndToChnNameMap.size() != 0) {
 
@@ -183,100 +205,129 @@ public class XlsxImporter extends AbstractImporter {
 	}
 
 	@Override
-	protected boolean loadDataIntoDatabase(String tableName,
-			List<String> columnNames) {
-		Vector<Vector<String>> commitValueVec = MainWindow.getJtableValueVec();
+	protected boolean loadDataIntoDatabase(final String tableName,
+			final List<String> columnNames) {
+		
+		final String fileName = getFileName();
+		ProgressBar progressBar = new ProgressBar(MainWindow.Instance(),"加载文件"){
 
-		commitValueVec.clear();
+			@Override
+			public void onRun() throws Exception {
+				setProgress(0,"开始加载文件:" + fileName);
+				
+				Vector<Vector<String>> commitValueVec = MainWindow.getJtableValueVec();
 
-		FILE_TYPE fileType = getFileType();
+				commitValueVec.clear();
 
-		List<Integer> numbericIndexList = getNumericListColumnIndex(columnNames);
+				FILE_TYPE fileType = getFileType();
 
-		int sheetNum = xssWorkBook.getNumberOfSheets();
+				List<Integer> numbericIndexList = getNumericListColumnIndex(columnNames);
 
-		int obsoleteLine = 0;
+				int sheetNum = xssWorkBook.getNumberOfSheets();
 
-		for (int i = 0; i < sheetNum; i++) {
+				int obsoleteLine = 0;
 
-			Sheet sheet = null;
-			
-			sheet = xssWorkBook.getSheetAt(i);
-			
-			if (sheet == null)
-				continue;
+				int progress = 0;
+				for (int i = 0; i < sheetNum; i++) {
 
-			for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
+					Sheet sheet = null;
+					
+					sheet = xssWorkBook.getSheetAt(i);
+					
+					if (sheet == null)
+						continue;
 
-				Row row = sheet.getRow(rowNum);
-				if (null == row || missingColumnIndexList.contains(rowNum)) {
-					continue;
-				}
+					for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
 
-				Vector<String> tmpVec = new Vector<String>();
+						Row row = sheet.getRow(rowNum);
+						if (null == row || missingColumnIndexList.contains(rowNum)) {
+							continue;
+						}
 
-				boolean isAddThisRow = true;
+						Vector<String> tmpVec = new Vector<String>();
 
-				int cellNum = row.getLastCellNum();
+						boolean isAddThisRow = true;
 
-				for (int j = 0; j < cellNum; j++) {
+						int cellNum = row.getLastCellNum();
 
-					Cell cell = row.getCell(j);
+						for (int j = 0; j < cellNum; j++) {
 
-					String cellValue = null;
+							Cell cell = row.getCell(j);
 
-					if (null == cell || "#NULL!".equals(cell.toString())) {
+							String cellValue = null;
 
-						// String columnName = columnNames.get(i);
+							if (null == cell || "#NULL!".equals(cell.toString())) {
 
-						// String defVal =
-						// ConfigParser.columnInfoMap.get(columnName).mDefValue;
+								// String columnName = columnNames.get(i);
 
-						// cellValue = defVal;
+								// String defVal =
+								// ConfigParser.columnInfoMap.get(columnName).mDefValue;
 
-						// cellValue = "-1";
-						cellValue = String.valueOf(CommonConfig.IVALID_VALUE);
+								// cellValue = defVal;
 
-					} else {
+								// cellValue = "-1";
+								cellValue = String.valueOf(CommonConfig.IVALID_VALUE);
 
-						if (true == numbericIndexList.contains(j)
-								&& cell.getCellType() != Cell.CELL_TYPE_NUMERIC) {
+							} else {
 
-							isAddThisRow = false;
+								if (true == numbericIndexList.contains(j)
+										&& cell.getCellType() != Cell.CELL_TYPE_NUMERIC) {
 
-							obsoleteLine++;
+									isAddThisRow = false;
 
-							break;
+									obsoleteLine++;
+
+									break;
+
+								}
+								cellValue = cell.toString();
+
+							}
+
+							tmpVec.add(cellValue);
 
 						}
-						cellValue = cell.toString();
 
+						if (true == isAddThisRow) {
+
+							commitValueVec.add(tmpVec);
+
+						}
+
+						isAddThisRow = true;
+						
+						if(rowNum % (sheet.getLastRowNum() / 100) == 0){
+							setProgress(progress++);	
+						}
+						
 					}
 
-					tmpVec.add(cellValue);
+				}
+				
+				DatabaseAction.Instance().insertTable(tableName, columnNames,
+						commitValueVec);
+
+				setProgress(100,"导入数据完成.");
+				if (obsoleteLine > 0) {
+
+					System.out.println(obsoleteLine + "行不符合格式的数据将会被丢弃！");
 
 				}
-
-				if (true == isAddThisRow) {
-
-					commitValueVec.add(tmpVec);
-
-				}
-
-				isAddThisRow = true;
-
 			}
 
-		}
+			@Override
+			public void onClose() {
+				this.dispose();
+			}
 
-		DatabaseAction.Instance().insertTable(tableName, columnNames,
-				commitValueVec);
-
-		if (obsoleteLine > 0) {
-
-			System.out.println(obsoleteLine + "行不符合格式的数据将会被丢弃！");
-
-		}
+			@Override
+			public void onException(Exception e) {
+				JOptionPane.showMessageDialog(this, e.getMessage(),"ERROR",JOptionPane.ERROR_MESSAGE);
+				this.dispose();
+			}
+			
+		};
+		
 
 		return true;
 	}

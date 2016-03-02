@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Vector;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -21,8 +22,9 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.xn.alex.data.resultobj.algorithmResultObj1;
+import com.xn.alex.data.window.MainWindow;
 
-public class CategoryDataSheet extends JFrame{
+public class CategoryDataSheet extends JDialog{
 
 	/**
 	 * 
@@ -33,8 +35,8 @@ public class CategoryDataSheet extends JFrame{
 	
 	private JFreeChart chart = null;
 	
-	private CategoryDataSheet(String title) {
-		super(title);
+	private CategoryDataSheet(JFrame parent, String title) {
+		super(parent,title);
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		// TODO Auto-generated constructor stub
@@ -49,7 +51,7 @@ public class CategoryDataSheet extends JFrame{
 		
 		if(null == categoryDataSheetHandler){
 			
-			categoryDataSheetHandler = new CategoryDataSheet("统计直方图");
+			categoryDataSheetHandler = new CategoryDataSheet(MainWindow.Instance(),"统计直方图");
 			
 		}		
 		return categoryDataSheetHandler;		
@@ -90,9 +92,9 @@ public class CategoryDataSheet extends JFrame{
 		
 		Instance().pack();
 		
+		Instance().setLocationRelativeTo(MainWindow.Instance());
+		Instance().setModal(true);
 		Instance().setVisible(true);
-		
-		Instance().setLocationRelativeTo(null);
 		
 	}
 	

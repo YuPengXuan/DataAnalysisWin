@@ -205,11 +205,6 @@ public class NewColumnHandler{
 				ConfigWriter cfgWr = new ConfigWriter(cfgVec);
 				new Thread(cfgWr).start();
 
-				if(false == createTable(columnNames,tableName)){
-					frame.dispose();
-					return;
-				}
-				
 				frame.dispose();
 				isFinished = true;
 				
@@ -298,18 +293,6 @@ public class NewColumnHandler{
 		return cfgElement;
 	}
 	
-	private boolean createTable(List<String> columnNames, String tableName){
-		String primaryKey = "customerID";
-		
-		List<DataColumnInfo> columnNameToType = ConfigParser.Instance().getColumnNameToTypeMap(columnNames);
-		
-		if(false == DatabaseAction.Instance().createTable(tableName, columnNameToType, primaryKey)){
-			return false;
-		}
-		
-		return true;
-		
-	}
 	
 	private void loadHugeData(String tableName, List<String> columnNames, List<Integer> missingColumnIndexList){
 		String fileName = m_dataImprtHandler.getFileName();

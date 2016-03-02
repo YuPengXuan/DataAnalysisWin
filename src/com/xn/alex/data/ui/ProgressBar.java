@@ -40,6 +40,7 @@ public class ProgressBar extends JDialog{
 		
 		progressBar.setPreferredSize(new Dimension(450, 18));
         progressBar.setMaximum(100);
+        progressBar.setStringPainted(true);
         progressBar.setVisible(true);
         
         this.setSize(400, 200);
