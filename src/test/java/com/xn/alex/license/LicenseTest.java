@@ -1,12 +1,42 @@
-package com.xn.alex.data.datimport;
+package com.xn.alex.license;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.xn.alex.license.LicenseController;
 
 public class LicenseTest {
   
+	@Before
+	public void before() throws IOException {
+		clearEnv();
+	}
+
+	private void clearEnv() {
+		final String userHomeDir = System.getProperty("user.home");
+		final String baseDir = userHomeDir + File.separator + ".dataanalysis" + File.separator;
+		File basefile = new File(baseDir);
+		File[] dirList = basefile.listFiles();
+		if(dirList != null) {
+	       for (File f : dirList) {
+	    	   f.delete();
+	       }
+		}
+		basefile.delete();
+	}
+	
+	@After
+	public void after() {
+		clearEnv();
+	}
+	
 	@Test
 	public void testExpireLicense() {
 		LicenseController licenseController = LicenseController.getLicenseController();
