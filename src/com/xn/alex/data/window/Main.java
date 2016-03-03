@@ -8,7 +8,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import com.xn.alex.data.common.ConfigParser;
-import com.xn.alex.data.common.SoftWareLicence;
 import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.database.DatabaseSpecialAction;

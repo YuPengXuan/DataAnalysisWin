@@ -51,7 +51,6 @@ import com.xn.alex.data.action.WindowAction;
 import com.xn.alex.data.common.CommonConfig.CURRENT_ACTION;
 import com.xn.alex.data.common.CommonConfig.ROC_TYPE;
 import com.xn.alex.data.common.ConfigParser;
-import com.xn.alex.data.common.SoftWareLicence;
 import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.graphics.CategoryDataSheet;

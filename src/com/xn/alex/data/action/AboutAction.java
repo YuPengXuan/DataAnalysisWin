@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import com.xn.alex.data.common.SoftWareLicence;
 import com.xn.alex.data.ui.AboutDialog;
+import com.xn.alex.license.LicenseController;
 
 public class AboutAction extends WindowAction {
 	
@@ -24,7 +25,7 @@ public class AboutAction extends WindowAction {
 	 
 	 public void takeAction(){
 		 
-		 long leftDay = SoftWareLicence.Instance().getLeftUseTime();
+		 long leftDay = LicenseController.getLicenseController().getLeftUseTime();
 		 
 		 AboutDialog dialog = new AboutDialog();
 		 dialog.setVisible(true);
