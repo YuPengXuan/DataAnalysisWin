@@ -2,15 +2,11 @@ package com.xn.alex.license;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.xn.alex.license.LicenseController;
 
 public class LicenseTest {
   

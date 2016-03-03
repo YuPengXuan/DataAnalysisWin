@@ -14,7 +14,9 @@ import java.util.zip.GZIPOutputStream;
 import com.verhas.licensor.License;
 
 public class LicenseController {
-	private static final int TRAIL_DURATION = 15 * 24 * 60 *60 * 1000;
+	private static final int DAY_UNIT = 24 * 60 *60 * 1000;
+
+	private static final int TRAIL_DURATION = 15 * DAY_UNIT;
 
 	private static final String TRIAL = "trial";
 
@@ -32,11 +34,11 @@ public class LicenseController {
 	
 	private static boolean isTrialLicense;
 	
-	private static final byte[] digest = new byte[] { (byte) 0x12, (byte) 0x92, (byte) 0xDA, (byte) 0xE2, (byte) 0x97,
-			(byte) 0x75, (byte) 0x67, (byte) 0x50, (byte) 0x40, (byte) 0xE3, (byte) 0xC1, (byte) 0x6A, (byte) 0xE3,
-			(byte) 0x25, (byte) 0x75, (byte) 0x5A, (byte) 0xF1, (byte) 0xCC, (byte) 0x86, (byte) 0x16, (byte) 0x53,
-			(byte) 0x66, (byte) 0x83, (byte) 0xB9, (byte) 0xC9, (byte) 0xCB, (byte) 0x65, (byte) 0x85, (byte) 0x0A,
-			(byte) 0xCE, (byte) 0xE1, (byte) 0x85, };
+//	private static final byte[] digest = new byte[] { (byte) 0x12, (byte) 0x92, (byte) 0xDA, (byte) 0xE2, (byte) 0x97,
+//			(byte) 0x75, (byte) 0x67, (byte) 0x50, (byte) 0x40, (byte) 0xE3, (byte) 0xC1, (byte) 0x6A, (byte) 0xE3,
+//			(byte) 0x25, (byte) 0x75, (byte) 0x5A, (byte) 0xF1, (byte) 0xCC, (byte) 0x86, (byte) 0x16, (byte) 0x53,
+//			(byte) 0x66, (byte) 0x83, (byte) 0xB9, (byte) 0xC9, (byte) 0xCB, (byte) 0x65, (byte) 0x85, (byte) 0x0A,
+//			(byte) 0xCE, (byte) 0xE1, (byte) 0x85, };
 	
 	private  LicenseController() {
 		
@@ -140,6 +142,13 @@ public class LicenseController {
 	}
 	
 	public long getLeftUseTime(){
+		try {
+			final long installTime = dateFormat.parse(installDateTime.getTime()).getTime();
+			return (System.currentTimeMillis() - installTime) / DAY_UNIT;
+		} catch (ParseException e) {
+			System.err.print("权限认证文件损坏");
+		}
+		
 		return 0;
 	}
 }
