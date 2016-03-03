@@ -138,4 +138,8 @@ public class LicenseController {
 			return true;
 		}
 	}
+	
+	public long getLeftUseTime(){
+		return 0;
+	}
 }

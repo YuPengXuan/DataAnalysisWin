@@ -15,6 +15,7 @@ import com.xn.alex.data.database.DatabaseSpecialAction;
 import com.xn.alex.data.login.LoginWindow;
 import com.xn.alex.data.process.MenuItemDisable;
 import com.xn.alex.data.ui.Logo;
+import com.xn.alex.license.LicenseController;
 
 
 
@@ -82,7 +83,7 @@ public class Main {
 			e.printStackTrace();
 		}
 */		
-		//licenceCheck();
+		licenceCheck();
 				
 		createAvailableIdTable();
 		
@@ -93,7 +94,7 @@ public class Main {
 	
 	private static void licenceCheck(){
 		
-		if(false == SoftWareLicence.Instance().isLicenceValid()){
+		if(false == LicenseController.getLicenseController().validate()){
 			
 			JOptionPane.showMessageDialog(null,"软件证书不合法或者已过期！请联系多多老师(^_^)","错误信息",JOptionPane.ERROR_MESSAGE);
 			
