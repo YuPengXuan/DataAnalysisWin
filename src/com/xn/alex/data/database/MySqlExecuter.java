@@ -30,7 +30,6 @@ public class MySqlExecuter {
 	    	  mysqlDataSource.setMaxIdle(1);
 	    	  mysqlDataSource.setInitialSize(1);
 	    	  mysqlDataSource.setDefaultAutoCommit(false);
-	    	  mysqlDataSource.setEnableAutoCommitOnReturn(true);
 	    	  Collection<String> initSqls = new ArrayList<String>();
 	    	  Collections.addAll(initSqls, "CREATE DATABASE IF NOT EXISTS " + DatabaseConstant.DB_NAME);
 	    	  Collections.addAll(initSqls, "USE " + DatabaseConstant.DB_NAME);
@@ -50,21 +49,27 @@ public class MySqlExecuter {
 	
 	public boolean executer(final SqlTask sqlTask) throws DataAnalysisException {
 		Connection connection = null;
+		boolean result = false;
 		try {
 			connection = getConnection();
 			if (connection != null) {
 				final Statement statement = sqlTask.run(connection);
 				if (statement != null) {
 					statement.close();
-					return true;
+					result = true;
 				}
 			}
 		} catch (SQLException e) {
+			result = false;
 			throw new DataAnalysisException(e);
 		} finally {
 			if (connection != null) {
 				try {
-					connection.commit();
+					if(result) {
+					  connection.commit();
+					} else {
+						connection.rollback();
+					}
 					connection.close();
 				} catch (SQLException e) {
 					throw new DataAnalysisException(e);
@@ -72,6 +77,6 @@ public class MySqlExecuter {
 			}
 		}
 		
-		return false;
+		return result;
 	}
 }
