@@ -1,7 +1,7 @@
 package com.xn.ales.data.datimport.csv;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import com.univocity.parsers.common.ParsingContext;
@@ -14,7 +14,7 @@ public class DataRowListProcessor implements RowProcessor {
 
     private static final String REGEX = "-?[0-9]+.*[0-9]*";
 
-    private final List<String[]> rows;
+    private StringBuilder rows;
 
     private String[] headers;
 
@@ -24,20 +24,24 @@ public class DataRowListProcessor implements RowProcessor {
 
     private List<String> numbericIndexList;
 
-    private int obsoleteLine = 0;
+    private final int obsoleteLine = 0;
+
+    private int rowNum = 1;
+
+    private int totalNum = 0;
 
     public DataRowListProcessor(final int batchNum, final IDataImport dataImport) {
         super();
         this.batchNum = batchNum;
         this.dataImport = dataImport;
-        rows = new ArrayList<String[]>(batchNum);
+        rows = new StringBuilder();
         headers = null;
         numbericIndexList = null;
     }
 
     @Override
     public void processStarted(final ParsingContext context) {
-        System.out.println("Started to process rows of data.");
+        //System.out.println("Started to process rows of data.");
     }
 
     @Override
@@ -47,27 +51,38 @@ public class DataRowListProcessor implements RowProcessor {
             ((CSVImport) dataImport).processENColumn(headers);
             numbericIndexList = DataImportFactory.getNumericListColumnIndex(((CSVImport) dataImport).getColumnNames());
         }
-        boolean obsolete = false;
-        for (String value : row) {
-            if (value == null || value.equals(INVALID_VALUE)) {
-                value = String.valueOf(CommonConfig.IVALID_VALUE);
+        // boolean obsolete = false;
+        //for (String value : row) {
+        for (int i = 0; i < row.length; i++) {
+            if (row[i] == null || row[i].equals(INVALID_VALUE)) {
+                row[i] = String.valueOf(CommonConfig.IVALID_VALUE);
             }
-            if (numbericIndexList.contains(value)) {
+            rows.append(row[i]);
+            if (i != row.length - 1) {
+                rows.append(",");
+            }
+            /*if (numbericIndexList.contains(value)) {
                 final Boolean strResult = value.matches(REGEX);
                 if (strResult == false) {
                     obsolete = true;
                 }
-            }
+            }*/
         }
-        if (obsolete == true) {
-            obsoleteLine++;
-        } else {
-            rows.add(row);
-        }
-        if (rows.size() == batchNum) {
-            dataImport.load2Db(rows, ((CSVImport) dataImport).getTableName());
-            System.out.println("Processed line " + rows.size());
-            rows.clear();
+        rows.append("\r\n");
+        rowNum++;
+        totalNum++;
+        /*   if (obsolete == true) {
+               obsoleteLine++;
+           } else {
+        rows.add(row);
+        }*/
+        if (rowNum == batchNum) {
+            final ByteArrayInputStream ingputStream = new ByteArrayInputStream(String.valueOf(rows).getBytes());
+            dataImport.load2Db(new BufferedInputStream(ingputStream, 3 * 1024 * 1024),
+                    ((CSVImport) dataImport).getTableName());
+            //System.out.println("Processed line " + rowNum);
+            rows = new StringBuilder();
+            rowNum = 0;
         }
     }
 
@@ -76,8 +91,8 @@ public class DataRowListProcessor implements RowProcessor {
         headers = context.headers();
     }
 
-    public List<String[]> getRows() {
-        return rows == null ? Collections.<String[]> emptyList() : rows;
+    public StringBuilder getRows() {
+        return rows;
     }
 
     public String[] getHeaders() {
@@ -89,6 +104,20 @@ public class DataRowListProcessor implements RowProcessor {
      */
     public int getObsoleteLine() {
         return obsoleteLine;
+    }
+
+    /**
+     * @return the rowNum
+     */
+    public int getRowNum() {
+        return rowNum;
+    }
+
+    /**
+     * @return the totalNum
+     */
+    public int getTotalNum() {
+        return totalNum;
     }
 
 }
