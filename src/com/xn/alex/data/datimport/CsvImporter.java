@@ -112,7 +112,7 @@ public class CsvImporter extends  AbstractImporter{
 				createTable(columnNames,tableName);
 				setProgress(30,200);
 				final IDataImport csvImport = DataImportFactory.getDataImport(CommonConfig.FILE_TYPE.CSV_FILE, tableName);
-	    		
+	    		csvImport.setPropertyListener(this);
 				if(false == csvImport.parse(fileName)){
 					    System.out.println("导入大数据失败.");
 					    setProgress(50,"导入数据失败:" + fileName);

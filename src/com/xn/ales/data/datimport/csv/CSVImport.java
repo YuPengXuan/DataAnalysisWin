@@ -16,6 +16,7 @@ import com.xn.alex.data.database.DataAnalysisException;
 import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.database.LoadDataInFileTask;
 import com.xn.alex.data.database.MySqlExecuter;
+import com.xn.alex.data.ui.IPropertyListener;
 
 public class CSVImport implements IDataImport {
     private static final int BATCH_NUM = 20000;
@@ -26,6 +27,8 @@ public class CSVImport implements IDataImport {
 
     private final String tableName;
 
+    private IPropertyListener propertyListener;
+    
     /**
      * @param tableName
      */
@@ -176,5 +179,17 @@ public class CSVImport implements IDataImport {
     public void setColumnNames(final List<String> columnNames) {
         this.columnNames = columnNames;
     }
+
+	@Override
+	public void setPropertyListener(IPropertyListener listener) {
+		this.propertyListener = propertyListener;
+		
+	}
+
+	@Override
+	public IPropertyListener getPropertyListener() {
+		return propertyListener;
+	}
+	
 
 }

@@ -15,7 +15,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
 
-public class ProgressBar extends JDialog{
+public class ProgressBar extends JDialog implements IPropertyListener{
 	
 	/**
 	 * 
@@ -148,6 +148,11 @@ public class ProgressBar extends JDialog{
 	}
 	
 	public void onException(Exception e){
+		
+	}
+	@Override
+	public void valueChanged(String name, Object value) {
+		// TODO Auto-generated method stub
 		
 	}
 }
