@@ -380,7 +380,7 @@ public class MainWindow extends JFrame implements ActionListener{
 
 			public void windowClosing(WindowEvent e){				
 				if(JOptionPane.showConfirmDialog(null,"ÊÇ·ñÍË³ö")==JOptionPane.OK_OPTION){
-					SoftWareLicence.Instance().setLeftTime();
+					//SoftWareLicence.Instance().setLeftTime();
 				    System.exit(0);
 				}
 				
