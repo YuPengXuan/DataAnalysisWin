@@ -12,12 +12,16 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 
 public class ProgressBar extends JDialog{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7737913283285888535L;
+
 	protected JProgressBar progressBar;
 	
 	private JLabel messageLabel;
@@ -108,7 +112,7 @@ public class ProgressBar extends JDialog{
  	}
 		
 	private void start(){
-		SwingWorker task = new SwingWorker(){
+		SwingWorker<Object, Object> task = new SwingWorker<Object, Object>(){
 			boolean bDone = false;
 			@Override
 			protected Void doInBackground() throws Exception {

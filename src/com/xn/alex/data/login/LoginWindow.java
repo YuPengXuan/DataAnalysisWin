@@ -6,10 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,10 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import com.xn.alex.data.database.DataAnalysisException;
-import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.database.MySqlExecuter;
-import com.xn.alex.data.database.SqlTask;
 import com.xn.alex.data.window.Main;
 import com.xn.alex.data.window.MainWindow;
 

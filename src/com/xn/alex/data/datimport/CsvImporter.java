@@ -100,6 +100,11 @@ public class CsvImporter extends  AbstractImporter{
 	    
 		final ProgressBar progresBar = new ProgressBar(MainWindow.Instance(),"加载文件"){
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1609711263573769118L;
+
 			@Override
 			public void onRun() throws Exception {
 				setProgress(0,"开始加载文件:" + fileName);

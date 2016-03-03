@@ -1,6 +1,5 @@
 package com.xn.alex.data.window;
 
-import java.awt.EventQueue;
 import java.io.File;
 
 import javax.swing.JOptionPane;

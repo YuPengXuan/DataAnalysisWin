@@ -28,9 +28,7 @@ import com.xn.alex.data.common.CommonConfig.CURRENT_ACTION;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.common.ConfigElement;
 import com.xn.alex.data.common.ConfigParser;
-import com.xn.alex.data.common.ConfigParser.DataColumnInfo;
 import com.xn.alex.data.common.ConfigWriter;
-import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.process.MenuItemEnable;
 import com.xn.alex.data.window.MainWindow;
 
