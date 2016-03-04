@@ -29,6 +29,8 @@ public class DataRowListProcessor implements RowProcessor {
     private int rowNum = 1;
 
     private int totalNum = 0;
+    
+    private int currentNum = 0;
 
     public DataRowListProcessor(final int batchNum, final IDataImport dataImport) {
         super();
@@ -70,7 +72,7 @@ public class DataRowListProcessor implements RowProcessor {
         }
         rows.append("\r\n");
         rowNum++;
-        totalNum++;
+        currentNum++;
         /*   if (obsolete == true) {
                obsoleteLine++;
            } else {
@@ -81,6 +83,7 @@ public class DataRowListProcessor implements RowProcessor {
             dataImport.load2Db(new BufferedInputStream(ingputStream, 3 * 1024 * 1024),
                     ((CSVImport) dataImport).getTableName());
             //System.out.println("Processed line " + rowNum);
+            dataImport.getPropertyListener().valueChanged("progress", (int)((1.0f * currentNum / totalNum) * 100));
             rows = new StringBuilder();
             rowNum = 0;
         }
@@ -118,6 +121,13 @@ public class DataRowListProcessor implements RowProcessor {
      */
     public int getTotalNum() {
         return totalNum;
+    }
+    
+    public int getCurrentNum(){
+    	return currentNum;
+    }
+    public void setTotalNum(int totalNum){
+    	this.totalNum = totalNum;
     }
 
 }

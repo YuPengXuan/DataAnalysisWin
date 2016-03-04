@@ -152,7 +152,6 @@ public class ProgressBar extends JDialog implements IPropertyListener{
 	}
 	@Override
 	public void valueChanged(String name, Object value) {
-		// TODO Auto-generated method stub
-		
+		setProgress((int) value);
 	}
 }

@@ -1,11 +1,14 @@
 package com.xn.ales.data.datimport.csv;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +76,7 @@ public class CSVImport implements IDataImport {
         final long start = System.currentTimeMillis();
         final CsvParserSettings settings = new CsvParserSettings();
         final DataRowListProcessor rowProcessor = new DataRowListProcessor(BATCH_NUM, this);
+        rowProcessor.setTotalNum(getLineNumbers(file));
         //settings.setRowProcessor(new ConcurrentRowProcessor(rowProcessor));
         settings.setRowProcessor(rowProcessor);
         settings.setHeaderExtractionEnabled(true);
@@ -80,7 +84,8 @@ public class CSVImport implements IDataImport {
         settings.setEmptyValue("");
         //settings.setNullValue("");
         settings.setSkipEmptyLines(true);
-
+        
+        
         final CsvParser parser = new CsvParser(settings);
         FileReader reader = null;
         try {
@@ -105,8 +110,8 @@ public class CSVImport implements IDataImport {
             }
 
             /* System.out.println("Headers are " + sb.toString());*/
-            if (rowProcessor.getTotalNum() > 0) {
-                System.out.println("导入数据行数: " + rowProcessor.getTotalNum());
+            if (rowProcessor.getCurrentNum() > 0) {
+                System.out.println("导入数据行数: " + rowProcessor.getCurrentNum());
             }
             if (rowProcessor.getObsoleteLine() > 0) {
                 System.out.println(rowProcessor.getObsoleteLine() + "行不符合要求数据被丢弃！");
@@ -182,7 +187,7 @@ public class CSVImport implements IDataImport {
 
 	@Override
 	public void setPropertyListener(IPropertyListener listener) {
-		this.propertyListener = propertyListener;
+		this.propertyListener = listener;
 		
 	}
 
@@ -190,6 +195,32 @@ public class CSVImport implements IDataImport {
 	public IPropertyListener getPropertyListener() {
 		return propertyListener;
 	}
-	
+
+	private int getLineNumbers(final String fileName){
+		long start = System.currentTimeMillis();
+		int lines = 0;
+		File file = new File(fileName);
+		long fileLength = file.length();
+		LineNumberReader rf = null;
+		try{
+			rf = new LineNumberReader(new FileReader(file));
+			rf.skip(fileLength);
+			lines = rf.getLineNumber();
+		}catch(IOException e){
+			
+		}finally{
+			if(rf != null){
+				try {
+					rf.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		long end = System.currentTimeMillis() - start;
+		return lines;
+	}
 
 }
