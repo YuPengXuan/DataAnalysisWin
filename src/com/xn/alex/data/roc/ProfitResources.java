@@ -4,9 +4,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import com.xn.alex.data.common.CommonConfig.ROC_TYPE;
+import com.xn.alex.data.roc.ProfitGraph.CHART;
 
 public class ProfitResources {
-	
+		
 	public static String getTitle(ROC_TYPE rocType){
 		String title = null;
 		switch(rocType){
@@ -127,6 +128,34 @@ public class ProfitResources {
 	    }
 		
 		return labelb;
+	}
+	
+	public static String getChartTitle(CHART chartType){
+		String chartTitle = "";
+		
+		switch(chartType){
+		case F0_TO_PROFIT:
+			chartTitle = "命中率 - 利润值关系图";
+			break;
+		
+		case F0_TO_SUCCRATE:
+			chartTitle = "命中率 - 成功率关系图";
+			break;
+		
+		case SALEP_TO_PROFIT:
+			chartTitle = "营销人数 - 利润值关系图";
+			break;
+			
+		case SALTEP_TO_SUCCP:
+			chartTitle = "营销人数 - 预计成功人数关系图";
+			break;		
+			
+		default:
+			chartTitle = "";
+			break;			
+	    }
+		
+		return chartTitle;
 	}
 
 }

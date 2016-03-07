@@ -1,5 +1,7 @@
 package com.xn.alex.data.roc;
 
+import java.util.Vector;
+
 import com.xn.alex.data.resultobj.ProfitResultNode;
 import com.xn.alex.data.resultobj.treeNodeResultObj;
 import com.xn.alex.data.rule.GenerateTreeByLeaf;
@@ -19,6 +21,8 @@ public class ProfitCalculate extends ProfitModelInterface{
 	
 	private void calculateProfit(){
 		treeNodeResultObj rootNode = GenerateTreeByLeaf.getTreeNodeByLevelVec().get(0).get(0);
+		
+		Vector<treeNodeResultObj> treeLeafNodeVec = GenerateTreeByLeaf.getTreeLeafNodeVec();
 		
 		long totalBuy = rootNode.conditionMeet;
 		
@@ -41,52 +45,63 @@ public class ProfitCalculate extends ProfitModelInterface{
 				continue;
 			}
 			
-            incrSalP += obj.salePNum; 
-			
-			incrSuccP += obj.predSuccPNum;
-			
-			obj.F2 = (double)incrSuccP/(double)incrSalP; //F2
-			
-			if(obj.F0>=para_F0_1 && obj.F0<=para_F0_2 && obj.F1>= para_F1_1 && obj.F1<=para_F1_2 && succRate>=para_F2_1 && succRate<= para_F2_2){
-				double tmpP = getProfit(succRate, obj,totalNum);
-				
-				if(tmpP>maxP){
-					maxNodeNum = i;
-				}
-				obj.isShowToPGraph = true;
-			}
+			for (int j = 0; j < treeLeafNodeVec.size(); j++) {
+		          if (((treeNodeResultObj)treeLeafNodeVec.get(j)).nodeNumber == obj.nodeNum)
+		          {
+		        	 incrSalP += ((treeNodeResultObj)treeLeafNodeVec.get(j)).conditionMeet + ((treeNodeResultObj)treeLeafNodeVec.get(j)).conditionNotMeet;
+		        	 incrSuccP += ((treeNodeResultObj)treeLeafNodeVec.get(j)).conditionMeet;
+		        	 
+		        	 obj.showSaleNum = incrSalP;		
+		 			
+		 			obj.predSuccPNum = incrSuccP/10000 * (para_N / totalNum);
+		 			
+		 			obj.F2 = (double)incrSuccP/(double)incrSalP; //F2
+		 			
+		 			if(obj.F0>=para_F0_1 && obj.F0<=para_F0_2 && obj.F1>= para_F1_1 && obj.F1<=para_F1_2 && succRate>=para_F2_1 && succRate<= para_F2_2){
+		 				double tmpP = getProfit(succRate, obj,totalNum, treeLeafNodeVec.get(j));
+		 				
+		 				if(tmpP>maxP){
+		 					maxNodeNum = i;
+		 					maxP = tmpP;
+		 				}
+		 				obj.isShowToPGraph = true;
+		 			}
+		 			
+		 			break;		            
+		          }
+		        }
 									
 		}
 		
 	}
 	
-	private double getProfit(double alfa, ProfitResultNode obj, long totalNum){
+	private double getProfit(double alfa, ProfitResultNode obj, long totalNum, treeNodeResultObj treeObj){
 		double P = -999999999999D;
 		
 		switch(rocType){
 		case ROC_EXT:
 			P = (( para_N* alfa* obj.F0 *(para_V-para_c-para_d)) - (para_N* (1-alfa)* obj.F1* (para_b+para_d)))/10000;			
-		    obj.exportProfitVal = ((obj.predSuccPNum*(para_V-para_c-para_d)) - (obj.distPNum*(para_d+para_b)))*((double)para_N/(double)totalNum);
+		    obj.exportProfitVal = ((treeObj.conditionMeet*(para_V-para_c-para_d)) - (treeObj.conditionNotMeet*(para_d+para_b)))*((double)para_N/(double)totalNum);
 			break;
 
 		case ROC_SMS:
 			P = (( para_N* alfa* obj.F0 *(para_V-para_c-para_d)) - (para_N* (1-alfa)* obj.F1* (para_b+para_d)))/10000;
-			obj.exportProfitVal = ((obj.predSuccPNum*(para_V-para_c-para_d)) - (obj.distPNum*(para_d+para_b)))*((double)para_N/(double)totalNum);
+			obj.exportProfitVal = ((treeObj.conditionMeet*(para_V-para_c-para_d)) - (treeObj.conditionNotMeet*(para_d+para_b)))*((double)para_N/(double)totalNum);
 			break;
 		
 		case ROC_CUST:
 			P = (( para_N* alfa* obj.F0 *(para_¦Ã* para_V-para_¦Ã* para_c-para_d)) - (para_N* (1-alfa)* obj.F1* (para_d+para_c)))/10000;
-			obj.exportProfitVal = ((obj.predSuccPNum*(para_¦Ã* para_V-para_¦Ã* para_c-para_d)) - (obj.distPNum*(para_d+para_c)))*((double)para_N/(double)totalNum);
+			obj.exportProfitVal = ((treeObj.conditionMeet*(para_¦Ã* para_V-para_¦Ã* para_c-para_d)) - (treeObj.conditionNotMeet*(para_d+para_c)))*((double)para_N/(double)totalNum);
 			break;
 			
 		case ROC_APP:
 			P = (( para_N* alfa* obj.F0 *para_¦Ã* (para_V-para_c)) - (para_N* (1-alfa)* obj.F1* para_c))/10000;
-			obj.exportProfitVal = ((obj.predSuccPNum*para_¦Ã* (para_V-para_c)) - (obj.distPNum*para_c))*((double)para_N/(double)totalNum);
+			obj.exportProfitVal = ((treeObj.conditionMeet*para_¦Ã* (para_V-para_c)) - (treeObj.conditionNotMeet*para_c))*((double)para_N/(double)totalNum);
 			break;
 		
 		case ROC_WARN:
 			P = (( para_N* alfa* obj.F0 *(para_¦Ã* para_V-para_¦Ã* para_c-para_d)) - (para_N* (1-alfa)* obj.F1* (para_d+para_c)))/10000;
-			obj.exportProfitVal = ((obj.predSuccPNum*(para_¦Ã* para_V-para_¦Ã* para_c-para_d)) - (obj.distPNum*(para_d+para_c)))*((double)para_N/(double)totalNum);
+			obj.exportProfitVal = ((obj.predSuccPNum*(para_¦Ã* para_V-para_¦Ã* para_c-para_d)) - (treeObj.conditionNotMeet*(para_d+para_c)))*((double)para_N/(double)totalNum);
 			break;
 			
 		default:

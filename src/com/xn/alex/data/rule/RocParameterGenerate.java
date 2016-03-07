@@ -126,6 +126,8 @@ public class RocParameterGenerate {
 			cmpObj.exportF1 = (double)obj.conditionNotMeet /(double)rootNode.conditionNotMeet;
 			
 			cmpObj.exportF2 = (double)obj.conditionMeet / ((double)obj.conditionMeet + (double)obj.conditionNotMeet);
+			
+			cmpObj.condition = obj.condition;
 						
 			showVec.add(cmpObj);
 		}

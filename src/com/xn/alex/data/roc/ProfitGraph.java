@@ -53,7 +53,7 @@ public class ProfitGraph implements ActionListener{
 	
 	private JButton exportBt;
 	
-	private enum CHART{F0_TO_PROFIT, F0_TO_SUCCRATE, SALEP_TO_PROFIT,SALTEP_TO_SUCCP};
+	public enum CHART{F0_TO_PROFIT, F0_TO_SUCCRATE, SALEP_TO_PROFIT,SALTEP_TO_SUCCP};
 	
 	public ProfitGraph(Vector<ProfitResultNode> showVec,ROC_TYPE rocType, int maxProfitVecInd){
 		this.showVec = showVec;
@@ -107,19 +107,19 @@ public class ProfitGraph implements ActionListener{
 		
 		contentPane2.add(b);
 		
-		JLabel k = new JLabel(df.format(obj.profitVal)+"万");
+		JLabel k = new JLabel(df.format(obj.exportProfitVal)+"万");
 		
 		contentPane2.add(k);
 		
-		JLabel c = new JLabel("F0: "+df.format(obj.F0));
+		JLabel c = new JLabel("F0: "+df.format(obj.exportF0));
 		
 		contentPane2.add(c);
 		
-		JLabel d = new JLabel("F1: "+df.format(obj.F1));
+		JLabel d = new JLabel("F1: "+df.format(obj.exportF1));
 		
 		contentPane2.add(d);
 		
-		JLabel e = new JLabel("F2: "+df.format(obj.F2));
+		JLabel e = new JLabel("F2: "+df.format(obj.exportF2));
 		
 		contentPane2.add(e);
 		
@@ -186,7 +186,7 @@ public class ProfitGraph implements ActionListener{
 		CHART chartType = CHART.values()[i];
 		
 		// 创建JFreeChart对象：ChartFactory.createXYLineChart      
-        JFreeChart jfreechart = ChartFactory.createXYLineChart("营销人数 - 利润值关系图", // 标题      
+        JFreeChart jfreechart = ChartFactory.createXYLineChart(ProfitResources.getChartTitle(chartType), // 标题      
         		getXlabel(chartType), // categoryAxisLabel （category轴，横轴，X轴标签）      
         		getYlabel(chartType), // valueAxisLabel（value轴，纵轴，Y轴的标签）      
                 xyDataSet, // dataset      
@@ -204,7 +204,7 @@ public class ProfitGraph implements ActionListener{
         
         jfreechart.getLegend().setItemFont(new Font("宋体", Font.BOLD+Font.PLAIN, 12));
 		
-        jfreechart.setTitle(new TextTitle("ROC曲线图",new Font(getChartTitle(chartType),Font.BOLD+Font.ITALIC,20)));
+        jfreechart.setTitle(new TextTitle(ProfitResources.getChartTitle(chartType),new Font(getChartTitle(chartType),Font.BOLD+Font.ITALIC,20)));
 				
 		plot.setRangeGridlinePaint(Color.white);
 		
@@ -330,15 +330,18 @@ public class ProfitGraph implements ActionListener{
 			switch(chartType){
 		        case F0_TO_PROFIT:
 		    	    xyseries.add(obj.F0, obj.profitVal);
+		        	//xyseries.add(obj.F0, obj.exportProfitVal);
 			        break;
 		        case F0_TO_SUCCRATE:
 		    	    xyseries.add(obj.F0, obj.F2);;
 		    	    break;
 		        case SALEP_TO_PROFIT:
-		    	    xyseries.add(obj.salePNum/10000, obj.profitVal);;
+		    	    xyseries.add(obj.showSaleNum/10000, obj.profitVal);
+		        	//xyseries.add(obj.exportSalePNum/10000, obj.profitVal);
 		    	    break;
 		        case SALTEP_TO_SUCCP:
-		    	    xyseries.add(obj.salePNum/10000, obj.predSuccPNum/10000);;
+		    	    xyseries.add(obj.showSaleNum/10000, obj.predSuccPNum/10000);
+		        	//xyseries.add(obj.exportSalePNum/10000, obj.predSuccPNum/10000);
 		    	break;
 		    default:
 		    	return;
@@ -401,11 +404,15 @@ public class ProfitGraph implements ActionListener{
         Collections.sort(descVec, new ProfitObjOrderByDesc());
         
 		for(int i=0;i<descVec.size();i++){
+			
+			ProfitResultNode obj =  descVec.get(i);
+			if((obj.exportProfitVal/10000) < 0){
+				continue;
+			}
+			
 			fileContent.add("");
 			
 			fileContent.add("建议营销人群" + (i+1));
-			
-			ProfitResultNode obj =  descVec.get(i);
 			
 			fileContent.add("节点编号：" + (int)obj.nodeNum);
 			
