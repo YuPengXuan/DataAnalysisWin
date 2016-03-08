@@ -38,6 +38,8 @@ public class ProfitCalculate extends ProfitModelInterface{
 		
 		double incrSuccP = 0;
 		
+		double incrDistP = 0;
+		
 		for(int i=0;i<m_pResultVec.size();i++){
 			ProfitResultNode obj = m_pResultVec.get(i);
 												
@@ -50,10 +52,14 @@ public class ProfitCalculate extends ProfitModelInterface{
 		          {
 		        	 incrSalP += ((treeNodeResultObj)treeLeafNodeVec.get(j)).conditionMeet + ((treeNodeResultObj)treeLeafNodeVec.get(j)).conditionNotMeet;
 		        	 incrSuccP += ((treeNodeResultObj)treeLeafNodeVec.get(j)).conditionMeet;
+		        	 incrDistP += ((treeNodeResultObj)treeLeafNodeVec.get(j)).conditionNotMeet;
+		        	 
+		        	 obj.showDistNum = incrDistP;
 		        	 
 		        	 obj.showSaleNum = incrSalP;		
 		 			
-		 			obj.predSuccPNum = incrSuccP/10000 * (para_N / totalNum);
+		 			//obj.predSuccPNum = incrSuccP/10000 * (para_N / totalNum);
+		        	 obj.predSuccPNum = incrSuccP * (para_N / totalNum);
 		 			
 		 			obj.F2 = (double)incrSuccP/(double)incrSalP; //F2
 		 			

@@ -107,19 +107,19 @@ public class ProfitGraph implements ActionListener{
 		
 		contentPane2.add(b);
 		
-		JLabel k = new JLabel(df.format(obj.exportProfitVal)+"万");
+		JLabel k = new JLabel(df.format(obj.profitVal)+"万");
 		
 		contentPane2.add(k);
 		
-		JLabel c = new JLabel("F0: "+df.format(obj.exportF0));
+		JLabel c = new JLabel("F0: "+df.format(obj.F0));
 		
 		contentPane2.add(c);
 		
-		JLabel d = new JLabel("F1: "+df.format(obj.exportF1));
+		JLabel d = new JLabel("F1: "+df.format(obj.F1));
 		
 		contentPane2.add(d);
 		
-		JLabel e = new JLabel("F2: "+df.format(obj.exportF2));
+		JLabel e = new JLabel("F2: "+df.format(obj.F2));
 		
 		contentPane2.add(e);
 		
@@ -127,7 +127,7 @@ public class ProfitGraph implements ActionListener{
 		
 		contentPane2.add(f);
 		
-		JLabel l = new JLabel(df.format(obj.salePNum/10000)+"万");
+		JLabel l = new JLabel(df.format(obj.showSaleNum/10000)+"万");
 		
 		contentPane2.add(l);
 		
@@ -143,7 +143,7 @@ public class ProfitGraph implements ActionListener{
 		
 		contentPane2.add(i);
 		
-		JLabel j = new JLabel(df.format(obj.distPNum/10000)+"万");
+		JLabel j = new JLabel(df.format(obj.showDistNum/10000)+"万");
 		
 		contentPane2.add(j);
 		
@@ -442,11 +442,11 @@ public class ProfitGraph implements ActionListener{
             
             sucTotalPNum += obj.predSuccPNum;
             
-            fileContent.add("人群总利润：" + (double)obj.exportProfitVal/(double)10000);
+            fileContent.add("人群总利润：" + df.format((double)obj.exportProfitVal/(double)10000));
             
-            totalProfit += obj.profitVal;
+            totalProfit += obj.exportProfitVal;
             
-            fileContent.add("单次营销利润：" + ((double)obj.profitVal/((double)obj.salePNum/(double)10000)));
+            fileContent.add("单次营销利润：" + df.format((double)obj.exportProfitVal/(double)obj.salePNum/(double)10000));
 			 				 						
 		}
 		
@@ -466,9 +466,9 @@ public class ProfitGraph implements ActionListener{
        
        fileContent.add("成功率：" + df.format(totalF2));
        
-       fileContent.add("人群总利润：" + (double)totalProfit/(double)10000);
+       fileContent.add("人群总利润：" + df.format((double)totalProfit/(double)10000));
        
-       fileContent.add("单次营销利润：" + ((double)totalProfit/(double)totalSalePNum));
+       fileContent.add("单次营销利润：" + df.format((double)totalProfit/(double)totalSalePNum/10000));
 					
 		return fileContent;
 		

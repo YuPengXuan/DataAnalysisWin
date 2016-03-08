@@ -24,11 +24,15 @@ public class ProfitResultNode implements Comparator<Object>{
 	
 	public double salePNum;   //sale people total num
 	
+	public double showSaleNum; //show saleNum in sheet
+	
 	public double profitVal;  // profit value
 	
 	public double predSuccPNum; // prediction Successful sale people num
 	
 	public double distPNum;     // disturb people num
+	
+	public double showDistNum;  // show distNum in sheet;
 	
 	public double peopleRatio;  // node people / total nodes people
 	
