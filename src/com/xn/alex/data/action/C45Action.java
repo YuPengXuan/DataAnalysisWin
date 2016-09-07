@@ -18,6 +18,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
+import com.xn.alex.data.c45.DecisionTree;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.window.MainWindow;
@@ -251,9 +253,12 @@ public class C45Action extends WindowAction{
 					JOptionPane.showMessageDialog(null,"自变量选择非法,可能性取值不等于2,请重新选择自变量","错误信息",JOptionPane.ERROR_MESSAGE);
 					return;
 					
-				}				
+				}
 				
 				frame.dispose();
+				
+				DecisionTree dtTree = new DecisionTree();
+				dtTree.createDecisionTree(argumentString, treeWidth, treeDeepth);
 			}
 			 
 		 });

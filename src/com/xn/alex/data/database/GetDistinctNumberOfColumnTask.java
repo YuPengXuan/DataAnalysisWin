@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
-public class getDistinctNumberOfColumnTask implements SqlTask {
+public class GetDistinctNumberOfColumnTask implements SqlTask {
 	
 	private Map<String, Integer> resultMap = null;
 	
