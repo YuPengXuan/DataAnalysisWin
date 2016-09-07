@@ -48,7 +48,7 @@ public class AboutDialog extends JDialog {
         String verStr = "<html><table>"
                 + "<tr><td><b>" + strName + "</b></td></tr>"
                 + "<tr><td>Version: " + strVersion+"</td></tr>" 
-                + "<tr><td>(c) Ericsson AB, Sweden. All rights reserved.</td></tr>"
+                + "<tr><td>(c) AlexSoft Copywrite, Sweden. All rights reserved.</td></tr>"
                 + "<tr><td>移动数据可视化分析系统.</td></tr>"
                 + "</table></html>";
         lblVersion.setText(verStr);

@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -878,11 +876,15 @@ public class DatabaseAction {
 				return null;
 			}
 			
-			StringBuffer sb = new StringBuffer("SELECT * FROM " + tableName + " LIMIT 2000 ORDER BY " + orderCol);
+			StringBuffer sb = new StringBuffer("SELECT * FROM " + tableName + " ORDER BY " + orderCol);
 			
 			if(!isAsc){
-				sb.append(" DESC");
+				sb.append(" DESC LIMIT 2000");
 			}
+			else{
+				sb.append(" ASC LIMIT 2000");
+			}
+				
 			
 			String sql = sb.toString();
 			
@@ -905,5 +907,42 @@ public class DatabaseAction {
 		return rs;  		
 		
 	}
+    
+    public int getDistinctCountFromColumn(String columnName, String tableName){
+    	int result = 0;
+    	try{
+    		if(false == connect()){
+				return result;
+			}
+    		
+    		String sql = "select count(distinct " +  columnName + ") from " + tableName;
+    		
+    		PreparedStatement ps = con.prepareStatement(sql);
+    		
+    		currentPs = ps;
+    		
+    		ResultSet rs = ps.executeQuery();
+    		
+            if(rs.next()){
+	            
+		        String resultStr = rs.getString(1);
+		    
+		        result = Integer.parseInt(resultStr); 		    
+		    }
+    		
+    		if(false == disconnect()){
+		    	return 0;
+		    }
+    		
+    	}
+    	catch(Exception e){
+    		closeCurrentConnection();
+    		
+    		System.out.println("获取列数据种类数目失败!");
+    	}
+    	  	
+    	
+    	return result;
+    }
 
 }

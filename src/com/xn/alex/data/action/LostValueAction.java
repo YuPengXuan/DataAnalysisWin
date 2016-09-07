@@ -1,6 +1,5 @@
 package com.xn.alex.data.action;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;

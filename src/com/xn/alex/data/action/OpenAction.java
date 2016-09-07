@@ -8,7 +8,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -21,7 +20,6 @@ import com.xn.alex.data.database.DatabaseAction;
 import com.xn.alex.data.datimport.AbstractImporter;
 import com.xn.alex.data.datimport.DataExport;
 import com.xn.alex.data.process.MenuItemEnable;
-import com.xn.alex.data.ui.ProgressBar;
 import com.xn.alex.data.window.MainWindow;
 import com.xn.alex.data.window.UpdateObject;
 

@@ -3,9 +3,7 @@ package com.xn.alex.data.database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import com.xn.alex.data.common.ConfigParser.DataColumnInfo;
@@ -235,7 +233,6 @@ public class DatabaseSpecialAction {
 	   return true;
 	   
    }
-
 	   
 }
 

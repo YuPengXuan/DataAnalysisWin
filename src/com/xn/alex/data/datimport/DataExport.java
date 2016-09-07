@@ -23,6 +23,16 @@ public class DataExport {
 	
 	private JTable m_jtable = null;
 	
+	private ResultSet m_rs = null;
+	
+	public ResultSet getM_rs() {
+		return m_rs;
+	}
+
+	public void setM_rs(ResultSet m_rs) {
+		this.m_rs = m_rs;
+	}
+
 	public DataExport(String fullFileName, JTable table){
 		
 		m_fullFileName = fullFileName;
@@ -42,16 +52,22 @@ public class DataExport {
 		    
 		    String orderCol = OrderAction.Instance().getOrderCol();
 		    
-            if(orderCol == null || "".equals(orderCol)){
-		    	
-            	rs = DatabaseAction.Instance().getAllResult(tableName);
-		    	
-		    }else{
-		    	
-                boolean isAsc = OrderAction.Instance().isAsc();
-		    	
-		    	rs = DatabaseAction.Instance().getOrderResult(tableName, orderCol, isAsc);
+		    if(null == m_rs){
 		    
+                if(orderCol == null || "".equals(orderCol)){
+		    	
+            	    rs = DatabaseAction.Instance().getAllResult(tableName);
+		    	
+		        }else{
+		    	
+                    boolean isAsc = OrderAction.Instance().isAsc();
+		    	
+		    	    rs = DatabaseAction.Instance().getOrderResult(tableName, orderCol, isAsc);
+		    
+		        }
+		    }
+		    else{
+		    	rs = m_rs;
 		    }
 		    
 		    ResultSetMetaData data = rs.getMetaData();
@@ -178,5 +194,6 @@ public class DataExport {
 		}
 		
 	}
+	
 
 }
