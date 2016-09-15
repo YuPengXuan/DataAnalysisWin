@@ -5,6 +5,7 @@
  */
 package com.xn.alex.data.threadpool;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -24,7 +25,7 @@ public class PriorityThreadPoolExecutor extends ThreadPoolExecutor {
      *
      * @param <V>
      */
-    private static class ComparableFutureTask<V> extends FutureTask<V> implements Comparable<ComparableFutureTask<V>> {
+    private static class ComparableFutureTask<V> extends FutureTask<V> {
 
         final Object object;
 
@@ -37,25 +38,6 @@ public class PriorityThreadPoolExecutor extends ThreadPoolExecutor {
             super(runnable, result);
             object = runnable;
         }
-
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        public int compareTo(final ComparableFutureTask<V> o) {
-            if (o == null) {
-                return -1;
-            }
-            if (o == this) {
-                return 0;
-            }
-
-            // DON't check object == null or o.object == null due to 
-            // it will get NullException in constructor
-            if (object.getClass().equals(o.object.getClass())) {
-                if (object instanceof Comparable) {
-                    return ((Comparable) object).compareTo(o.object);
-                }
-            }
-            return object.getClass().toString().compareTo(o.object.getClass().toString());
-        }
     }
 
     /**
@@ -67,7 +49,7 @@ public class PriorityThreadPoolExecutor extends ThreadPoolExecutor {
      * @param workQueue
      */
     public PriorityThreadPoolExecutor(final int corePoolSize, final int maximumPoolSize, final long keepAliveTime,
-            final TimeUnit unit, final PriorityBlockingQueue<Runnable> workQueue) {
+            final TimeUnit unit, final BlockingQueue<Runnable> workQueue) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
     }
 

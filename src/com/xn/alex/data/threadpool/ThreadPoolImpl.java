@@ -1,7 +1,9 @@
 package com.xn.alex.data.threadpool;
 
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +17,7 @@ public class ThreadPoolImpl implements IThreadPool {
 
     private static final int SIZE_DEF = Runtime.getRuntime().availableProcessors();
 
-    private final PriorityBlockingQueue<Runnable> queue = new PriorityBlockingQueue<Runnable>();
+    private final BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
 
     private final PriorityThreadPoolExecutor executor;
 
@@ -44,7 +46,7 @@ public class ThreadPoolImpl implements IThreadPool {
         if (worker == null) {
             System.out.println("Task is null");
         } else {
-        	System.out.println("Submit worker is " + worker);
+        	//System.out.println("Submit worker is " + worker);
             if (worker instanceof AbstractWorker) {
                 ((AbstractWorker) worker).setTimeInQueue((new Date()).getTime());
             }
@@ -57,7 +59,7 @@ public class ThreadPoolImpl implements IThreadPool {
         	System.out.println("Task is null");
             return null;
         }
-        System.out.println("Submit worker is " + worker);
+        //System.out.println("Submit worker is " + worker);
         if (worker instanceof AbstractWorker) {
             ((AbstractWorker) worker).setTimeInQueue((new Date()).getTime());
         }

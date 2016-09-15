@@ -36,6 +36,10 @@ public class DatabaseAction {
 		return databaseHandler;		
 	}
 	
+	public Connection getCon() {
+		return con;
+	}
+	
 	public boolean connect(){
 		
 		try{

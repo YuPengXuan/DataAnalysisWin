@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DataRecord> 
+  <column name="客户编号" defValue="0" valueType="VARCHAR(30)" databaseName="customerID"/>  
+  <column name="年龄" defValue="99" valueType="INT" databaseName="customerAge"/>  
+  <column name="套餐品牌" defValue="全球通" valueType="VARCHAR(30)" databaseName="tariffPackage"/>  
+  <column name="信用等级" defValue="五星级钻" valueType="VARCHAR(50)" databaseName="creditRating"/>  
+  <column name="是否使用4GUSIM卡" defValue="是" valueType="VARCHAR(10)" databaseName="is4GUsim"/>  
+  <column name="是否4G资费" defValue="是" valueType="VARCHAR(10)" databaseName="is4Tariff"/>  
+  <column name="网龄" defValue="0" valueType="INT" databaseName="netAge"/>  
+  <column name="当月ARPU" defValue="0.0" valueType="FLOAT" databaseName="currentARPU"/>  
+  <column name="当月MOU" defValue="0" valueType="FLOAT" databaseName="currentMOU"/>  
+  <column name="当月停机天数" defValue="0.0" valueType="FLOAT" databaseName="shutDownDays"/>  
+  <column name="当月停机次数" defValue="0" valueType="LONG" databaseName="shutDownTimes"/>  
+  <column name="当月DOU" defValue="0" valueType="BIGINT" databaseName="currentDOU"/>  
+  <column name="随意玩编号" defValue="0" valueType="BIGINT" databaseName="freePlayNo"/>  
+  <column name="终端制式" defValue="GSM" valueType="VARCHAR(30)" databaseName="ueMode"/>  
+  <column name="终端机型" defValue="GSM" valueType="VARCHAR(30)" databaseName="ueType"/>  
+  <column name="是否智能机" defValue="Y" valueType="VARCHAR(10)" databaseName="isSmartUe"/>  
+  <column name="终端使用时间（月）" defValue="0" valueType="INT" databaseName="usedMonth"/>  
+  <column name="终端屏幕大小" defValue="0.0" valueType="VARCHAR(20)" databaseName="ueScreenSize"/>  
+  <column name="当月省内漫游时长" defValue="0" valueType="INT" databaseName="intraRoamingTime"/>  
+  <column name="当月省际漫游时长" defValue="0" valueType="INT" databaseName="interRoamingTime"/>  
+  <column name="外呼营销4G终端是否成功" defValue="是" valueType="VARCHAR(10)" databaseName="is4GExtSaleSuc"/>  
+  <column name="是否为策反客户" defValue="0" valueType="INT" databaseName="customerChan"/>  
+  <column name="入网时间" defValue="20160107" valueType="VARCHAR(30)" databaseName="netDate"/>  
+  <column name="当月基础语音资费套餐名称编码" defValue="0" valueType="VARCHAR(30)" databaseName="currentCallNum"/>  
+  <column name="当月流量套餐名称编码" defValue="0" valueType="VARCHAR(30)" databaseName="currentDataNum"/>  
+  <column name="当月是否有订购安心包" defValue="0" valueType="INT" databaseName="currentAnxinBag"/>  
+  <column name="当月是否订制放心用业务" defValue="0" valueType="INT" databaseName="currentFangBag"/>  
+  <column name="付费方式" defValue="0" valueType="BIGINT" databaseName="currentPayType"/>  
+  <column name="常驻小区类型编码" defValue="0" valueType="BIGINT" databaseName="cellNum"/>  
+  <column name="是否学校小区" defValue="0" valueType="INT" databaseName="isSchoolCell"/>  
+  <column name="是否为敏感客户" defValue="0" valueType="INT" databaseName="isSensCustomer"/>  
+  <column name="向前三月消费总额（元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="threeARPU"/>  
+  <column name="向前两月消费总额 （元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="twoARPU"/>  
+  <column name="前一月消费总额 （元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="oneARPU"/>  
+  <column name="向前三月超流量套餐费用 （元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="threeOverDataFee"/>  
+  <column name="向前两月超流量套餐费用 （元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="twoOverDataFee"/>  
+  <column name="前一月超流量套餐费用 （元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="oneOverDataFee"/>  
+  <column name="向前三月流量费用总额 （元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="threeDOU"/>  
+  <column name="向前两月流量费用总额 （元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="twoDOU"/>  
+  <column name="前一月流量费用总额 （元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="oneDOU"/>  
+  <column name="向前三月免费流量资源总量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="threeFreeData"/>  
+  <column name="向前两月免费流量资源总量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="twoFreeData"/>  
+  <column name="前一月免费流量资源总量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="oneFreeData"/>  
+  <column name="向前三月实际产生流量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="threeRealData"/>  
+  <column name="向前两月实际产生流量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="twoRealData"/>  
+  <column name="前一月实际产生流量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="oneRealData"/>  
+  <column name="向前三月超流量数量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="threeOverData"/>  
+  <column name="向前两月超套餐流量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="twoOverData"/>  
+  <column name="前一月超流量数量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="oneOverData"/>  
+  <column name="当月2G流量" defValue="0" valueType="VARCHAR(30)" databaseName="current2GData"/>  
+  <column name="当月3G流量" defValue="0" valueType="VARCHAR(30)" databaseName="current3GData"/>  
+  <column name="当月4G流量" defValue="0" valueType="VARCHAR(30)" databaseName="current4GData"/>  
+  <column name="当月上行流量" defValue="0" valueType="VARCHAR(30)" databaseName="currentUpData"/>  
+  <column name="当月下行流量" defValue="0" valueType="VARCHAR(30)" databaseName="currentDownData"/>  
+  <column name="当月实际产生流量" defValue="0" valueType="VARCHAR(30)" databaseName="currentRealData"/>  
+  <column name="当月免费流量资源总量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="currentFreeData"/>  
+  <column name="当月超流量数量（KB）" defValue="0" valueType="VARCHAR(30)" databaseName="currentOverData"/>  
+  <column name="常用业务大类1编码" defValue="1" valueType="INT" databaseName="service1Num"/>  
+  <column name="常用业务大类2编码" defValue="1" valueType="INT" databaseName="service2Num"/>  
+  <column name="常用业务大类3编码 " defValue="1" valueType="INT" databaseName="service3Num"/>  
+  <column name="常用APP1编码" defValue="1" valueType="INT" databaseName="APP1Num"/>  
+  <column name="常用APP2编码" defValue="1" valueType="INT" databaseName="APP2Num"/>  
+  <column name="常用APP3编码" defValue="1" valueType="INT" databaseName="APP3Num"/>  
+  <column name="手机型号编码" defValue="1" valueType="VARCHAR(30)" databaseName="ueType"/>  
+  <column name="手机品牌" defValue="1" valueType="VARCHAR(30)" databaseName="ueBrand"/>  
+  <column name="主屏尺寸" defValue="0.0" valueType="VARCHAR(20)" databaseName="ueScreenSize"/>  
+  <column name="操作系统软件版本编码" defValue="1" valueType="VARCHAR(10)" databaseName="conductVersion"/>  
+  <column name="近三个月拨打10086查询话费次数" defValue="0" valueType="INT" databaseName="three10086forMOU"/>  
+  <column name="近三个月短信查询话费次数" defValue="0" valueType="INT" databaseName="threeMessforMOU"/>  
+  <column name="近1年是否有投诉话费问题" defValue="0" valueType="INT" databaseName="isoneComMOU"/>  
+  <column name="近1年是否有投诉GPRS费用问题" defValue="0" valueType="INT" databaseName="isoneComGPRS"/>  
+  <column name="近三个月拨打10086热线人工记录次数" defValue="0" valueType="INT" databaseName="threeDia10086Num"/>  
+  <column name="热线评价是否满意" defValue="0" valueType="INT" databaseName="isSatisfied"/>  
+  <column name="近三个月热线通话平均时长（秒）" defValue="0" valueType="VARCHAR(20)" databaseName="three10086Time"/>  
+  <column name="当月是否有投诉" defValue="0" valueType="INT" databaseName="isComplain"/>  
+  <column name="投诉时间" defValue="0" valueType="VARCHAR(100)" databaseName="complainDate"/>  
+  <column name="是否投诉实时话费" defValue="0" valueType="INT" databaseName="isComplainMOU"/>  
+  <column name="是否投诉流量费用" defValue="0" valueType="INT" databaseName="isComplainGPRS"/>  
+  <column name="投诉时手机是否开通手机上网功能" defValue="0" valueType="INT" databaseName="isNetOpen"/>  
+  <column name="投诉时手机是否开通gprs功能" defValue="0" valueType="INT" databaseName="isGPRSOpen"/>  
+  <column name="近一年是否有投诉退费" defValue="0" valueType="INT" databaseName="isRepay"/>  
+  <column name="近一年投诉退费金额（元）" defValue="0.00" valueType="VARCHAR(30)" databaseName="oneYearRepayFee"/>  
+  <column name="当月欠费停机次数（次）" defValue="0" valueType="INT" databaseName="currentOweNum"/>  
+  <column name="投诉时手机是否属于停机" defValue="0" valueType="INT" databaseName="isShutUp"/>  
+  <column name="近三个月是否有投诉流量提醒延时服务" defValue="0" valueType="INT" databaseName="isComforDelay"/>  
+  <column name="近三个月月均投诉次数" defValue="0.00" valueType="VARCHAR(30)" databaseName="threeMonthAvgComNum"/>  
+  <column name="投诉当月缴费总额（元）" defValue="0.00" valueType="VARCHAR(20)" databaseName="currentPayFee"/>  
+  <column name="投诉当月缴费次数" defValue="0" valueType="INT" databaseName="isPayNum"/>  
+  <column name="当月客户网厅登录的次数" defValue="0" valueType="INT" databaseName="currentNetNum"/>  
+  <column name="当月客户使用短厅的次数" defValue="0" valueType="INT" databaseName="currentMessNum"/>  
+  <column name="当月拨打10086的次数" defValue="0" valueType="INT" databaseName="current10086Num"/>  
+  <column name="当月客户登录APP的次数" defValue="0" valueType="INT" databaseName="currentAPPNum"/>  
+  <column databaseName="genColumn_1" defValue="0" name="客户星级" valueType="VARCHAR(100)"/>
+  <column databaseName="genColumn_2" defValue="0" name="常用业务大类3编码" valueType="VARCHAR(100)"/>
+</DataRecord>
