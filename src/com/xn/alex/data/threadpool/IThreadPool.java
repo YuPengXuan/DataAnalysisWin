@@ -1,8 +1,3 @@
-/**
- * -----------------------------------------------------------------------
- *     Copyright (C) 2012 Ericsson.  All rights reserved.
- * -----------------------------------------------------------------------
- */
 package com.xn.alex.data.threadpool;
 
 import java.util.concurrent.Future;
@@ -14,6 +9,8 @@ import com.xn.alex.data.worker.IWorker;
 public interface IThreadPool {
 
     void submitTask(IWorker worker);
+    
+    void submitTask(final Runnable task);
 
     Future<Runnable> submitTaskWithFuture(final IWorker worker);
 

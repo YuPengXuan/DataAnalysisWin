@@ -53,6 +53,10 @@ public class ThreadPoolImpl implements IThreadPool {
             executor.execute(worker);
         }
     }
+    
+    public void submitTask(final Runnable task){
+    	executor.execute(task);
+    }
 
     public Future<Runnable> submitTaskWithFuture(final IWorker worker) {
         if (worker == null) {

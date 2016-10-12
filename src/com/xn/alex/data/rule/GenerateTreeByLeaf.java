@@ -3,7 +3,9 @@ package com.xn.alex.data.rule;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +59,14 @@ public class GenerateTreeByLeaf {
 		    deduceOtherNode(m_treeNodeByLevelVec, i);		
 		}
         
+        resultTree =  m_treeNodeByLevelVec.get(0).get(0);
+        
+        return true;
+		
+	}
+	
+	public boolean generateTree(){
+		
         resultTree =  m_treeNodeByLevelVec.get(0).get(0);
         
         return true;

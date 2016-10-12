@@ -4,17 +4,20 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
 
 public class GetNumberByConditionTask implements SqlTask {
 	
-	private Map<String, Integer> resultMap = null;
-		
+	private int result = 0;
+			
 	private String columnName = null;
 	
 	private String tableName = null;
 	
 	private String condition = null;
+	
+	public int getResult() {
+		return result;
+	}
 	
 	public String getTableName() {
 		return tableName;
@@ -41,17 +44,12 @@ public class GetNumberByConditionTask implements SqlTask {
 		this.condition = condition;
 	}
 	
-	public void setResultMap(Map<String, Integer> resultMap) {
-		this.resultMap = resultMap;
-	}
-
 	@Override
 	public Statement run(Connection connection) throws SQLException {
 		// TODO Auto-generated method stub
-		int result = 0;
 		Statement statement = connection.createStatement();
 		try{
-			String sql = "select " + getColumnName() +" from " + getTableName() + " " + getCondition();
+			String sql = "select count(*) from " + getTableName() + " " + getCondition();
 			ResultSet rs = statement.executeQuery(sql);
 			
 			if(rs.next()){
@@ -59,9 +57,8 @@ public class GetNumberByConditionTask implements SqlTask {
 		        String resultStr = rs.getString(1);
 		    
 		        result = Integer.parseInt(resultStr); 		    
-		    }
+		    }			
 			
-			resultMap.put(columnName, result);
 		}
 		catch(Exception e){
 			e.printStackTrace();
