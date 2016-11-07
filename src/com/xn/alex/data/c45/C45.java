@@ -16,8 +16,15 @@ public class C45 {
 		double infoD = 0;
 		
 		for(int i=0;i<partCountList.size();i++){
-			int partCount = partCountList.get(i);			
-			double tmpVal = -1 * ((double)partCount/(double)totalCount) * logYBase2((double)partCount/(double)totalCount);			
+			int partCount = partCountList.get(i);
+			
+			if(partCount == totalCount){
+			    break;	
+			}
+			double tmpVal = 0;
+			if(partCount != 0){
+			   tmpVal = -1 * ((double)partCount/(double)totalCount) * logYBase2((double)partCount/(double)totalCount);
+			}
 			infoD +=tmpVal;
 		}
 		
@@ -43,9 +50,13 @@ public class C45 {
 				return 0;
 			}
 			
+			if(PartVal == 0){
+				continue;
+			}
+			
 			double infoD = infoD(PartVal, subPartValList);
 			
-			infoAD += (PartVal/totalCount)*infoD;			
+			infoAD += ((double)PartVal/(double)totalCount)*infoD;			
 		}				
 		return infoAD;
 	}

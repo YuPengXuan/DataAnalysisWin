@@ -1,5 +1,6 @@
 package com.xn.alex.data.c45;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,7 +34,22 @@ public class CalculateGainRatioThread implements Runnable{
 	
 	private Map<String, Double> gainRatioMap = null;
 	
+	private Map<String, Integer> partCountMap = new ConcurrentHashMap<String, Integer>();
 	
+	private Map<String, List<String>> argumentResultUnderCondMap;
+	
+	public Map<String, List<String>> getArgumentResultUnderCondMap() {
+		return argumentResultUnderCondMap;
+	}
+
+	public void setArgumentResultUnderCondMap(
+			Map<String, List<String>> argumentResultUnderCondMap) {
+		this.argumentResultUnderCondMap = argumentResultUnderCondMap;
+	}
+
+	public Map<String, Integer> getArgumentResulMap() {
+		return argumentResulMap;
+	}
 	
 	public Map<String, Double> getGainRatioMap() {
 		return gainRatioMap;
@@ -82,21 +98,68 @@ public class CalculateGainRatioThread implements Runnable{
 	public void setRangeValueMap(Map<String, List<String>> rangeValueMap) {
 		this.rangeValueMap = rangeValueMap;
 	}
+	
+	private boolean isDoubleZero(double val){
+		BigDecimal decVal = new BigDecimal(val);
+		
+		if(decVal.compareTo(new BigDecimal(0)) == 0){
+			return false;
+		}
+		
+		return false;
+	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-					
+		long milsecond = System.currentTimeMillis();			
 		double infoD = calCulateArgumentInfoD();
+		
+		if(true == isDoubleZero(infoD)){
+			gainRatioMap.put(databaseColName, (double)0);
+			return;
+		}
 		
 		double infoAD = calCulateColumnInfoAD();
 		
+		if(true == isDoubleZero(infoAD)){
+			gainRatioMap.put(databaseColName, (double)0);
+			return;
+		}
+		
 		double gain = infoD - infoAD;
 		
-		double gainRatio = c45Handler.gainRatio(gain, infoAD);
+		double hv = calculateHV(); 
+		
+		double gainRatio = 0;
+		
+		if(hv > +0.0000001){
+		  gainRatio = c45Handler.gainRatio(gain, hv);
+		}
 		
 		gainRatioMap.put(databaseColName, gainRatio);
 		
+		milsecond = (System.currentTimeMillis() - milsecond)/1000 ;
+		System.out.println("CalculateGainRatioThread tid:"+ Thread.currentThread() + " run time:" + milsecond);
+		
+	}	
+	
+	private double calculateHV(){
+		double hv = 0;
+		List<Integer> partValList = new CopyOnWriteArrayList<Integer>();
+		for(Map.Entry<String, Integer> entry : partCountMap.entrySet()){
+			int value = entry.getValue();
+			if(value == 0){
+				continue;
+			}
+			partValList.add(value);
+		}
+		
+		if(partValList.size() != 0){
+			hv = c45Handler.infoD(argumentTotalCount, partValList);
+		}
+		
+		return hv;
 	}
 	
 	private double calCulateColumnInfoAD(){
@@ -109,10 +172,6 @@ public class CalculateGainRatioThread implements Runnable{
 		task.setTableName(tableName);
 		
 		task.setColumnName(databaseColName);
-	
-		StringBuffer subConditionBuf = new StringBuffer("");
-		
-		subConditionBuf.append(condition);
 		
 		List<String> rangeValueMapList = rangeValueMap.get(databaseColName);
 		
@@ -128,16 +187,26 @@ public class CalculateGainRatioThread implements Runnable{
 			}
 		}
 		
-		Map<String, Integer> partCountMap = new ConcurrentHashMap<String, Integer>();
-		
 		Map<String, List<Integer>> subPartNumMap = new ConcurrentHashMap<String, List<Integer>>();
+		
+        StringBuffer subConditionBuf = new StringBuffer("");
 				
 		for(int i=0;i<rangeValueMapList.size();i++){
-			String tmpVal = rangeValueMapList.get(i);
+			subConditionBuf.setLength(0);
 			
-			if(false == isRangeCondition){
-				subConditionBuf.append(" and ");
-				subConditionBuf.append(databaseColName);				
+			subConditionBuf.append(condition);
+			
+			String tmpVal = rangeValueMapList.get(i);
+			if("".equals(subConditionBuf.toString())){
+				subConditionBuf.append("where ");
+			}
+			else{
+			    subConditionBuf.append(" and ");
+			}
+			
+			subConditionBuf.append(databaseColName);
+			
+			if(false == isRangeCondition){				
 				subConditionBuf.append("=");
                 if(false == isNumeric){
                 	subConditionBuf.append("'");
@@ -151,9 +220,7 @@ public class CalculateGainRatioThread implements Runnable{
 				if(i == rangeValueMapList.size() -1){
 					break;
 				}
-				String tmpVal_2 = rangeValueMapList.get(i+1);
-				subConditionBuf.append(" and ");
-				subConditionBuf.append(databaseColName);
+				String tmpVal_2 = rangeValueMapList.get(i+1);				
 				subConditionBuf.append(">=");
 				subConditionBuf.append(tmpVal);
 				subConditionBuf.append(" and ");
@@ -174,7 +241,7 @@ public class CalculateGainRatioThread implements Runnable{
 				
 				int result = task.getResult();
 				
-				partCountMap.put(databaseColName, result);
+				partCountMap.put(subConditionBuf.toString(), result);
 				
 				List<Integer> subValList = getArgumentNumUnderCondition(subConditionBuf.toString(), task);
 				
@@ -182,7 +249,7 @@ public class CalculateGainRatioThread implements Runnable{
 					return 0;
 				}
 				
-				subPartNumMap.put(databaseColName, subValList);
+				subPartNumMap.put(subConditionBuf.toString(), subValList);
 				
 			} catch (DataAnalysisException e) {
 				// TODO Auto-generated catch block
@@ -211,13 +278,13 @@ public class CalculateGainRatioThread implements Runnable{
 			isNumeric = true;
 		}
 								
-		StringBuffer sb = new StringBuffer("");
+		StringBuffer sb = new StringBuffer(condition);
 		
 		if("".equals(condition)){
 			sb.append("where ");
 		}
 		else{
-			sb.append("and ");
+			sb.append(" and ");
 		}
 		sb.append(argumentName);
 		sb.append("=");
@@ -287,6 +354,8 @@ public class CalculateGainRatioThread implements Runnable{
 		subConditionBuf.append(argumentName);				
 		subConditionBuf.append("=");		
 		
+		int tmpMaxArgumentResult = 0;
+		String tmpMaxArgumentName = "";
 		for(int i=0;i<rangeValueMapList.size();i++){
 			String tmpVal = rangeValueMapList.get(i);
 			
@@ -307,6 +376,11 @@ public class CalculateGainRatioThread implements Runnable{
 				
 				int result = task.getResult();
 				
+				if(result>tmpMaxArgumentResult){
+					tmpMaxArgumentResult = result;
+					tmpMaxArgumentName = tmpVal;
+				}
+				
 				argumentTotalCount += result;
 				
 				argumentValueList.add(result);
@@ -320,6 +394,12 @@ public class CalculateGainRatioThread implements Runnable{
 			}						
 						
 		}
+		
+		List<String> tmpList = new CopyOnWriteArrayList<String>();
+		double prb_001 = (double)tmpMaxArgumentResult/(double)argumentTotalCount;
+		tmpList.add(tmpMaxArgumentName);
+		tmpList.add(String.valueOf(prb_001));
+		argumentResultUnderCondMap.put(databaseColName, tmpList);
 		
 		double infoD = c45Handler.infoD(argumentTotalCount, argumentValueList);
 		

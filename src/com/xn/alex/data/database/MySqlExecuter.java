@@ -26,9 +26,9 @@ public class MySqlExecuter {
 	    	  mySqlExecuter = new MySqlExecuter();
 	    	  mysqlDataSource = new BasicDataSource();
 	    	  mysqlDataSource.setUrl(DatabaseConstant.URL);
-	    	  mysqlDataSource.setMaxTotal(2);
-	    	  mysqlDataSource.setMaxIdle(1);
-	    	  mysqlDataSource.setInitialSize(1);
+	    	  mysqlDataSource.setMaxTotal(100);
+	    	  mysqlDataSource.setMaxIdle(30);
+	    	  mysqlDataSource.setInitialSize(30);
 	    	  mysqlDataSource.setDefaultAutoCommit(false);
 	    	  Collection<String> initSqls = new ArrayList<String>();
 	    	  Collections.addAll(initSqls, "CREATE DATABASE IF NOT EXISTS " + DatabaseConstant.DB_NAME);
