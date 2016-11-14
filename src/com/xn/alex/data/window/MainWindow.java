@@ -84,7 +84,12 @@ public class MainWindow extends JFrame implements ActionListener{
     private JMenuItem mntmClusterAnalyze;    
 	private JMenu mnClassAnalyze;
     private JMenuItem mntmKaFang;
-    private JMenuItem mntmC4_45;
+    private JMenu mnC4_45;
+	private JMenuItem mnC45_exCall;
+    private JMenuItem mnC45_sms;
+    private JMenuItem mnC45_custKeep;
+    private JMenuItem mnC45_appCustKeep;
+    private JMenuItem mnC45_custWarn;
     private JMenuItem mntmZAPTree;
     private JMenuItem mntmRegAnylyze;    
 	private JMenuItem mntmAssocAnalyze;
@@ -312,8 +317,8 @@ public class MainWindow extends JFrame implements ActionListener{
 		return mntmKaFang;
 	}
 
-	public JMenuItem getMntmC4_45() {
-		return mntmC4_45;
+	public JMenuItem getMnC4_45() {
+		return mnC4_45;
 	}
 
 	public JMenuItem getMntmZAPTree() {
@@ -366,6 +371,26 @@ public class MainWindow extends JFrame implements ActionListener{
 
 	public JMenuItem getMntmProfitModelWarn() {
 		return mntmProfitModelWarn;
+	}	
+
+	public JMenuItem getMnC45_exCall() {
+		return mnC45_exCall;
+	}
+
+	public JMenuItem getMnC45_sms() {
+		return mnC45_sms;
+	}
+
+	public JMenuItem getMnC45_custKeep() {
+		return mnC45_custKeep;
+	}
+
+	public JMenuItem getMnC45_appCustKeep() {
+		return mnC45_appCustKeep;
+	}
+
+	public JMenuItem getMnC45_custWarn() {
+		return mnC45_custWarn;
 	}
 
 	/**
@@ -522,9 +547,28 @@ public class MainWindow extends JFrame implements ActionListener{
 		mnClassAnalyze.add(mntmKaFang);
 		mntmKaFang.addActionListener(this);
 		
-		mntmC4_45 = new JMenuItem("  C4.5");
-		mnClassAnalyze.add(mntmC4_45);
-		mntmC4_45.addActionListener(this);
+		mnC4_45 = new JMenu("  C4.5");
+		mnClassAnalyze.add(mnC4_45);		
+		
+		mnC45_exCall = new JMenuItem(" 外呼营销");
+		mnC4_45.add(mnC45_exCall);
+		mnC45_exCall.addActionListener(this);
+		
+		mnC45_sms = new JMenuItem(" 短信营销");
+		mnC4_45.add(mnC45_sms);
+		mnC45_sms.addActionListener(this);
+		
+		mnC45_custKeep = new JMenuItem(" 客户保有");
+		mnC4_45.add(mnC45_custKeep);
+		mnC45_custKeep.addActionListener(this);
+		
+		mnC45_appCustKeep = new JMenuItem(" APP客户保有");
+		mnC4_45.add(mnC45_appCustKeep);
+		mnC45_appCustKeep.addActionListener(this);
+		
+		mnC45_custWarn = new JMenuItem(" 投诉客户预警");
+		mnC4_45.add(mnC45_custWarn);
+		mnC45_custWarn.addActionListener(this);		
 		
 		mntmZAPTree = new JMenuItem("  ZAP树");
 		mnClassAnalyze.add(mntmZAPTree);
@@ -770,9 +814,6 @@ public class MainWindow extends JFrame implements ActionListener{
         else if(event.getSource() == mntmLostVal){
         	LostValueAction.Instance().takeAction();
         }
-        else if(event.getSource() == mntmC4_45){
-        	action = C45Action.Instance();        	
-        }
         else if(event.getSource() == mntmRoc){
         	action = RocAction.Instance();
         }
@@ -806,7 +847,26 @@ public class MainWindow extends JFrame implements ActionListener{
         else if(event.getSource() == mntmHistogram){
         	action = HistogramAction.Instance();
         }
-        
+        else if(event.getSource() == mnC45_exCall){
+        	ImportRuleAction.Instance().setRocType(ROC_TYPE.ROC_EXT);
+        	action = C45Action.Instance();
+        }
+        else if(event.getSource() == mnC45_sms){
+        	ImportRuleAction.Instance().setRocType(ROC_TYPE.ROC_SMS);
+        	action = C45Action.Instance();
+        }
+        else if(event.getSource() == mnC45_custKeep){
+        	ImportRuleAction.Instance().setRocType(ROC_TYPE.ROC_CUST);
+        	action = C45Action.Instance();
+        }
+        else if(event.getSource() == mnC45_appCustKeep){
+        	ImportRuleAction.Instance().setRocType(ROC_TYPE.ROC_APP);
+        	action = C45Action.Instance();
+        }
+        else if(event.getSource() == mnC45_custWarn){
+        	ImportRuleAction.Instance().setRocType(ROC_TYPE.ROC_WARN);
+        	action = C45Action.Instance();
+        }
                 
         if(null!=action){
         	action.takeAction();

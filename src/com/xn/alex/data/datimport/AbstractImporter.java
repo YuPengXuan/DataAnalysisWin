@@ -73,7 +73,6 @@ public abstract class AbstractImporter{
 	}
 
 	public String getTableName() {
-		String tableName = MainWindow.fileNameToTableMap.get(fileName);
         
         if(tableName != null){
         	
@@ -301,7 +300,7 @@ public abstract class AbstractImporter{
 		File xlsxFile = new File(fileName);
 		long fileSize = xlsxFile.length();
 		
-		if(fileSize> 8000000){			
+		if(fileSize> 8000000 && type != FILE_TYPE.CSV_FILE){			
 			Vector<String> columnNames = new Vector<String>();
 			
 			if(false == HugeDataImport.Instance().importData(fileName, getTableName(), columnNames, missingColumnIndexList)){

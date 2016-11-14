@@ -112,7 +112,7 @@ public class CalculateGainRatioThread implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		long milsecond = System.currentTimeMillis();			
+		//long milsecond = System.currentTimeMillis();			
 		double infoD = calCulateArgumentInfoD();
 		
 		if(true == isDoubleZero(infoD)){
@@ -139,8 +139,8 @@ public class CalculateGainRatioThread implements Runnable{
 		
 		gainRatioMap.put(databaseColName, gainRatio);
 		
-		milsecond = (System.currentTimeMillis() - milsecond)/1000 ;
-		System.out.println("CalculateGainRatioThread tid:"+ Thread.currentThread() + " run time:" + milsecond);
+		//milsecond = (System.currentTimeMillis() - milsecond)/1000 ;
+		//System.out.println("CalculateGainRatioThread tid:"+ Thread.currentThread() + " run time:" + milsecond);
 		
 	}	
 	
@@ -396,10 +396,12 @@ public class CalculateGainRatioThread implements Runnable{
 		}
 		
 		List<String> tmpList = new CopyOnWriteArrayList<String>();
-		double prb_001 = (double)tmpMaxArgumentResult/(double)argumentTotalCount;
-		tmpList.add(tmpMaxArgumentName);
-		tmpList.add(String.valueOf(prb_001));
-		argumentResultUnderCondMap.put(databaseColName, tmpList);
+		if(0 != argumentTotalCount){
+		    double prb_001 = (double)tmpMaxArgumentResult/(double)argumentTotalCount;
+		    tmpList.add(tmpMaxArgumentName);
+		    tmpList.add(String.valueOf(prb_001));
+		    argumentResultUnderCondMap.put(databaseColName, tmpList);
+		}
 		
 		double infoD = c45Handler.infoD(argumentTotalCount, argumentValueList);
 		

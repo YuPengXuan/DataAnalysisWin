@@ -51,7 +51,7 @@ public class MenuItemEnable {
         	
         	MainWindow.Instance().getMntmKaFang().setEnabled(false);
         	
-        	MainWindow.Instance().getMntmC4_45().setEnabled(true);
+        	MainWindow.Instance().getMnC4_45().setEnabled(true);
         	
         	MainWindow.Instance().getMntmZAPTree().setEnabled(false);
         	

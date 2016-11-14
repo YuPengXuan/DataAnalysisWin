@@ -18,6 +18,7 @@ import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.database.DatabaseAction;
+import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.window.MainWindow;
 
 public class XlsImporter extends AbstractImporter {
@@ -103,8 +104,12 @@ public class XlsImporter extends AbstractImporter {
 						.getCurrentNode().hashCode());
 				return;
 			}
+			
+			if(!tableName.equals(DatabaseConstant.TREE_DATA_IMP_TABLE)){
 
 			MainWindow.fileNameToTableMap.put(fileName, tableName);
+			
+			}
 
 			updateMainWindowColumnVec(columnNames);
 

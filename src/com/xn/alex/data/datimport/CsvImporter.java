@@ -15,6 +15,7 @@ import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
+import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.ui.ProgressBar;
 import com.xn.alex.data.window.MainWindow;
 
@@ -118,7 +119,11 @@ public class CsvImporter extends  AbstractImporter{
 					    throw new Exception("导入数据失败.");
 				 }
 				
-				MainWindow.fileNameToTableMap.put(fileName, tableName);		
+				if(!tableName.equals(DatabaseConstant.TREE_DATA_IMP_TABLE)){
+				
+			    MainWindow.fileNameToTableMap.put(fileName, tableName);
+			    
+				}
 				
 				updateMainWindowColumnVec(columnNames);
 				

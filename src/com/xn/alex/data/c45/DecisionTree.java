@@ -15,7 +15,9 @@ import javax.swing.JOptionPane;
 
 import com.xn.ales.data.datimport.csv.DataImportFactory;
 import com.xn.ales.data.datimport.csv.IDataImport;
+import com.xn.alex.data.action.ImportRuleAction;
 import com.xn.alex.data.common.CommonConfig;
+import com.xn.alex.data.common.CommonConfig.ROC_TYPE;
 import com.xn.alex.data.common.ConfigElement;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.database.GetDistinctNumberOfColumnTask;
@@ -40,8 +42,6 @@ public class DecisionTree {
 	private Map<String, Integer> resultMap = new ConcurrentHashMap<String, Integer>();;
 	
 	private Map<String, List<String>> rangeValueMap = new ConcurrentHashMap<String, List<String>>();
-	
-	private Map<Integer, treeNodeResultObj> nodeNumToTreeNodeMap = new ConcurrentHashMap<Integer, treeNodeResultObj>();
 	
 	private ReadWriteLock myLock = new ReentrantReadWriteLock(false); 
 	
@@ -172,7 +172,7 @@ public class DecisionTree {
 		
 		int columnSize = columnNameVec.size();		
 				
-		long milsecond =  System.currentTimeMillis();
+		//long milsecond =  System.currentTimeMillis();
 		
 		String fileName = MainWindow.treeNodeToFullPathMap.get(MainWindow.Instance().getCurrentNode().hashCode());
 		
@@ -215,11 +215,11 @@ public class DecisionTree {
 			}
 		}
 		
-		milsecond = (System.currentTimeMillis() - milsecond)/1000 ;	
-		System.out.println("sql search time:" + milsecond);
+		//milsecond = (System.currentTimeMillis() - milsecond)/1000 ;	
+		//System.out.println("sql search time:" + milsecond);
 		
-		milsecond =  System.currentTimeMillis();
-		System.out.println("begin to get distinct");
+		//milsecond =  System.currentTimeMillis();
+		//System.out.println("begin to get distinct");
 		
 		int rangeValueMapSize = 0;
 				
@@ -265,12 +265,13 @@ public class DecisionTree {
 		}
 		
 		removeUnneededDataInMap();
-				
+		/*		
 		milsecond = (System.currentTimeMillis() - milsecond)/1000;
 		for(Map.Entry<String, List<String>> entry:rangeValueMap.entrySet()){
-			//System.out.println("key:" + entry.getKey() + " value:" + entry.getValue());			
+			System.out.println("key:" + entry.getKey() + " value:" + entry.getValue());			
 		}
 		System.out.println("end to get distinct:" + milsecond);
+		 */
 		return true;
 	}
 	
@@ -375,6 +376,11 @@ public class DecisionTree {
 		passedNodeNum++;
 		
 		if(level >= treeDeepth){
+			parent.isLeaf = true;
+			if(null != parent){
+				GenerateTreeByLeaf.getTreeLeafNodeVec().add(parent);
+			}
+			
 			return;
 		}
 		
@@ -395,7 +401,7 @@ public class DecisionTree {
 		 
 		 if(null == maxGainRatioLine){
 			 //this is leaf node
-			 addToLeafNodeVec(parent, level, conditionBuf, chnCondition);	
+			 addToLeafNodeVec(parent, level, conditionBuf, chnCondition, passedColSet);	
 			 			 
 			 for(int i=level+1;i<treeDeepth;i++){
 				 passedNodeNum += (int)Math.pow(treeWidth, i);
@@ -405,7 +411,7 @@ public class DecisionTree {
 		 
 		 List<String> valueRangeList = rangeValueMap.get(maxGainRatioLine);
 		 
-		 treeNodeResultObj currentNode = buildTree(parent, maxGainRatioLine, level, conditionBuf, chnCondition);
+		 treeNodeResultObj currentNode = buildTree(parent, maxGainRatioLine, level, conditionBuf, chnCondition, passedColSet);
 		 
 		 passedColSet.add(maxGainRatioLine);
 		 
@@ -433,11 +439,17 @@ public class DecisionTree {
 		 passedColSet.remove(maxGainRatioLine); 		
 	}
 	
-	private void addToLeafNodeVec(treeNodeResultObj parentNode, int level, StringBuffer condition, String chnCondition){
+	private void addToLeafNodeVec(treeNodeResultObj parentNode, int level, StringBuffer condition, String chnCondition, Set<String> passedColSet){
 		
 		String nodeName = "Node" + String.valueOf(getNodeNum()+1);
 		   	      	     	       
-    	treeNodeResultObj childNode = buildOtherNode(parentNode, nodeName, level, condition, true, chnCondition);    	   
+    	treeNodeResultObj childNode = buildOtherNode(parentNode, nodeName, level, condition, true, chnCondition, passedColSet);  
+    	
+    	if(null != childNode){
+    	
+    	    GenerateTreeByLeaf.getTreeLeafNodeVec().add(childNode);
+    	
+    	}
 				
 	}	
 	
@@ -456,7 +468,7 @@ public class DecisionTree {
 		buildTreeByLoop(null, level, databaseName, "", null, "");
 		
 		milsecond = (System.currentTimeMillis() - milsecond)/1000 ;	
-		System.out.println("build tree time:" + milsecond);
+		System.out.println("建树耗费时间:" + milsecond + "秒");
 		
 		}
 		catch(Exception e){
@@ -477,6 +489,7 @@ public class DecisionTree {
         TreeDataSheet.Instance().setPreTitle("C4.5决策树");
 		
 		TreeDataSheet.Instance().show(resultTree);
+		
 	}
 	
 	//for debug
@@ -574,17 +587,17 @@ public class DecisionTree {
 		return conditionBuf.toString();
 	}
 	
-	private treeNodeResultObj buildTree(treeNodeResultObj parent, String maxGainRatioLine, int level, StringBuffer conditionBuf, String chnCondition){
+	private treeNodeResultObj buildTree(treeNodeResultObj parent, String maxGainRatioLine, int level, StringBuffer conditionBuf, String chnCondition, Set<String> passedColSet){
 		
 		if(level == 0){
 			//it's root node
 			return buildRootNode(maxGainRatioLine, level);		
 		}
 		
-	    return buildOtherNode(parent, maxGainRatioLine, level, conditionBuf, false, chnCondition);
+	    return buildOtherNode(parent, maxGainRatioLine, level, conditionBuf, false, chnCondition, passedColSet);
 	}
 	
-	private treeNodeResultObj buildOtherNode(treeNodeResultObj parent, String nodeName, int level, StringBuffer conditionBuf, boolean isLeaf, String chnCondition){
+	private treeNodeResultObj buildOtherNode(treeNodeResultObj parent, String nodeName, int level, StringBuffer conditionBuf, boolean isLeaf, String chnCondition, Set<String> passedColSet){
 		if(level == 0){
 			return null;
 		}		
@@ -610,7 +623,14 @@ public class DecisionTree {
 		
 		}
 		
-		newNode.nodeName = nodeName;
+		ConfigElement tmpElement = ConfigParser.columnInfoMap.get(nodeName);
+		if(tmpElement != null){
+		    newNode.nodeName = tmpElement.mExcelColumnName;
+		}
+		else{
+			newNode.nodeName = nodeName;
+		}
+		
 		
 		newNode.objectLevel = level;
 				
@@ -636,9 +656,19 @@ public class DecisionTree {
 		    newNode.Probability = tmpList.get(1);
 		}
 
+		if(null == newNode.childNodeVec){			
+		    newNode.childNodeVec = new Vector<treeNodeResultObj>();		    
+		}
 		
-
-		
+		newNode.chnColumnName = new Vector<String>();
+		for(Iterator<String> iter = passedColSet.iterator();iter.hasNext();){
+			String colName = iter.next();
+			String chName = ConfigParser.columnInfoMap.get(colName).mExcelColumnName;
+			if(null != chName){
+			newNode.chnColumnName.add(chName);
+			}
+		}
+				
 		newNode.nodeInfo = "节点号：" + newNode.nodeNumber + "\n";
 		
 		newNode.nodeInfo += "预测结果：" + newNode.Prediction + "\n";
@@ -678,6 +708,8 @@ public class DecisionTree {
 		Vector<Vector<treeNodeResultObj>> treeNodeByLevelVec = GenerateTreeByLeaf.getTreeNodeByLevelVec();
 		
 		treeNodeByLevelVec.add(rootLevelVec);
+		
+		GenerateTreeByLeaf.getTreeLeafNodeVec().clear();
 		
 		return rootObj;
 	}

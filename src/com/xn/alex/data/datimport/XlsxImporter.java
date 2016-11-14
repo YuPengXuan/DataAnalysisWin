@@ -30,6 +30,7 @@ import com.xn.alex.data.common.CommonConfig;
 import com.xn.alex.data.common.ConfigParser;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.database.DatabaseAction;
+import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.ui.ProgressBar;
 import com.xn.alex.data.window.MainWindow;
 
@@ -156,8 +157,12 @@ public class XlsxImporter extends AbstractImporter {
 
 						throw new Exception("导入大数据失败");
 					}
+					
+					if(!tableName.equals(DatabaseConstant.TREE_DATA_IMP_TABLE)){
 
 					MainWindow.fileNameToTableMap.put(fileName, tableName);
+					
+					}
 
 					updateMainWindowColumnVec(columnNames);
 

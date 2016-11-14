@@ -244,8 +244,8 @@ public class ImportDataAction extends WindowAction {
 
         fileChooser.setAcceptAllFileFilterUsed(false);
 
-        final String[][] fileENames = { {".csv", "CSV 文件(*.csv)"} , { ".DBF", "数据库文件（*.DBF）" }, { ".xls", "MS-Excel 2003 文件(*.xls)" },
-                { ".xlsx", "MS-Excel 2007 文件(*.xlsx)" } };
+        final String[][] fileENames = {{ ".DBF", "数据库文件（*.DBF）" }, { ".xls", "MS-Excel 2003 文件(*.xls)" },
+                { ".xlsx", "MS-Excel 2007 文件(*.xlsx)" }, {".csv", "CSV 文件(*.csv)"} };
 
         fileChooser.addChoosableFileFilter(new FileFilter() {
             @Override
