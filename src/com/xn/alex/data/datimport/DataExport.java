@@ -144,7 +144,7 @@ public class DataExport {
 		DefaultTableModel dtm = (DefaultTableModel) m_jtable.getModel();
 		
 		dtm.setDataVector(dataInfoVec, columnInfoVec);
-	    
+			    
 	    dtm.fireTableStructureChanged();
 	    
 	    dtm.fireTableDataChanged();

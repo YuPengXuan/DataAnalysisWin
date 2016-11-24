@@ -2,6 +2,8 @@ package com.xn.alex.data.action;
 
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import com.xn.alex.data.common.CommonConfig.ROC_TYPE;
 import com.xn.alex.data.graphics.LineDataSheet;
 import com.xn.alex.data.process.MenuItemDisable;
@@ -15,9 +17,17 @@ public class RocAction extends WindowAction {
 
 	private static RocAction rocActionHandler = null;
 	
-	 private RocAction(){
+	private boolean isDataImport = false;
+	
+	 public void setDataImport(boolean isDataImport) {
+		this.isDataImport = isDataImport;
+	}
+
+
+	private RocAction(){
 		 
 	 }
+	 
 	 
 	 public static RocAction Instance(){
 		 
@@ -30,6 +40,11 @@ public class RocAction extends WindowAction {
 	 
 	 public void takeAction(){
 		 //treeNodeResultObj treeNode = GenerateTreeByLeaf.getResultNode();
+		 
+		 if(isDataImport == false){
+			 JOptionPane.showMessageDialog(null,"请先导入数据!","错误信息",JOptionPane.ERROR_MESSAGE);
+			 return;
+		 }
 		 
 		 ROC_TYPE rocType = ImportRuleAction.Instance().getRocType();
 		 

@@ -17,6 +17,7 @@ import javax.swing.tree.TreePath;
 import com.xn.alex.data.common.CommonConfig.CURRENT_ACTION;
 import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.database.DatabaseAction;
+import com.xn.alex.data.database.DatabaseSpecialAction;
 import com.xn.alex.data.datimport.AbstractImporter;
 import com.xn.alex.data.datimport.DataExport;
 import com.xn.alex.data.process.MenuItemEnable;
@@ -147,7 +148,9 @@ public class OpenAction extends WindowAction{
 
 	     }
 	     
-	     DatabaseAction.Instance().deleteAll(tableName);
+	     //DatabaseAction.Instance().deleteAll(tableName);
+	     DatabaseSpecialAction.Instance().deleteFromFileToTableTable(fileName);
+	     DatabaseAction.Instance().dropTable(tableName);
 	     
 	     loadANewFile(fileName);
 		

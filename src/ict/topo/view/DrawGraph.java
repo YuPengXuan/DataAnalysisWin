@@ -45,8 +45,12 @@ import javax.swing.JMenu;
 
             private JMenu menu1;            
 			private JMenu menu2;
-            private JMenu menu3;
-            private JMenu menu4;
+            private JMenu menu3;            
+			private JMenu menu4;
+			
+			public JMenu getMenu3() {
+				return menu3;
+			}
             
 /*     */   public DrawGraph(String name)
 /*     */   {
@@ -316,6 +320,9 @@ import javax.swing.JMenu;
               this.menuBar.add(menu2);
               this.menuBar.add(menu3);
               this.menuBar.add(menu4);
+              
+
+              
 /*     */ 
 /* 314 */     if (this.tabCount * 80 >= this.screenSize.width - 210)
 /*     */     {

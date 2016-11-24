@@ -100,7 +100,7 @@ public class CSVImport implements IDataImport {
 
             // processENColumn(headers);
             final StringBuilder rows = rowProcessor.getRows();
-            final ByteArrayInputStream ingputStream = new ByteArrayInputStream(String.valueOf(rows).getBytes());
+            final ByteArrayInputStream ingputStream = new ByteArrayInputStream(String.valueOf(rows).getBytes("UTF-8"));
             load2Db(new BufferedInputStream(ingputStream, 3 * 1024 * 1024), tableName);
 
             final StringBuilder sb = new StringBuilder();
@@ -122,7 +122,11 @@ public class CSVImport implements IDataImport {
         } catch (final FileNotFoundException e) {
             e.printStackTrace();
             rt = false;
-        } finally {
+        } catch (Exception e) {
+        	e.printStackTrace();
+            rt = false;
+        }
+        finally {
             parser.stopParsing();
             if (reader != null) {
                 try {

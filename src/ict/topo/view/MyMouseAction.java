@@ -41,6 +41,7 @@ import com.xn.alex.data.action.WindowAction;
 /*     */   private static ArrayList<JLayeredPane> allPanes;
 /*     */   private static int lastTab;
 /*     */   public boolean diy;
+            private boolean isDataImport = false;
 /*     */   //private boolean mode;
 /*     */ 
 /*     */   public MyMouseAction()
@@ -342,9 +343,11 @@ import com.xn.alex.data.action.WindowAction;
 	            }
 	            else if("importData".equals(com.getName())){
 	            	action = ImportDataAction.Instance();
+	            	isDataImport = true;
 	            }
 	            else if("generateRoc".equals(com.getName())){
 	            	action = RocAction.Instance();
+	            	RocAction.Instance().setDataImport(isDataImport);
 	            }
 	            else if("savePic".equals(com.getName())){
 	            	action = SavePicAction.Instance();

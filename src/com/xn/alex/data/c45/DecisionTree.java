@@ -687,7 +687,13 @@ public class DecisionTree {
 	private treeNodeResultObj buildRootNode(String nodeName, int level){
 		treeNodeResultObj rootObj = new treeNodeResultObj();
 		
-		rootObj.nodeName = nodeName;
+		ConfigElement tmpElement = ConfigParser.columnInfoMap.get(nodeName);
+		if(tmpElement != null){
+			rootObj.nodeName = tmpElement.mExcelColumnName;
+		}
+		else{
+			rootObj.nodeName = nodeName;
+		}
 		
 		rootObj.nodeInfo = nodeName;
 		
