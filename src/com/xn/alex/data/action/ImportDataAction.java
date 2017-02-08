@@ -234,7 +234,9 @@ public class ImportDataAction extends WindowAction {
 
         obj.nodeInfo += "概率：" + obj.Probability + "\n";
 
-        obj.nodeInfo += "节点属性：" + obj.condition;
+        obj.nodeInfo += "节点属性：" + obj.condition + "\n";
+        
+        obj.nodeInfo += "命中vs非命中：" + obj.conditionMeet + ":" + obj.conditionNotMeet;
 
     }
 
