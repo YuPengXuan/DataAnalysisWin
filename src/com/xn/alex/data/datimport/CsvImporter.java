@@ -1,6 +1,8 @@
 package com.xn.alex.data.datimport;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,6 +12,8 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import org.apache.commons.io.FileUtils;
+
 import com.xn.ales.data.datimport.csv.DataImportFactory;
 import com.xn.ales.data.datimport.csv.IDataImport;
 import com.xn.alex.data.common.CommonConfig;
@@ -18,6 +22,7 @@ import com.xn.alex.data.common.CommonConfig.FILE_TYPE;
 import com.xn.alex.data.database.DatabaseConstant;
 import com.xn.alex.data.ui.ProgressBar;
 import com.xn.alex.data.window.MainWindow;
+import com.xn.alex.encode.FileCharsetDetector;
 
 public class CsvImporter extends  AbstractImporter{
 
@@ -33,7 +38,7 @@ public class CsvImporter extends  AbstractImporter{
 		List<String> columnNames = new ArrayList<String>();
 		String fileName = getFileName();
 		
-		InputStreamReader fr = new InputStreamReader(new FileInputStream(fileName));
+		InputStreamReader fr = new InputStreamReader(new FileInputStream(fileName), "UTF-8");
 		
 		BufferedReader br = new BufferedReader(fr);
 		
@@ -71,9 +76,26 @@ public class CsvImporter extends  AbstractImporter{
 
 	@Override
 	public void load() throws IOException {
+		try{
+		
+		String fileName = getFileName();
+		File tmpFile = new File(fileName);
+		FileCharsetDetector dec = new FileCharsetDetector();
+		String encode = dec.guessFileEncoding(tmpFile);
+		
+		if("GBK".equals(encode)){			
+			transformFileFromGBKToUTF8(fileName);
+		}
+						
 		List<String> columnNames = getColumnInfo();
 
 		loadDataIntoDatabase(getTableName(),columnNames);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			System.out.println("‘ÿ»ÎŒƒº˛ ß∞‹£°");
+			return;
+		}
 		
 	}
 	
@@ -143,14 +165,71 @@ public class CsvImporter extends  AbstractImporter{
 				this.dispose();
 			}
 			
-		};
-		
-	    
-		
-		 
+		};			    				 
 		 
 		 return true;
 		
 	}
 	
+	public boolean transformFileFromGBKToUTF8(String fileName){
+    	try {
+    		
+    	final String userHomeDir = System.getProperty("user.home");
+		String tmpDirPath = userHomeDir + File.separator + ".dataanalysis" + File.separator + "tmp";
+		File tmpDir = new File(tmpDirPath);
+		if(false == tmpDir.exists()){
+			tmpDir.mkdirs();
+		}
+				
+    	String newFileName = tmpDirPath + File.separator + "tmp_utf8.csv";
+    	
+    	File newFile = new File(newFileName);
+    	
+    	File oldFile = new File(fileName);
+    	
+    	if(newFile.exists()){
+    		newFile.delete();
+    	}
+    	
+		FileUtils.writeLines(newFile, "UTF-8", FileUtils.readLines(oldFile, "GBK"));
+		
+		//setFileName(newFileName);
+		
+		FileUtils.copyFile(oldFile, new File(fileName + ".bak"));
+		
+		FileUtils.copyFile(newFile, new File(fileName));
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			return false;
+		}
+    	
+		return true;
+    }
+	
+	public String codeString(String fileName) throws Exception{
+        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileName));
+        byte[] head = new byte[3];
+        bin.read(head);
+        String code = null;
+         
+        if(head[0]==-1 && head[1]==-2){
+            code = "UTF-16";
+        }
+        else if(head[0]==-2 && head[1]==-1){
+            code = "Unicode";
+        }
+        else if(head[0]==-17 && head[1]==-69 && head[2] ==-65){
+            code = "UTF-8";
+        }
+        else{
+             code = "GBK";
+        }
+        bin.close();        
+        return code;
+    }		
 }
+
+

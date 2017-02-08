@@ -82,8 +82,8 @@ public class ConfigParser extends DefaultHandler{
 		    else if("databaseName".equals(attrName)){
 			    cfgElement.mDatabaseName = attributes.getValue(attrName);
 			    mDataBaseName = cfgElement.mDatabaseName;
-			    if(mDataBaseName.contains("GenColumn_")){
-			        Pattern numPat = Pattern.compile(CommonConfig.GEN_COLUMN_NAME_PREFIX+"\\d+");
+			    if(mDataBaseName.contains(CommonConfig.GEN_COLUMN_NAME_PREFIX)){
+			        Pattern numPat = Pattern.compile(CommonConfig.GEN_COLUMN_NAME_PREFIX+"(\\d+)");
 			        Matcher macher = numPat.matcher(mDataBaseName);
 			        while(macher.find()){
 			        	String numStr = macher.group(1);

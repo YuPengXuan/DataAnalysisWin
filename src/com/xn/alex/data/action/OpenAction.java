@@ -23,6 +23,7 @@ import com.xn.alex.data.datimport.DataExport;
 import com.xn.alex.data.process.MenuItemEnable;
 import com.xn.alex.data.window.MainWindow;
 import com.xn.alex.data.window.UpdateObject;
+import org.apache.commons.io.FileUtils;
 
 public class OpenAction extends WindowAction{
 	
@@ -155,6 +156,8 @@ public class OpenAction extends WindowAction{
 	     loadANewFile(fileName);
 		
 	}
+    
+    
     
     private void loadANewFile(final String fullFileName){
 		
@@ -328,8 +331,6 @@ public class OpenAction extends WindowAction{
         tree.scrollPathToVisible(path);
         
         tree.updateUI();
-    }
-    
-    
+    }        
     
 }

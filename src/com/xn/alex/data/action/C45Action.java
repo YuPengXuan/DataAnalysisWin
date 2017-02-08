@@ -146,7 +146,7 @@ public class C45Action extends WindowAction{
 		 argumentFd.setText("自变量:");
 		 rightPane.add(argumentFd);
 		 
-		 JLabel treewidthLabel = new JLabel("树的宽度:");
+		 JLabel treewidthLabel = new JLabel("单列分类数:");
 		 treewidthLabel.setBounds(40, 80, 80, 30);
 		 rightPane.add(treewidthLabel);	
 		 		 
