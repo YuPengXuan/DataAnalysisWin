@@ -83,8 +83,8 @@ public class CsvImporter extends  AbstractImporter{
 		FileCharsetDetector dec = new FileCharsetDetector();
 		String encode = dec.guessFileEncoding(tmpFile);
 		
-		if("GBK".equals(encode)){			
-			transformFileFromGBKToUTF8(fileName);
+		if(!"UTF-8".equals(encode)){			
+			transformFileFromGBKToUTF8(fileName,encode);
 		}
 						
 		List<String> columnNames = getColumnInfo();
@@ -171,7 +171,7 @@ public class CsvImporter extends  AbstractImporter{
 		
 	}
 	
-	public boolean transformFileFromGBKToUTF8(String fileName){
+	public boolean transformFileFromGBKToUTF8(String fileName, String encode){
     	try {
     		
     	final String userHomeDir = System.getProperty("user.home");
@@ -191,7 +191,7 @@ public class CsvImporter extends  AbstractImporter{
     		newFile.delete();
     	}
     	
-		FileUtils.writeLines(newFile, "UTF-8", FileUtils.readLines(oldFile, "GBK"));
+		FileUtils.writeLines(newFile, "UTF-8", FileUtils.readLines(oldFile, encode));
 		
 		//setFileName(newFileName);
 		
@@ -207,28 +207,6 @@ public class CsvImporter extends  AbstractImporter{
 		}
     	
 		return true;
-    }
-	
-	public String codeString(String fileName) throws Exception{
-        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(fileName));
-        byte[] head = new byte[3];
-        bin.read(head);
-        String code = null;
-         
-        if(head[0]==-1 && head[1]==-2){
-            code = "UTF-16";
-        }
-        else if(head[0]==-2 && head[1]==-1){
-            code = "Unicode";
-        }
-        else if(head[0]==-17 && head[1]==-69 && head[2] ==-65){
-            code = "UTF-8";
-        }
-        else{
-             code = "GBK";
-        }
-        bin.close();        
-        return code;
     }		
 }
 
