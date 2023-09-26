@@ -20,6 +20,12 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+
+
+
+
+	
 	<dependencies>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
